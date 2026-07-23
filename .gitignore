@@ -1,0 +1,64 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.secret
+*.key
+*.pem
+*.p12
+*.pfx
+credentials*
+secrets*
+config/local.conf
+config/researcher-system.conf
+koha-conf.xml
+
+# Database and private exports
+*.sql.gz
+*.dump
+*.bak
+database/data/
+database/backups/
+database/production/
+database/snapshots/
+
+# Logs and runtime data
+*.log
+logs/
+cache/
+raw-data/
+raw-json/
+api-responses/
+*.jsonl
+
+# Personal data and uploads
+patron-data/
+researcher-data/
+exports/
+uploads/
+photos/
+
+# Temporary and editor files
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+
+# Perl generated files
+Makefile
+Makefile.old
+MYMETA.json
+MYMETA.yml
+blib/
+pm_to_blib
