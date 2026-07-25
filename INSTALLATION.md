@@ -17,6 +17,7 @@ OPAC template language
 Staff template language
 Plack status
 Apache virtual-host configuration
+Server time zone
 ```
 
 Useful commands:
@@ -25,14 +26,23 @@ Useful commands:
 koha-list
 sudo koha-plack --status INSTANCE
 sudo koha-shell INSTANCE -c 'perl -I/usr/share/koha/lib -e "use C4::Context; print C4::Context->preference(q{Version}), qq{\n};"'
+timedatectl
 ```
+
+Replace `INSTANCE` with the real Koha instance name in every command.
 
 ## 3. Back up Koha
 
+Create a timestamped backup directory so that database and file backups belong to the same deployment attempt.
+
 ```bash
+STAMP="$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="/root/koha-researcher-backups/$STAMP"
+
+sudo mkdir -p "$BACKUP_DIR"
 sudo koha-dump INSTANCE
 
-sudo tar -czf /root/koha-researcher-files-before-install.tar.gz \
+sudo tar -czf "$BACKUP_DIR/koha-researcher-files-before-install.tar.gz" \
   /usr/share/koha/opac/cgi-bin/opac \
   /usr/share/koha/intranet/cgi-bin/tools \
   /usr/share/koha/opac/htdocs/opac-tmpl/bootstrap/en/modules \
@@ -40,6 +50,8 @@ sudo tar -czf /root/koha-researcher-files-before-install.tar.gz \
   /usr/share/koha/bin \
   /etc/cron.d
 ```
+
+Confirm that the backup files exist before continuing.
 
 ## 4. Prepare patron data
 
@@ -75,13 +87,26 @@ Normal circulation rules remain controlled by Koha.
 
 ## 6. Install the database schema
 
-After the schema file is added to this repository:
+After reviewing the schema file, load it through the Koha instance database connection rather than placing a database password in the shell command or repository.
 
 ```bash
-mysql KOHA_DATABASE < database/schema/researcher-system-schema.sql
+sudo koha-mysql INSTANCE < database/schema/researcher-system-schema.sql
 ```
 
-Use credentials from the local Koha configuration. Never store a database password in this repository.
+Validate the expected tables after import:
+
+```bash
+sudo koha-mysql INSTANCE -e "
+SHOW TABLES LIKE 'custom_profile_details';
+SHOW TABLES LIKE 'researcher_identifiers';
+SHOW TABLES LIKE 'researcher_publications_master';
+SHOW TABLES LIKE 'researcher_publication_sources';
+SHOW TABLES LIKE 'researcher_publication_links';
+SHOW TABLES LIKE 'researcher_sync_jobs';
+"
+```
+
+Never store a database password in this repository.
 
 ## 7. Install OPAC programs
 
@@ -109,6 +134,8 @@ sudo install -m 0644 \
   /usr/share/koha/opac/htdocs/opac-tmpl/bootstrap/en/modules/
 ```
 
+Adjust the template-language path when the instance does not use `en`.
+
 ## 9. Install staff verification files
 
 ```bash
@@ -121,10 +148,44 @@ sudo install -m 0644 \
   /usr/share/koha/intranet/htdocs/intranet-tmpl/prog/en/modules/tools/
 ```
 
+The verification program must retain the background Scopus and Web of Science launch block. A deployment that copies an older verification file can silently remove immediate synchronization.
+
+After installation, confirm the worker references:
+
+```bash
+sudo grep -nE \
+  'bu-researcher-publication-sync\.pl|bu-rims-wos-auto-sync\.pl|fork\(|exec\(|system\(' \
+  /usr/share/koha/intranet/cgi-bin/tools/researcher-verification.pl
+```
+
 ## 10. Install maintenance scripts
+
+Review each script before installation, then copy only the required workers.
 
 ```bash
 sudo install -m 0755 scripts/maintenance/*.pl /usr/share/koha/bin/
+```
+
+Expected production workers can include:
+
+```text
+bu-researcher-publication-sync.pl
+bu-rims-wos-auto-sync.pl
+bu-crossref-publication-sync.pl
+```
+
+Validate every installed Perl worker:
+
+```bash
+export PERL5LIB=/usr/share/koha/lib
+
+for file in \
+  /usr/share/koha/bin/bu-researcher-publication-sync.pl \
+  /usr/share/koha/bin/bu-rims-wos-auto-sync.pl \
+  /usr/share/koha/bin/bu-crossref-publication-sync.pl
+do
+  [[ -f "$file" ]] && sudo koha-shell INSTANCE -c "perl -c '$file'"
+done
 ```
 
 ## 11. Configure APIs and mail
@@ -133,22 +194,49 @@ sudo install -m 0755 scripts/maintenance/*.pl /usr/share/koha/bin/
 sudo mkdir -p /etc/koha/researcher-system
 sudo cp config/researcher-system.example.conf \
   /etc/koha/researcher-system/researcher-system.conf
-sudo chmod 600 /etc/koha/researcher-system/researcher-system.conf
+sudo chown root:INSTANCE-koha \
+  /etc/koha/researcher-system/researcher-system.conf
+sudo chmod 0640 \
+  /etc/koha/researcher-system/researcher-system.conf
 ```
+
+Confirm the actual Koha group name before using the `chown` command. Use mode `0600` instead when only root should read the file.
 
 Enter real credentials only in the local protected file.
 
-## 12. Install cron jobs
+## 12. Install cron jobs safely
 
-Review instance names and schedules before copying:
+Do not blindly copy cron templates into production. Review and replace all placeholders first:
 
 ```bash
-sudo cp scripts/cron/* /etc/cron.d/
-sudo chmod 0644 /etc/cron.d/researcher*
-sudo systemctl restart cron
+grep -RniE 'INSTANCE|CHANGEME|example|/path/to' scripts/cron config
 ```
 
-## 13. Validate Perl
+Each cron entry should:
+
+- run as the Koha instance user;
+- set `KOHA_CONF` and `PERL5LIB` explicitly;
+- use `flock` to prevent overlapping runs;
+- write to a protected instance log;
+- use schedules appropriate for API quotas.
+
+Example Crossref metadata-enrichment cron:
+
+```cron
+35 3 * * * INSTANCE-koha flock -n /var/lock/koha/INSTANCE/crossref-publication-sync.lock env KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/share/koha/bin/bu-crossref-publication-sync.pl --apply >> /var/log/koha/INSTANCE/crossref-publication-sync.log 2>&1
+```
+
+After replacing `INSTANCE`, install reviewed cron files and validate them:
+
+```bash
+sudo install -m 0644 scripts/cron/REVIEWED_FILE \
+  /etc/cron.d/REVIEWED_FILE
+sudo systemctl restart cron
+sudo systemctl is-active cron
+sudo grep -Rni 'bu-.*sync' /etc/cron.d
+```
+
+## 13. Validate repository Perl files
 
 ```bash
 export PERL5LIB=/usr/share/koha/lib
@@ -166,6 +254,8 @@ sudo koha-plack --restart INSTANCE
 sudo systemctl reload apache2
 ```
 
+Check service and HTTP status after restart.
+
 ## 15. Test the complete workflow
 
 ```text
@@ -175,19 +265,37 @@ Create researcher profile
 Generate researcher UUID
 Add ORCID, Scopus ID and WoS ResearcherID
 Register name variants and affiliations
-Verify profile
-Send verification email
-Synchronize publications
+Verify identifiers against official source profiles
+Verify the researcher profile
+Confirm verification email
+Confirm immediate background Scopus synchronization
+Confirm immediate/background Web of Science synchronization
 Normalize DOI, title and journal metadata
 Merge Scopus–WoS duplicates
 Run author disambiguation
 Review uncertain records
 Enable public profile
-Test scheduled synchronization
+Run Crossref DOI metadata verification
+Confirm Crossref changes source rows only
+Test scheduled synchronization and retry jobs
 Test Active/Former lifecycle
 Test Hide and Restore
 Verify audit logs
 ```
+
+Useful validation queries:
+
+```bash
+sudo koha-mysql INSTANCE -e "
+SELECT source_name, job_type, job_status, COUNT(*) AS jobs,
+       MAX(started_at) AS latest_job
+FROM researcher_sync_jobs
+GROUP BY source_name, job_type, job_status
+ORDER BY latest_job DESC;
+"
+```
+
+Validate the public profile with an HTTP request and confirm that no private data is exposed.
 
 ## 16. Production release checklist
 
@@ -195,9 +303,12 @@ Verify audit logs
 Backup verified
 Secret scan passed
 Schema verified
-CGI syntax passed
+CGI and worker syntax passed
+Verification-trigger worker references confirmed
 API tests passed
 Email delivery passed
+Cron placeholders removed
+Cron overlap protection enabled
 Role permissions reviewed
 HTTPS verified
 Data privacy review completed
