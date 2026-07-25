@@ -19,7 +19,9 @@ Pilot implementation. Test on a non-production Koha instance before deployment.
 - Scopus–WoS publication deduplication
 - Author disambiguation with automated scoring and manual review
 - Source-specific citation counts
-- Scheduled synchronization and audit trail
+- Verification-triggered synchronization
+- Scheduled retry and metadata-enrichment jobs
+- Synchronization audit trail
 - Active, Former, Hidden, Restored, and Deleted researcher lifecycle
 
 ## Start-to-end workflow
@@ -38,17 +40,51 @@ New user arrives
 → Name variants registered
 → Affiliation history registered
 → Library verification
+→ Verification status becomes verified
+→ Public visibility and synchronization enabled for active researchers
 → Verification email
-→ API synchronization
+→ Immediate background Scopus synchronization
+→ Immediate/background Web of Science synchronization
 → Metadata normalization
 → Scopus–WoS deduplication
 → Author disambiguation
 → Manual review when required
 → Public researcher profile enabled
-→ Scheduled synchronization
+→ Scheduled Scopus/WoS retry synchronization
+→ Daily Crossref DOI metadata verification
 → Patron-expiry lifecycle
 → Former / Reactivated / Hidden / Restored / Deleted state
 ```
+
+## Verified synchronization behaviour
+
+The production pilot currently uses two layers of automation.
+
+### Verification trigger
+
+When library staff verify an active researcher, the staff verification program:
+
+1. sets `verification_status = 'verified'`;
+2. enables public visibility and synchronization for an active researcher;
+3. launches the Scopus publication worker as a background process;
+4. launches or queues the Web of Science synchronization process;
+5. records synchronization activity in the RIMS audit tables and log files.
+
+The scheduled jobs remain a retry and refresh mechanism. They are not the only synchronization path.
+
+### Crossref enrichment
+
+Crossref does not discover researchers and does not create researcher-publication links. It verifies and enriches DOI-bearing records already present in the publication master.
+
+```text
+Scopus / Web of Science publication
+→ DOI normalized
+→ Crossref DOI lookup
+→ DOI, title and year validation
+→ Crossref source metadata inserted or updated
+```
+
+The Crossref worker changes `CROSSREF_SOURCE_ROWS_ONLY`; it does not replace Scopus or Web of Science as the source of researcher authorship.
 
 ## Publication deduplication
 
@@ -75,6 +111,8 @@ One master publication
 └── ORCID source
 ```
 
+Source totals may overlap. For example, a profile can have 23 unique publications, 21 Scopus links, 14 Web of Science links, and 14 Crossref-verified DOI records without those source totals being added together.
+
 ## Author disambiguation
 
 | Evidence | Maximum score |
@@ -95,6 +133,16 @@ Decision rules:
 | Score below 50 | Needs review or rejection |
 | Manual decision already exists | Preserve the manual decision |
 
+## Operational safety
+
+- Never enter an unverified Scopus Author ID or Web of Science ResearcherID.
+- Verify identifiers against the source profile before approving the researcher.
+- Use cache-first retrieval where configured and respect licensed API limits.
+- Use `flock` for scheduled workers to prevent overlapping jobs.
+- Back up files and the Koha database before changing production code.
+- Run Perl syntax checks before restarting Koha services.
+- Treat retracted, corrected, missing, or low-similarity Crossref records as review items rather than silently approving them.
+
 ## Documentation
 
 - [Installation](INSTALLATION.md)
@@ -107,4 +155,4 @@ Decision rules:
 
 ## Security warning
 
-Never commit production credentials, API keys, SMTP passwords, Koha configuration files, patron data, private researcher information, raw licensed API datasets, database dumps, or production logs.
+Never commit production credentials, API keys, SMTP passwords, Koha configuration files, patron data, private researcher information, raw licensed API datasets, database dumps, production logs, or diagnostic reports containing sensitive data.
