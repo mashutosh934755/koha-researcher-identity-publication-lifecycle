@@ -2,9 +2,15 @@
 
 A Koha extension for researcher onboarding, persistent researcher identity, scholarly identifier management, publication synchronization, Scopus–Web of Science deduplication, author disambiguation, public researcher profiles, email notifications, audit logging, and Active/Former lifecycle management.
 
+## Read this first
+
+This repository currently contains the **pilot architecture and implementation documentation**. It explains the intended workflow and production-pilot behaviour, but it should not be treated as a complete clone-and-install release until the database schema, CGI programs, templates, synchronization workers, cron files, and tests listed in [Project readiness](PROJECT-READINESS.md) are present.
+
+For a simple start-to-finish explanation, read the [Beginner Build Guide](BEGINNER-BUILD-GUIDE.md).
+
 ## Status
 
-Pilot implementation. Test on a non-production Koha instance before deployment.
+Pilot implementation documentation and reference architecture. Test only on a non-production Koha instance. Do not deploy from documentation alone when required implementation files are missing.
 
 ## Main capabilities
 
@@ -143,15 +149,17 @@ Decision rules:
 - Run Perl syntax checks before restarting Koha services.
 - Treat retracted, corrected, missing, or low-similarity Crossref records as review items rather than silently approving them.
 
-## Documentation
+## Documentation order for a new user
 
-- [Installation](INSTALLATION.md)
-- [Configuration](CONFIGURATION.md)
-- [Security](SECURITY.md)
-- [System workflow](docs/01-system-workflow.md)
-- [Scopus–WoS deduplication](docs/02-deduplication.md)
-- [Author disambiguation](docs/03-author-disambiguation.md)
-- [Lifecycle management](docs/04-lifecycle.md)
+1. [Beginner Build Guide](BEGINNER-BUILD-GUIDE.md)
+2. [Project readiness and required files](PROJECT-READINESS.md)
+3. [Installation](INSTALLATION.md)
+4. [Configuration](CONFIGURATION.md)
+5. [Security](SECURITY.md)
+6. [System workflow](docs/01-system-workflow.md)
+7. [Scopus–WoS deduplication](docs/02-deduplication.md)
+8. [Author disambiguation](docs/03-author-disambiguation.md)
+9. [Lifecycle management](docs/04-lifecycle.md)
 
 ## Security warning
 
