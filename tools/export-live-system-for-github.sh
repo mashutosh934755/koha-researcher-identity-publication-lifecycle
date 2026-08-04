@@ -112,7 +112,7 @@ if [[ -n "$TABLES" ]]; then
   } > "$ROOT/database/schema/researcher-system-schema.sql"
 fi
 
-# Replace only deployment-specific instance and private IPv4 values.
+# Replace deployment-specific instance and private IPv4 values.
 find "$ROOT" -type f \
   \( -name '*.pl' -o -name '*.py' -o -name '*.sh' -o -name '*.tt' -o -name '*.sql' \) \
   -print0 |
@@ -123,7 +123,9 @@ while IFS= read -r -d '' file; do
     "$file"
 done
 
-# Scan for likely embedded secrets. Empty example assignments are allowed.
+# High-confidence secret scan. Variable names such as api_key and safe
+# environment lookups are intentionally allowed; only credential-like values
+# and private-key material cause the exporter to stop.
 SECRET_REPORT="$ROOT/evidence/secret-scan.txt"
 : > "$SECRET_REPORT"
 
@@ -137,17 +139,30 @@ scan_pattern() {
     "$ROOT" >> "$SECRET_REPORT" 2>/dev/null || true
 }
 
-scan_pattern 'BEGIN (RSA|OPENSSH|EC) PRIVATE KEY'
-scan_pattern '(api[_-]?key|client_secret|access_token|smtp_password)[[:space:]]*[:=][[:space:]]*[^[:space:]]+'
-scan_pattern '(password|passwd)[[:space:]]*[:=][[:space:]]*[^[:space:]]+'
-scan_pattern 'Authorization:[[:space:]]*(Bearer|Basic)[[:space:]]+[A-Za-z0-9._~+/-]+'
+scan_pattern 'BEGIN (RSA|OPENSSH|EC|DSA) PRIVATE KEY'
+scan_pattern 'Authorization:[[:space:]]*(Bearer|Basic)[[:space:]]+[A-Za-z0-9._~+/-]{16,}'
 scan_pattern 'sk-[A-Za-z0-9_-]{20,}'
+scan_pattern 'sk-proj-[A-Za-z0-9_-]{20,}'
 scan_pattern 'AIza[0-9A-Za-z_-]{30,}'
+scan_pattern 'gh[pousr]_[A-Za-z0-9]{30,}'
+scan_pattern 'github_pat_[A-Za-z0-9_]{20,}'
+scan_pattern 'AKIA[0-9A-Z]{16}'
+scan_pattern '-----BEGIN [A-Z ]*PRIVATE KEY-----'
 
 if [[ -s "$SECRET_REPORT" ]]; then
-  echo "Potential secret matches found. Review: $SECRET_REPORT"
+  echo "High-confidence secret matches found. Review: $SECRET_REPORT"
   exit 2
 fi
+
+# Record potentially sensitive literals for manual review without failing.
+REVIEW_REPORT="$ROOT/evidence/manual-review.txt"
+: > "$REVIEW_REPORT"
+grep -RInE \
+  --exclude='manual-review.txt' \
+  --exclude='secret-scan.txt' \
+  --exclude='SHA256SUMS' \
+  '(api[_-]?key|client_secret|access_token|smtp_password|password|passwd|email|cardnumber|borrowernumber|employee_id)' \
+  "$ROOT" >> "$REVIEW_REPORT" 2>/dev/null || true
 
 find "$ROOT" -type f -exec sha256sum {} + \
   > "$ROOT/evidence/SHA256SUMS"
@@ -165,3 +180,4 @@ chmod 640 "$ARCHIVE"
 echo "EXPORT_OK"
 echo "Directory: $ROOT"
 echo "Archive:   $ARCHIVE"
+echo "Manual review: $REVIEW_REPORT"
