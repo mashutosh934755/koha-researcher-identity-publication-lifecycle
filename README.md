@@ -75,6 +75,23 @@ Natural-language research question
 
 Direct keyword matching can operate without an external semantic service. This provides a local fallback and reduces dependency on external AI availability.
 
+## From author-disambiguation gaps to institutional operationalization
+
+The framework is positioned as an implementable institutional response to several recurring problems in researcher-identity and author-name-disambiguation research. It does **not** claim to solve every disambiguation problem.
+
+The main operational responses include:
+
+- ORCID is not treated as sufficient in isolation; it is combined with Scopus Author ID, Web of Science ResearcherID, Koha-linked institutional identity, registered name variants, affiliation history and timeline evidence;
+- author ambiguity is handled through weighted identifier, name, affiliation and temporal evidence;
+- DOI/title/name/affiliation/document-type normalization reduces metadata inconsistency;
+- DOI-first and metadata-assisted deduplication consolidates duplicate source records into master publications;
+- library-mediated review is preserved for ambiguous cases instead of forcing opaque automated decisions;
+- publication ownership is separated from institutional-affiliation-period attribution;
+- Current/Former/rejoining lifecycle rules preserve one persistent researcher identity across multiple employment periods;
+- verified identity and publication provenance provide the foundation for explainable expert discovery.
+
+See [From Author-Disambiguation Gaps to Institutional Operationalization](docs/09-gap-to-operationalization.md) for the detailed gap-to-response matrix and scholarly positioning.
+
 ## No-dues, separation and rejoining
 
 A no-dues/separation event changes lifecycle state; it does **not** delete the researcher or their publications.
@@ -167,6 +184,7 @@ The pilot demonstrates technical feasibility. Stronger research evaluation shoul
 10. [Expert discovery](docs/06-expert-discovery.md)
 11. [Expert evidence and ranking](docs/07-expert-evidence-ranking.md)
 12. [Expert discovery evaluation protocol](docs/08-expert-discovery-evaluation.md)
+13. [Gap-to-operationalization framework](docs/09-gap-to-operationalization.md)
 
 ## Security warning
 
