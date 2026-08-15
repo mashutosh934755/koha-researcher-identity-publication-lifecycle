@@ -12,6 +12,24 @@ For a simple start-to-finish explanation, read the [Beginner Build Guide](BEGINN
 
 Pilot implementation documentation and reference architecture. Test only on a non-production Koha instance. Do not deploy from documentation alone when required implementation files are missing.
 
+## Audited pilot snapshot
+
+A read-only deployment audit on 15 August 2026 recorded the following anonymized aggregate values:
+
+- 6 verified researcher profiles: 4 active and 2 former;
+- 5 of 6 verified profiles publicly visible (83.33%);
+- ORCID, Scopus Author ID and Web of Science ResearcherID each present for 4 of 6 verified profiles (66.67%);
+- 423 source-specific publication records and 151 master publication entities;
+- 230 confirmed researcher-publication links;
+- 152 links with `review_status=auto_confirmed` and 78 with `review_status=confirmed`;
+- 188 links in the 80-100 match-score band and 42 in the 50-79 band;
+- 5 profiles in the public expert-evidence index: 4 active and 1 former;
+- 26 indexed research-interest terms across 2 profiles and 8 OECD classifications across 4 profiles;
+- mean local expert-index JSON retrieval of approximately 3.37 ms across five requests;
+- no active rejoin candidate in the audit snapshot.
+
+These values document technical feasibility and the deployed data model; they do not establish expert-ranking effectiveness. See [Empirical Pilot Audit — 15 August 2026](docs/10-empirical-pilot-audit-2026-08-15.md) for interpretation and limitations.
+
 ## Main capabilities
 
 - Koha patron-linked researcher onboarding
@@ -117,7 +135,7 @@ Former researcher
 -> eligible for current expert discovery again
 ```
 
-This allows one researcher identity to represent multiple institutional affiliation periods while preserving provenance. See [Lifecycle management](docs/04-lifecycle.md) for the detailed rules.
+This allows one researcher identity to represent multiple institutional affiliation periods while preserving provenance. The empirical audit contained zero live rejoin candidates, so rejoining is currently documented as an implemented and schema-validated workflow rather than as an observed longitudinal rejoining event. See [Lifecycle management](docs/04-lifecycle.md) for the detailed rules.
 
 ## Start-to-end researcher and publication workflow
 
@@ -154,6 +172,8 @@ New user arrives
 
 The unique-publication total is not calculated by adding Scopus and Web of Science totals. Unique publications are represented by deduplicated master publication records. Matching proceeds from exact normalized DOI, to normalized title/year/ISSN or journal evidence, to fuzzy comparison, with manual review for uncertain cases.
 
+The audited pilot contained 423 source-specific publication records and 151 master publication entities. This demonstrates source-to-master consolidation but should not be interpreted as an exact count of duplicate publications without record-level duplicate adjudication.
+
 ## Author disambiguation
 
 | Evidence | Maximum score |
@@ -164,11 +184,13 @@ The unique-publication total is not calculated by adding Scopus and Web of Scien
 | Timeline match | 10 |
 | Total | 100 |
 
-Decision rules preserve manual librarian decisions and route ambiguous cases to review.
+Decision rules preserve manual librarian decisions and route ambiguous cases to review. In the audited snapshot, 230 researcher-publication links had a final confirmed system decision; 152 carried auto-confirmed review status and 78 carried confirmed review status.
 
 ## Expert-discovery evaluation roadmap
 
 The pilot demonstrates technical feasibility. Stronger research evaluation should use a larger set of research questions with expert-judged relevance and report measures such as Precision@k, Recall@k, Mean Reciprocal Rank (MRR), and nDCG. Recommended baselines include keyword-only matching, department-only matching, publication-volume ranking, and the proposed evidence-grounded approach. Latency and resilience should also be compared for direct local matching and AI-assisted query interpretation.
+
+The empirical audit validates index integrity and fast local retrieval, but only two of five public indexed profiles contained declared research-interest evidence. Profile completeness is therefore a key evaluation and governance issue.
 
 ## Documentation order
 
@@ -185,6 +207,7 @@ The pilot demonstrates technical feasibility. Stronger research evaluation shoul
 11. [Expert evidence and ranking](docs/07-expert-evidence-ranking.md)
 12. [Expert discovery evaluation protocol](docs/08-expert-discovery-evaluation.md)
 13. [Gap-to-operationalization framework](docs/09-gap-to-operationalization.md)
+14. [Empirical pilot audit — 15 August 2026](docs/10-empirical-pilot-audit-2026-08-15.md)
 
 ## Security warning
 
