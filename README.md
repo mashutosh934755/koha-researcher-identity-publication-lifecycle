@@ -17,7 +17,7 @@ Pilot implementation documentation and reference architecture. Test only on a no
 - Koha patron-linked researcher onboarding
 - Persistent researcher UUID
 - ORCID, Scopus Author ID, and Web of Science ResearcherID
-- Name variants and affiliation history
+- Name variants and multi-period affiliation history
 - Library verification dashboard
 - Public researcher directory and researcher profiles
 - Research interests / keywords and disciplinary evidence
@@ -31,6 +31,8 @@ Pilot implementation documentation and reference architecture. Test only on a no
 - Scheduled retry and metadata-enrichment jobs
 - Synchronization audit trail
 - Active, Former, Hidden, Restored, and Deleted researcher lifecycle
+- No-dues/separation transition without deleting scholarly history
+- Rejoining/reactivation using the same persistent researcher identity
 - Evidence-grounded expert discovery from a research topic or question
 - Optional AI-assisted query interpretation and concept expansion
 - Deterministic/local researcher-evidence matching
@@ -39,11 +41,9 @@ Pilot implementation documentation and reference architecture. Test only on a no
 
 ## Two public discovery modes
 
-The public layer intentionally separates two different information needs.
-
 ### 1. Researcher directory
 
-Use this when the user already knows a person, department, school, researcher type, or employment status. The directory supports structured browsing and filtering.
+Use this when the user already knows a person, department, school, researcher type, or employment status. The directory supports structured browsing and filtering, including Current and Former researcher views.
 
 ### 2. Expert discovery
 
@@ -59,16 +59,7 @@ Topic Need
 -> Connect to Researcher Profile
 ```
 
-The expert discovery layer can use verified profile evidence such as:
-
-- declared research interests and keywords;
-- Fields of Science and Technology (OECD) classifications;
-- department, school and disciplinary affiliation;
-- verified and Current/Former researcher status;
-- linked scholarly-output evidence;
-- persistent identifiers as identity/provenance anchors.
-
-Publication volume is supporting evidence, not a substitute for topical expertise.
+The expert discovery layer can use verified profile evidence such as declared research interests and keywords, Fields of Science and Technology (OECD) classifications, department/school context, verified current status, linked scholarly outputs, and persistent identifiers as identity/provenance anchors. Publication volume is supporting evidence, not a substitute for topical expertise.
 
 ## Responsible AI boundary
 
@@ -84,18 +75,32 @@ Natural-language research question
 
 Direct keyword matching can operate without an external semantic service. This provides a local fallback and reduces dependency on external AI availability.
 
-## Explainability
+## No-dues, separation and rejoining
 
-A recommendation should expose the evidence behind the ranking instead of presenting a score as self-justifying. Example explanation categories include:
+A no-dues/separation event changes lifecycle state; it does **not** delete the researcher or their publications.
 
-- direct research-interest match;
-- related/semantic expertise match;
-- OECD or disciplinary alignment;
-- department/domain alignment;
-- current verified researcher status;
-- linked scholarly-output evidence.
+```text
+Active researcher
+-> no-dues / separation
+-> close current affiliation period
+-> Former researcher
+-> preserve UUID + identifiers + publications + audit history
+```
 
-The interface concept is summarized as **Why this expert?**
+If the same faculty member later rejoins, the system searches for and reuses the existing persistent researcher identity instead of creating a duplicate profile:
+
+```text
+Former researcher
+-> rejoining detected
+-> existing identity verified
+-> preserve old affiliation history
+-> open new current affiliation period
+-> reactivate profile and synchronization
+-> incremental publication refresh
+-> eligible for current expert discovery again
+```
+
+This allows one researcher identity to represent multiple institutional affiliation periods while preserving provenance. See [Lifecycle management](docs/04-lifecycle.md) for the detailed rules.
 
 ## Start-to-end researcher and publication workflow
 
@@ -123,26 +128,14 @@ New user arrives
 -> Public researcher profile enabled
 -> Researcher evidence available to directory / expert discovery
 -> Scheduled synchronization and metadata enrichment
--> Patron-expiry lifecycle
--> Former / Reactivated / Hidden / Restored / Deleted state
+-> No-dues / separation -> Former while scholarly history is preserved
+-> Rejoining -> same identity reactivated with a new affiliation period
+-> Hidden / Restored / Deleted administrative states as applicable
 ```
 
 ## Publication deduplication
 
-The unique-publication total is not calculated by adding Scopus and Web of Science totals.
-
-```text
-Unique publications = deduplicated master publication records
-```
-
-Matching order:
-
-1. Exact normalized DOI match
-2. Normalized title + year + ISSN/journal match
-3. Fuzzy metadata comparison
-4. Manual review for uncertain matches
-
-One master publication can retain several source records: Scopus, Web of Science, Crossref and ORCID.
+The unique-publication total is not calculated by adding Scopus and Web of Science totals. Unique publications are represented by deduplicated master publication records. Matching proceeds from exact normalized DOI, to normalized title/year/ISSN or journal evidence, to fuzzy comparison, with manual review for uncertain cases.
 
 ## Author disambiguation
 
