@@ -148,3 +148,32 @@ Before uploading code copied from a production server, remove or replace:
 - institution-specific secrets or identifiers that are not approved for publication.
 
 Run a secret scan and manually review every diff before merging.
+
+
+## Production-hardening readiness
+
+Before describing the repository as production-reproducible, include or locally implement equivalents of:
+
+```text
+scripts/maintenance/bu-researcher-publication-sync.pl
+scripts/maintenance/bu-rims-wos-auto-sync.pl
+scripts/maintenance/bu-crossref-publication-sync.pl
+scripts/maintenance/bu-official-api-author-names-sync.pl
+scripts/maintenance/bu-researcher-disambiguation-score.pl
+scripts/maintenance/bu-researcher-expiry-lifecycle.pl
+scripts/cron/
+```
+
+The production design must also implement:
+
+- authoritative verified/primary/active identifier resolution;
+- identifier-change quarantine/invalidation;
+- complete-set reconciliation guards;
+- duplicate disambiguation-case protection;
+- confirmed unique-publication counting;
+- confirmed exact-source Scopus/WoS visibility;
+- Crossref provenance visibility on confirmed publications;
+- source-native author-name caching with extraction method;
+- backup -> patch -> Koha-environment syntax check -> install -> regression validation.
+
+See [Production Hardening and Reproducible Koha Deployment Guide](docs/11-production-hardening-and-reproducible-deployment.md).
