@@ -351,3 +351,27 @@ Public-profile privacy
 ```
 
 Never solve a failure by exposing credentials, disabling authentication, or publishing private logs.
+
+
+## Production hardening after the base build
+
+After the base installation is working, do not stop at "API records are visible." Apply the hardening rules documented in [Production Hardening and Reproducible Koha Deployment Guide](docs/11-production-hardening-and-reproducible-deployment.md).
+
+At minimum verify this sequence:
+
+```text
+authoritative identifier registry
+-> verified + primary + active source identifier
+-> source synchronization
+-> complete-set reconciliation
+-> master-publication deduplication
+-> evidence-derived author disambiguation
+-> source-specific visibility
+-> source-faithful author names
+-> scheduled enrichment
+-> lifecycle reconciliation
+```
+
+For a production-style daily schedule, run publication harvesting first, then official author-name refresh, then Crossref enrichment, then disambiguation. Use `flock` where overlapping API jobs would be unsafe.
+
+Important: Crossref is normally publication-level DOI/bibliographic enrichment. Do not require a dedicated Crossref researcher-author link just to display Crossref provenance on a publication that is already confirmed for the researcher.
