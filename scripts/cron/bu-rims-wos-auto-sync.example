@@ -1,0 +1,3 @@
+# Koha RIMS Web of Science automatic synchronization
+# Cache-first; API is called only when a valid cache is unavailable.
+17,47 * * * * INSTANCE-koha KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/bin/perl /usr/share/koha/bin/bu-rims-wos-auto-sync.pl --all >> /var/log/koha/INSTANCE/rims-wos-auto-sync.log 2>&1
