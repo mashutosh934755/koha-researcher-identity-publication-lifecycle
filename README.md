@@ -30,6 +30,27 @@ A read-only deployment audit on 15 August 2026 recorded the following anonymized
 
 These values document technical feasibility and the deployed data model; they do not establish expert-ranking effectiveness. See [Empirical Pilot Audit — 15 August 2026](docs/10-empirical-pilot-audit-2026-08-15.md) for interpretation and limitations.
 
+
+
+## September 2026 production-hardening update
+
+The original 15 August 2026 audit remains the baseline pilot snapshot. Subsequent production validation added several controls that should be treated as the current operational reference:
+
+- scholarly source synchronization now uses **verified + primary + active** identifiers from the authoritative identifier registry;
+- changing a Scopus/WoS identifier quarantines old source-bound links instead of silently trusting them;
+- Scopus current-set reconciliation can retire stale source links only after a complete successful result set;
+- disambiguation scores remain evidence-derived and are not artificially inflated to 100;
+- duplicate unresolved-review cases are prevented;
+- public publication totals count distinct confirmed master publications;
+- Scopus/WoS badges require confirmed same-source researcher links;
+- Crossref is treated as DOI/bibliographic provenance on already-confirmed publications and does not require a dedicated researcher-author link;
+- source-faithful Scopus/WoS display names are cached with extraction provenance;
+- the recommended daily orchestration is publication sync -> official author-name sync -> Crossref enrichment -> disambiguation refresh.
+
+For the full implementation rules, cron examples, SQL validation queries, backup/syntax-check workflow and failure-mode tests, see [Production Hardening and Reproducible Koha Deployment Guide](docs/11-production-hardening-and-reproducible-deployment.md).
+
+See also [Post-Hardening Validation — September 2026](docs/12-post-hardening-validation-2026-09.md).
+
 ## Main capabilities
 
 - Koha patron-linked researcher onboarding
