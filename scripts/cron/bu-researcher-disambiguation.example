@@ -1,0 +1,2 @@
+# Researcher publication disambiguation scoring
+40 3 * * * INSTANCE-koha KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/bin/perl /usr/share/koha/bin/bu-researcher-disambiguation-score.pl >> /var/log/koha/INSTANCE/researcher-disambiguation.log 2>&1
