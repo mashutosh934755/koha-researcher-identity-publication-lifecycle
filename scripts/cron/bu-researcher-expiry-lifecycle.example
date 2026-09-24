@@ -1,0 +1,2 @@
+# Automatically convert expired active researcher profiles to former.
+* * * * * INSTANCE-koha KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/bin/perl /usr/share/koha/bin/bu-researcher-expiry-lifecycle.pl >> /var/log/koha/INSTANCE/researcher-expiry-lifecycle.log 2>&1
