@@ -11,7 +11,10 @@ This directory installs the sanitized implementation extracted from the validate
 
 ## Install
 ```bash
-sudo RIMS_INSTITUTION_NAME="Example University"      SCOPUS_AFFILIATION_ID="YOUR_ID"      CROSSREF_MAILTO="library@example.edu"      ./install/install.sh <koha-instance>
+sudo RIMS_INSTITUTION_NAME="Example University" \
+     SCOPUS_AFFILIATION_ID="YOUR_ID" \
+     CROSSREF_MAILTO="library@example.edu" \
+     ./install/install.sh <koha-instance>
 ```
 
 Then copy/edit the generated config examples under `/etc/koha/sites/<instance>/`, keep them mode `600`, and run:

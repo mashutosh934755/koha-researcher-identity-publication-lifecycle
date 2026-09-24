@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
-INSTANCE="${KOHA_INSTANCE:-INSTANCE}"
-export KOHA_INSTANCE="$INSTANCE"
-export KOHA_CONF="/etc/koha/sites/$INSTANCE/koha-conf.xml"
-export PERL5LIB="/usr/share/koha/lib"
+echo "[BU-WOS-PUBLICATION-SYNC] Started: $(date '+%F %T')"
 
-exec /usr/bin/python3 /usr/share/koha/bin/bu-wos-publication-sync.py "$@"
+cd /tmp
+
+exec /usr/bin/python3 \
+    /usr/share/koha/bin/bu-wos-publication-sync.py

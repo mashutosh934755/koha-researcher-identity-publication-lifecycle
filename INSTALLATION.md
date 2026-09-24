@@ -16,7 +16,10 @@ Review `database/schema/researcher-system-schema.sql`, `install/install.sh`, `sc
 ## 3. Install
 
 ```bash
-sudo RIMS_INSTITUTION_NAME="Example University"      SCOPUS_AFFILIATION_ID="YOUR_SCOPUS_AFFILIATION_ID"      CROSSREF_MAILTO="library@example.edu"      ./install/install.sh <koha-instance>
+sudo RIMS_INSTITUTION_NAME="Example University" \
+     SCOPUS_AFFILIATION_ID="YOUR_SCOPUS_AFFILIATION_ID" \
+     CROSSREF_MAILTO="library@example.edu" \
+     ./install/install.sh <koha-instance>
 ```
 
 Optional public-profile base URL can be supplied as `RIMS_PUBLIC_PROFILE_BASE_URL`.

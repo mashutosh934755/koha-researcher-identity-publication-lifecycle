@@ -66,7 +66,10 @@ See [Production hardening guide](docs/11-production-hardening-and-reproducible-d
 git clone https://github.com/mashutosh934755/koha-researcher-identity-publication-lifecycle.git
 cd koha-researcher-identity-publication-lifecycle
 
-sudo RIMS_INSTITUTION_NAME="Example University"      SCOPUS_AFFILIATION_ID="YOUR_SCOPUS_AFFILIATION_ID"      CROSSREF_MAILTO="library@example.edu"      ./install/install.sh <koha-instance>
+sudo RIMS_INSTITUTION_NAME="Example University" \
+     SCOPUS_AFFILIATION_ID="YOUR_SCOPUS_AFFILIATION_ID" \
+     CROSSREF_MAILTO="library@example.edu" \
+     ./install/install.sh <koha-instance>
 
 sudo ./install/verify.sh <koha-instance>
 ```

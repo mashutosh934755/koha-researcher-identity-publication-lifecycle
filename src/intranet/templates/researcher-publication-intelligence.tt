@@ -1,0 +1,703 @@
+[% USE raw %]
+[% SET footerjs = 1 %]
+
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Research Publication Intelligence</title>
+[% INCLUDE 'doc-head-close.inc' %]
+
+<style>
+.rpi-wrap {
+    margin: 20px;
+}
+.rpi-sub {
+    color: #64748b;
+    margin-bottom: 18px;
+}
+.rpi-message,
+.rpi-error {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+.rpi-message {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+.rpi-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+.rpi-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(155px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+}
+.rpi-card {
+    border: 1px solid #dbe3eb;
+    border-radius: 10px;
+    background: #fff;
+    padding: 14px;
+}
+.rpi-card strong {
+    display: block;
+    font-size: 25px;
+}
+.rpi-card span {
+    color: #64748b;
+    font-size: 13px;
+}
+.rpi-section {
+    border: 1px solid #dbe3eb;
+    border-radius: 10px;
+    margin: 18px 0;
+    background: #fff;
+    padding: 14px;
+}
+.rpi-table-wrap {
+    overflow-x: auto;
+}
+.rpi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.rpi-table th,
+.rpi-table td {
+    border: 1px solid #dbe3eb;
+    padding: 8px;
+    vertical-align: top;
+}
+.rpi-table th {
+    background: #f1f5f9;
+    white-space: nowrap;
+}
+.rpi-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.rpi-confirmed {
+    background: #dcfce7;
+    color: #166534;
+}
+.rpi-review {
+    background: #fef9c3;
+    color: #854d0e;
+}
+.rpi-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.rpi-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    padding: 12px;
+    border: 1px solid #dbe3eb;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+.rpi-filter label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.rpi-filter input,
+.rpi-filter select {
+    min-height: 38px;
+}
+.rpi-actions textarea {
+    width: 100%;
+    min-width: 220px;
+    min-height: 45px;
+}
+.rpi-actions button {
+    margin: 3px 2px;
+}
+.rpi-title {
+    max-width: 550px;
+}
+.rpi-small {
+    font-size: 12px;
+    color: #64748b;
+}
+</style>
+
+</head>
+
+<body id="tools_researcher_publication_intelligence"
+      class="tools">
+
+[% WRAPPER 'header.inc' %]
+    [% INCLUDE 'cat-search.inc' %]
+[% END %]
+
+[% WRAPPER 'sub-header.inc' %]
+    [% WRAPPER breadcrumbs %]
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/mainpage.pl">Home</a>
+        [% END %]
+
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/tools/tools-home.pl">
+                Tools
+            </a>
+        [% END %]
+
+        [% WRAPPER breadcrumb_item bc_active=1 %]
+            Research Publication Intelligence
+        [% END %]
+    [% END %]
+[% END %]
+
+<div class="main container-fluid">
+<div class="row">
+<div class="col-md-12">
+
+<div class="rpi-wrap">
+
+<h1>Research Publication Intelligence</h1>
+
+<div class="rpi-sub">
+    Local API-synchronised institutional publication analytics,
+    researcher attribution and author-disambiguation review.
+</div>
+
+<p>
+    <a class="btn btn-default"
+       href="/cgi-bin/koha/tools/researcher-verification.pl">
+        Researcher Verification Dashboard
+    </a>
+</p>
+
+[% IF message %]
+    <div class="rpi-message">[% message | html %]</div>
+[% END %]
+
+[% IF error %]
+    <div class="rpi-error">[% error | html %]</div>
+[% END %]
+
+<div class="rpi-grid">
+
+    <div class="rpi-card">
+        <strong>[% IF summary.current_verified_researchers %][% summary.current_verified_researchers %][% ELSE %]0[% END %]</strong>
+        <span>Current Verified Researchers</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>[% IF summary.unique_publications %][% summary.unique_publications %][% ELSE %]0[% END %]</strong>
+        <span>Unique Local Publications</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>[% IF summary.scopus_source_records %][% summary.scopus_source_records %][% ELSE %]0[% END %]</strong>
+        <span>Scopus Source Records</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>[% IF summary.wos_source_records %][% summary.wos_source_records %][% ELSE %]0[% END %]</strong>
+        <span>WoS Source Records</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>
+            [% IF summary.researchers_with_scopus_publications %][% summary.researchers_with_scopus_publications %][% ELSE %]0[% END %]
+        </strong>
+        <span>Researchers with Scopus Publications</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>
+            [% IF summary.researchers_with_wos_publications %][% summary.researchers_with_wos_publications %][% ELSE %]0[% END %]
+        </strong>
+        <span>Researchers with WoS Publications</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>[% IF summary.review_queue %][% summary.review_queue %][% ELSE %]0[% END %]</strong>
+        <span>Publication Review Queue</span>
+    </div>
+
+    <div class="rpi-card">
+        <strong>[% IF summary.failed_sync_jobs %][% summary.failed_sync_jobs %][% ELSE %]0[% END %]</strong>
+        <span>Failed Sync Jobs</span>
+    </div>
+
+</div>
+
+<div class="rpi-section">
+<h2>Source Summary</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>Source</th>
+    <th>Source Records</th>
+    <th>Unique Publications</th>
+    <th>Last Synced</th>
+</tr>
+</thead>
+<tbody>
+
+[% IF source_summary.size == 0 %]
+<tr>
+    <td colspan="4">No publication source data available.</td>
+</tr>
+[% ELSE %]
+
+[% FOREACH row IN source_summary %]
+<tr>
+    <td>[% row.source_name | html %]</td>
+    <td>[% row.source_records | html %]</td>
+    <td>[% row.unique_publications | html %]</td>
+    <td>[% row.last_synced_at | html %]</td>
+</tr>
+[% END %]
+
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rpi-section">
+<h2>Year-wise Publications</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>Publication Year</th>
+    <th>Unique Publications</th>
+</tr>
+</thead>
+<tbody>
+
+[% FOREACH row IN yearly %]
+<tr>
+    <td>
+        [% IF row.publication_year == 0 %]
+            Unknown
+        [% ELSE %]
+            [% row.publication_year | html %]
+        [% END %]
+    </td>
+    <td>[% row.publications | html %]</td>
+</tr>
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rpi-section">
+<h2>Department-wise Output</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>Department</th>
+    <th>Verified Researchers</th>
+    <th>Confirmed Unique Publications</th>
+</tr>
+</thead>
+<tbody>
+
+[% IF departments.size == 0 %]
+<tr>
+    <td colspan="3">No department data available.</td>
+</tr>
+[% ELSE %]
+
+[% FOREACH row IN departments %]
+<tr>
+    <td>[% row.department | html %]</td>
+    <td>[% row.researchers | html %]</td>
+    <td>[% row.confirmed_publications | html %]</td>
+</tr>
+[% END %]
+
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rpi-section">
+<h2>Researcher-wise Publication Output</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>Researcher</th>
+    <th>User Type</th>
+    <th>Department</th>
+    <th>Scopus</th>
+    <th>WoS</th>
+    <th>Unique Confirmed</th>
+    <th>Review Items</th>
+    <th>Last Scopus Sync</th>
+</tr>
+</thead>
+<tbody>
+
+[% FOREACH row IN researcher_output %]
+<tr>
+    <td>
+        <strong>[% row.preferred_name | html %]</strong><br>
+        <span class="rpi-small">
+            [% row.job_title | html %]
+        </span>
+    </td>
+    <td>[% IF row.user_type %]
+    [% row.user_type | html %]
+[% ELSE %]
+    Not selected
+[% END %]</td>
+    <td>[% row.working_group | html %]</td>
+    <td>[% row.scopus_publications | html %]</td>
+    <td>[% row.wos_publications | html %]</td>
+    <td>[% row.unique_confirmed_publications | html %]</td>
+    <td>[% row.review_items | html %]</td>
+    <td>[% row.last_scopus_sync | html %]</td>
+</tr>
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rpi-section">
+
+<h2>Publication Attribution Review</h2>
+
+<form method="get"
+      class="rpi-filter"
+      action="/cgi-bin/koha/tools/researcher-publication-intelligence.pl">
+
+    <div>
+        <label for="rpi-q">Search</label>
+        <input id="rpi-q"
+               type="text"
+               name="q"
+               value="[% q | html %]"
+               placeholder="Title, DOI, journal, researcher">
+    </div>
+
+    <div>
+        <label for="rpi-status">Decision</label>
+        <select id="rpi-status" name="status">
+            <option value="">All</option>
+
+            <option value="confirmed"
+                [% IF status_filter == 'confirmed' %]selected[% END %]>
+                Confirmed
+            </option>
+
+            <option value="review"
+                [% IF status_filter == 'review' %]selected[% END %]>
+                Review
+            </option>
+
+            <option value="rejected"
+                [% IF status_filter == 'rejected' %]selected[% END %]>
+                Rejected
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="rpi-source">Source</label>
+        <select id="rpi-source" name="source">
+            <option value="">All Sources</option>
+
+            <option value="scopus"
+                [% IF source_filter == 'scopus' %]selected[% END %]>
+                Scopus
+            </option>
+
+            <option value="wos"
+                [% IF source_filter == 'wos' %]selected[% END %]>
+                Web of Science
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" type="submit">
+            Apply Filters
+        </button>
+
+        <a class="btn btn-default"
+           href="/cgi-bin/koha/tools/researcher-publication-intelligence.pl">
+            Clear
+        </a>
+    </div>
+
+</form>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+
+<thead>
+<tr>
+    <th>Publication</th>
+    <th>Researcher</th>
+    <th>Source</th>
+    <th>Evidence</th>
+    <th>Decision</th>
+    <th>Review Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+[% IF links.size == 0 %]
+<tr>
+    <td colspan="6">No publication links matched.</td>
+</tr>
+[% ELSE %]
+
+[% FOREACH row IN links %]
+<tr>
+
+<td class="rpi-title">
+    <strong>[% row.title | html %]</strong><br>
+
+    [% row.journal | html %]
+
+    [% IF row.publication_year %]
+        • [% row.publication_year | html %]
+    [% END %]
+
+    [% IF row.doi %]
+        <br>
+        DOI: [% row.doi | html %]
+    [% END %]
+
+    [% IF row.source_url %]
+        <br>
+        <a href="[% row.source_url | html %]"
+           target="_blank"
+           rel="noopener">
+            Open source record
+        </a>
+    [% END %]
+</td>
+
+<td>
+    <strong>[% row.preferred_name | html %]</strong><br>
+    [% row.user_type | html %]<br>
+    [% row.working_group | html %]
+</td>
+
+<td>
+    [% row.source_name | html %]<br>
+    <span class="rpi-small">
+        [% row.source_record_id | html %]
+    </span>
+
+    [% IF row.citation_count %]
+        <br>
+        Citations: [% row.citation_count | html %]
+    [% END %]
+</td>
+
+<td>
+    Source Author ID:
+    [% row.source_author_id | html %]<br>
+
+    Match Score:
+    [% row.match_score | html %]<br>
+
+    Affiliation Evidence:
+    [% row.affiliation_status | html %]
+</td>
+
+<td>
+    [% IF row.system_decision == 'confirmed' %]
+        <span class="rpi-badge rpi-confirmed">
+            Confirmed
+        </span>
+    [% ELSIF row.system_decision == 'rejected' %]
+        <span class="rpi-badge rpi-rejected">
+            Rejected
+        </span>
+    [% ELSE %]
+        <span class="rpi-badge rpi-review">
+            Review
+        </span>
+    [% END %]
+
+    <br>
+    [% row.review_status | html %]
+</td>
+
+<td class="rpi-actions">
+
+<form method="post"
+      action="/cgi-bin/koha/tools/researcher-publication-intelligence.pl" autocomplete="off">
+    <input type="hidden" name="review_form" value="publication_attribution">
+
+    <input type="hidden"
+           name="link_id"
+           value="[% row.link_id | html %]">
+
+    <textarea name="reason"
+              placeholder="Review reason or evidence"></textarea>
+
+    [% IF row.system_decision != 'confirmed'
+          OR row.review_status != 'manually_confirmed' %]
+        <button class="btn btn-success"
+                type="submit"
+                name="action"
+                value="confirm">
+            Confirm
+        </button>
+    [% END %]
+
+    [% IF row.system_decision != 'review' %]
+        <button class="btn btn-warning"
+                type="submit"
+                name="action"
+                value="needs_review">
+            Needs Review
+        </button>
+    [% END %]
+
+    [% IF row.system_decision != 'rejected' %]
+        <button class="btn btn-danger"
+                type="submit"
+                name="action"
+                value="reject"
+                onclick="return confirm(
+                    'Reject this publication attribution?'
+                );">
+            Reject
+        </button>
+    [% END %]
+
+</form>
+
+</td>
+
+</tr>
+[% END %]
+
+[% END %]
+
+</tbody>
+</table>
+</div>
+
+</div>
+
+<div class="rpi-section">
+<h2>Duplicate DOI Audit</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>DOI</th>
+    <th>Duplicate Records</th>
+    <th>Publication IDs</th>
+    <th>Sample Title</th>
+</tr>
+</thead>
+<tbody>
+
+[% IF duplicates.size == 0 %]
+<tr>
+    <td colspan="4">No duplicate DOI records detected.</td>
+</tr>
+[% ELSE %]
+
+[% FOREACH row IN duplicates %]
+<tr>
+    <td>[% row.normalised_doi | html %]</td>
+    <td>[% row.duplicate_count | html %]</td>
+    <td>[% row.publication_ids | html %]</td>
+    <td>[% row.sample_title | html %]</td>
+</tr>
+[% END %]
+
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="rpi-section">
+<h2>Recent Synchronisation Jobs</h2>
+
+<div class="rpi-table-wrap">
+<table class="rpi-table">
+<thead>
+<tr>
+    <th>Date</th>
+    <th>Researcher</th>
+    <th>Source</th>
+    <th>Status</th>
+    <th>Found</th>
+    <th>Processed</th>
+    <th>Added</th>
+    <th>Updated</th>
+    <th>Linked</th>
+    <th>Error</th>
+</tr>
+</thead>
+<tbody>
+
+[% IF sync_jobs.size == 0 %]
+<tr>
+    <td colspan="10">No synchronisation jobs available.</td>
+</tr>
+[% ELSE %]
+
+[% FOREACH row IN sync_jobs %]
+<tr>
+    <td>[% row.started_at | html %]</td>
+    <td>[% row.preferred_name | html %]</td>
+    <td>[% row.source_name | html %]</td>
+    <td>[% row.job_status | html %]</td>
+    <td>[% row.records_found | html %]</td>
+    <td>[% row.records_processed | html %]</td>
+    <td>[% row.records_added | html %]</td>
+    <td>[% row.records_updated | html %]</td>
+    <td>[% row.records_linked | html %]</td>
+    <td>[% row.error_message | html %]</td>
+</tr>
+[% END %]
+
+[% END %]
+
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+[% MACRO jsinclude BLOCK %]
+[% END %]
+
+[% INCLUDE 'intranet-bottom.inc' %]

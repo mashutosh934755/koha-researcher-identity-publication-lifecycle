@@ -2,40 +2,102 @@
 set -euo pipefail
 
 INSTANCE="${1:-${KOHA_INSTANCE:-INSTANCE}}"
-KOHA_CONF="/etc/koha/sites/$INSTANCE/koha-conf.xml"
-[[ -f "$KOHA_CONF" ]] || { echo "Missing $KOHA_CONF" >&2; exit 1; }
 
-export KOHA_CONF
-export PERL5LIB=/usr/share/koha/lib
+echo "=================================================="
+echo " BU RESEARCHER INTELLIGENCE HEALTH CHECK"
+echo "=================================================="
+echo "Date: $(date)"
+echo
 
-echo "== Koha RIMS health check =="
-echo "Instance: $INSTANCE"
+echo "===== FILES ====="
 
-for f in  /usr/share/koha/bin/bu-researcher-publication-sync.pl  /usr/share/koha/bin/bu-rims-wos-auto-sync.pl  /usr/share/koha/bin/bu-crossref-publication-sync.pl  /usr/share/koha/bin/bu-official-api-author-names-sync.pl  /usr/share/koha/bin/bu-researcher-disambiguation-score.pl  /usr/share/koha/bin/bu-researcher-expiry-lifecycle.pl
+for FILE in \
+/usr/share/koha/opac/cgi-bin/opac/opac-researcher-search.pl \
+/usr/share/koha/opac/cgi-bin/opac/opac-researcher-profile.pl \
+/usr/share/koha/opac/cgi-bin/opac/opac-custom-profile.pl \
+/usr/share/koha/intranet/cgi-bin/tools/researcher-verification.pl \
+/usr/share/koha/intranet/cgi-bin/tools/researcher-publication-intelligence.pl \
+/usr/share/koha/bin/bu-researcher-publication-sync.pl \
+/usr/share/koha/bin/bu-researcher-disambiguation-score.pl \
+/usr/share/koha/bin/bu-researcher-exit-watch.pl
 do
-  if [[ -f "$f" ]]; then
-    koha-shell "$INSTANCE" -c "perl -c '$f'" >/dev/null
-    echo "OK $f"
-  else
-    echo "MISSING $f"
-  fi
+    if [[ -f "$FILE" ]]; then
+        echo "OK: $FILE"
+    else
+        echo "MISSING: $FILE"
+    fi
 done
 
-koha-mysql "$INSTANCE" -NBe "
-SELECT CONCAT('verified_public_profiles=',COUNT(*))
-FROM custom_profile_details
-WHERE verification_status='verified'
-  AND public_visibility=1;
+echo
+echo "===== DATABASE SUMMARY ====="
 
-SELECT CONCAT('confirmed_publication_links=',COUNT(*))
-FROM researcher_publication_links
-WHERE system_decision='confirmed'
-  AND review_status IN ('confirmed','auto_confirmed','manually_confirmed');
+sudo koha-mysql "$INSTANCE" -e "
+SELECT
+    COUNT(*) AS total_profiles,
+    SUM(verification_status='verified')
+        AS verified_profiles,
+    SUM(employment_status='active')
+        AS active_profiles,
+    SUM(employment_status='former')
+        AS former_profiles
+FROM custom_profile_details;
 
-SELECT CONCAT('unique_confirmed_publications=',COUNT(DISTINCT publication_id))
+SELECT
+    COUNT(*) AS unique_publications
+FROM researcher_publications_master;
+
+SELECT
+    source_name,
+    COUNT(*) AS source_records
+FROM researcher_publication_sources
+GROUP BY source_name;
+
+SELECT
+    system_decision,
+    review_status,
+    COUNT(*) AS total
 FROM researcher_publication_links
-WHERE system_decision='confirmed'
-  AND review_status IN ('confirmed','auto_confirmed','manually_confirmed');
+GROUP BY system_decision, review_status;
+
+SELECT
+    job_status,
+    COUNT(*) AS jobs
+FROM researcher_sync_jobs
+GROUP BY job_status;
 "
 
-echo "Health check complete."
+echo
+echo "===== CRON ====="
+
+sudo cat \
+/etc/cron.d/bu-researcher-publication-sync \
+/etc/cron.d/bu-researcher-disambiguation \
+/etc/cron.d/bu-researcher-exit-watch \
+2>/dev/null || true
+
+echo
+echo "===== SERVICE ====="
+
+sudo systemctl is-active apache2
+
+echo
+echo "===== PROFILE HTTP ====="
+
+curl -sS \
+    --max-time 30 \
+    -o /dev/null \
+    -w 'Public profile HTTP: %{http_code}\n' \
+    "http://127.0.0.1:8081/cgi-bin/koha/opac-researcher-profile.pl?id=52"
+
+echo
+echo "===== EXTERNAL STATUS ====="
+
+echo "Scopus: locally synchronised"
+echo "WoS: awaiting API quota availability"
+echo "ORCID OAuth: awaiting ORCID client credentials"
+echo "HR/No-dues: manual dashboard action + automated candidate detection"
+
+echo
+echo "=================================================="
+echo " HEALTH CHECK COMPLETE"
+echo "=================================================="

@@ -1,0 +1,4589 @@
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Research Profile</title>
+[% BLOCK cssinclude %][% END %]
+[% INCLUDE 'doc-head-close.inc' %]
+
+<style>
+.pub-wrap{max-width:1150px;margin:25px auto;background:#fff;border-radius:18px;padding:28px;box-shadow:0 14px 38px rgba(15,23,42,.09)}
+.pub-top{display:flex;gap:22px;align-items:flex-start;border-bottom:1px solid #e2e8f0;padding-bottom:22px;margin-bottom:22px}
+.pub-photo{width:165px;height:165px;border-radius:18px;object-fit:cover;border:1px solid #e2e8f0;background:#f1f5f9}
+.pub-no-photo{width:165px;height:165px;border-radius:18px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#64748b;font-weight:800}
+.pub-status-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:9px 0 12px;
+}
+.pub-status-badge {
+    display:inline-flex;
+    align-items:center;
+    border-radius:999px;
+    padding:5px 11px;
+    font-size:12px;
+    font-weight:800;
+}
+.pub-status-verified {
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #86efac;
+}
+.pub-status-pending {
+    background:#fef9c3;
+    color:#854d0e;
+    border:1px solid #fde047;
+}
+.pub-status-active {
+    background:#dbeafe;
+    color:#1e40af;
+    border:1px solid #93c5fd;
+}
+.pub-status-former,
+.pub-status-inactive {
+    background:#e2e8f0;
+    color:#334155;
+    border:1px solid #cbd5e1;
+}
+
+.pub-name{font-size:34px;font-weight:900;color:#071b3a;margin:0 0 6px}
+.pub-job{font-size:18px;color:#334155;margin-bottom:6px}
+.pub-aff{color:#64748b;margin-bottom:14px}
+.pub-actions a{display:inline-block;background:#071b3a;color:#fff!important;border-radius:999px;padding:10px 18px;text-decoration:none;font-weight:800;margin-right:8px;margin-bottom:8px}
+.pub-actions a.secondary{background:#e2e8f0;color:#0f172a!important}
+.pub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pub-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:15px;padding:18px}
+.pub-card.full{grid-column:1/-1}
+.pub-card h2{font-size:18px;color:#0f172a;margin:0 0 12px}
+.pub-line{margin:8px 0;color:#0f172a}
+.pub-label{font-weight:800;color:#475569;display:inline-block;min-width:190px}
+.pub-text{white-space:pre-line;line-height:1.6;color:#1e293b}
+.pub-alert{background:#fee2e2;color:#991b1b;padding:13px;border-radius:12px;margin-bottom:15px}
+.pub-empty{background:#fef3c7;color:#92400e;padding:13px;border-radius:12px;margin-bottom:15px}
+.pub-list{display:grid;gap:12px}
+.pub-item{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px}
+.pub-item-title{font-weight:900;color:#071b3a;margin-bottom:5px}
+.pub-meta{font-size:13px;color:#64748b;line-height:1.5}
+.pub-badge{display:inline-block;background:#e0f2fe;color:#075985;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800;margin-right:5px}
+.pub-link{color:#075985!important;font-weight:800;text-decoration:underline}
+@media(max-width:768px){.pub-top{flex-direction:column}.pub-grid{grid-template-columns:1fr}.pub-wrap{margin:12px;padding:18px}.pub-name{font-size:26px}.pub-label{display:block;min-width:0}}
+
+.pub-metrics{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.pub-metric-label{font-size:12px;font-weight:900;color:#475569;background:#f1f5f9;border-radius:999px;padding:5px 9px}
+.altmetric-embed{display:inline-block;min-width:45px}
+.__dimensions_badge_embed__{display:inline-block;min-width:45px}
+.pub-count-note{font-size:13px;color:#64748b;font-weight:700;margin-bottom:12px}
+
+
+/* Final visibility and publication controls */
+.pub-wrap, .pub-wrap *{
+  color:#000 !important;
+}
+.pub-actions a,
+.pub-toggle-toolbar button,
+.pub-section-controls button,
+.pub-item-toggle{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  box-shadow:none !important;
+}
+.pub-actions a{
+  border-radius:999px !important;
+}
+.pub-link{
+  color:#000 !important;
+  text-decoration:underline !important;
+}
+.pub-toggle-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:18px 0;
+  padding:14px;
+  border:1px solid #000;
+  border-radius:12px;
+  background:#fff;
+}
+.pub-toggle-toolbar button,
+.pub-section-controls button{
+  padding:9px 14px;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+}
+.pub-section-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:10px 0 16px;
+}
+.pub-item{
+  border-color:#000 !important;
+}
+.pub-item-title{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  cursor:pointer;
+}
+.pub-item-toggle{
+  white-space:nowrap;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.pub-item.is-collapsed .pub-item-details{
+  display:none;
+}
+.pub-item-details{
+  margin-top:10px;
+}
+.pub-metrics{
+  border-top:1px solid #000;
+  padding-top:10px;
+}
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000;
+}
+.plumx-plum-print-popup{
+  display:inline-block;
+  min-width:36px;
+  min-height:36px;
+}
+
+
+/* Section-level controls, PlumX size, and black visibility */
+.pub-wrap,
+.pub-wrap *{
+  color:#000 !important;
+}
+
+.pub-link,
+.pub-item-title a{
+  color:#000 !important;
+  text-decoration:underline !important;
+}
+
+.pub-actions a,
+.pub-section-inline-controls button,
+.pub-item-toggle{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  box-shadow:none !important;
+}
+
+.pub-publication-section{
+  border:1px solid #d7dde5 !important;
+}
+
+.pub-section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+
+.pub-section-header h2{
+  margin:0 !important;
+}
+
+.pub-section-inline-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.pub-section-inline-controls button{
+  border-radius:999px;
+  padding:9px 16px;
+  font-weight:900;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.pub-item-toggle{
+  border-radius:999px;
+  padding:5px 12px;
+  font-size:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.pub-toggle-toolbar{
+  display:none !important;
+}
+
+.pub-section-controls{
+  display:none !important;
+}
+
+.pub-publication-section.section-collapsed > .pub-count-note,
+.pub-publication-section.section-collapsed > .pub-list,
+.pub-publication-section.section-collapsed > .pub-empty{
+  display:none !important;
+}
+
+.pub-publication-section.section-collapsed{
+  padding-bottom:18px !important;
+}
+
+.pub-item{
+  border-color:#000 !important;
+}
+
+.pub-item-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  cursor:pointer;
+}
+
+.pub-item.is-collapsed .pub-item-details{
+  display:none !important;
+}
+
+.pub-item-details{
+  margin-top:10px;
+}
+
+.pub-metrics{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:14px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid #000;
+  overflow:visible;
+}
+
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  padding:7px 12px !important;
+}
+
+.altmetric-embed{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:72px !important;
+  min-height:58px !important;
+}
+
+.__dimensions_badge_embed__{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:72px !important;
+  min-height:58px !important;
+}
+
+.plumx-plum-print-popup{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:95px !important;
+  min-height:70px !important;
+  transform:scale(1.9);
+  transform-origin:left center;
+  margin-left:8px !important;
+  margin-right:80px !important;
+}
+
+.plumx-plum-print-popup img,
+.plumx-plum-print-popup svg,
+.plumx-plum-print-popup iframe{
+  min-width:52px !important;
+  min-height:52px !important;
+}
+
+@media(max-width:768px){
+  .pub-section-header{
+    align-items:flex-start;
+  }
+  .pub-section-inline-controls button{
+    padding:8px 12px;
+    font-size:13px;
+  }
+  .plumx-plum-print-popup{
+    transform:scale(1.45);
+    margin-right:45px !important;
+  }
+}
+
+
+/* Final popup-safe metrics and publication controls */
+.pub-wrap,
+.pub-wrap *{
+  color:#000 !important;
+}
+
+.pub-link,
+.pub-item-title a{
+  color:#000 !important;
+  text-decoration:underline !important;
+}
+
+.pub-toggle-toolbar,
+.pub-section-controls{
+  display:none !important;
+}
+
+.pub-section-header{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  flex-wrap:wrap !important;
+  margin-bottom:12px !important;
+}
+
+.pub-section-header h2{
+  margin:0 !important;
+}
+
+.pub-section-inline-controls{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+
+.pub-section-inline-controls button,
+.pub-item-toggle{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  box-shadow:none !important;
+  font-weight:900 !important;
+  cursor:pointer !important;
+}
+
+.pub-section-inline-controls button{
+  padding:9px 16px !important;
+  font-size:14px !important;
+}
+
+.pub-item-toggle{
+  padding:5px 12px !important;
+  font-size:12px !important;
+  white-space:nowrap !important;
+}
+
+.pub-publication-section.section-collapsed > .pub-count-note,
+.pub-publication-section.section-collapsed > .pub-list,
+.pub-publication-section.section-collapsed > .pub-empty{
+  display:none !important;
+}
+
+.pub-item{
+  border-color:#000 !important;
+}
+
+.pub-item-title{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  cursor:pointer !important;
+}
+
+.pub-item.is-collapsed .pub-item-details{
+  display:none !important;
+}
+
+.pub-item-details{
+  margin-top:10px !important;
+}
+
+.pub-metrics{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin-top:12px !important;
+  padding-top:12px !important;
+  border-top:1px solid #000 !important;
+  overflow:visible !important;
+}
+
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  padding:7px 12px !important;
+}
+
+.altmetric-embed,
+.__dimensions_badge_embed__{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:72px !important;
+  min-height:58px !important;
+}
+
+.pub-plumx-link{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:42px !important;
+  padding:9px 16px !important;
+  border:2px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  font-size:14px !important;
+  color:#000 !important;
+  background:#fff !important;
+  text-decoration:none !important;
+}
+
+@media(max-width:768px){
+  .pub-section-header{
+    align-items:flex-start !important;
+  }
+  .pub-section-inline-controls button{
+    padding:8px 12px !important;
+    font-size:13px !important;
+  }
+}
+
+
+/* Real PlumX widget, black UI, and clean publication controls */
+.pub-wrap,
+.pub-wrap *{
+  color:#000 !important;
+}
+
+.pub-link,
+.pub-item-title a{
+  color:#000 !important;
+  text-decoration:underline !important;
+}
+
+.pub-toggle-toolbar,
+.pub-section-controls{
+  display:none !important;
+}
+
+.pub-section-header{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  flex-wrap:wrap !important;
+  margin-bottom:12px !important;
+}
+
+.pub-section-header h2{
+  margin:0 !important;
+}
+
+.pub-section-inline-controls{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+
+.pub-section-inline-controls button,
+.pub-item-toggle{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  box-shadow:none !important;
+  font-weight:900 !important;
+  cursor:pointer !important;
+}
+
+.pub-section-inline-controls button{
+  padding:9px 16px !important;
+  font-size:14px !important;
+}
+
+.pub-item-toggle{
+  padding:5px 12px !important;
+  font-size:12px !important;
+  white-space:nowrap !important;
+}
+
+.pub-publication-section.section-collapsed > .pub-count-note,
+.pub-publication-section.section-collapsed > .pub-list,
+.pub-publication-section.section-collapsed > .pub-empty{
+  display:none !important;
+}
+
+.pub-item{
+  border-color:#000 !important;
+}
+
+.pub-item-title{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  cursor:pointer !important;
+}
+
+.pub-item.is-collapsed .pub-item-details{
+  display:none !important;
+}
+
+.pub-item-details{
+  margin-top:10px !important;
+}
+
+.pub-metrics{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin-top:12px !important;
+  padding-top:12px !important;
+  border-top:1px solid #000 !important;
+  overflow:visible !important;
+}
+
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  padding:7px 12px !important;
+}
+
+.altmetric-embed,
+.__dimensions_badge_embed__{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:72px !important;
+  min-height:58px !important;
+}
+
+/* Real PlumX widget must stay visible */
+.plumx-plum-print-popup,
+.plumx-plum-print-popup *,
+.pub-plumx-widget,
+.pub-plumx-widget *{
+  display:inline-block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+.pub-plumx-widget{
+  width:120px !important;
+  min-width:120px !important;
+  height:120px !important;
+  min-height:120px !important;
+  vertical-align:middle !important;
+  overflow:visible !important;
+}
+
+.pub-plumx-widget img,
+.pub-plumx-widget svg,
+.pub-plumx-widget iframe{
+  max-width:120px !important;
+  max-height:120px !important;
+}
+
+@media(max-width:768px){
+  .pub-section-header{
+    align-items:flex-start !important;
+  }
+  .pub-section-inline-controls button{
+    padding:8px 12px !important;
+    font-size:13px !important;
+  }
+  .pub-plumx-widget{
+    width:90px !important;
+    min-width:90px !important;
+    height:90px !important;
+    min-height:90px !important;
+  }
+}
+
+
+/* Final publication control buttons */
+.pub-wrap,
+.pub-wrap *{
+  color:#000 !important;
+}
+
+.pub-link,
+.pub-item-title a{
+  color:#000 !important;
+  text-decoration:underline !important;
+}
+
+.pub-toggle-toolbar,
+.pub-section-controls{
+  display:none !important;
+}
+
+.pub-master-controls{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap:10px !important;
+  align-items:center !important;
+  margin:20px 0 !important;
+  padding:16px !important;
+  border:1px solid #000 !important;
+  border-radius:14px !important;
+  background:#fff !important;
+}
+
+.pub-master-controls strong{
+  font-size:18px !important;
+  font-weight:900 !important;
+  margin-right:8px !important;
+}
+
+.pub-master-controls button,
+.pub-section-inline-controls button,
+.pub-item-toggle{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  box-shadow:none !important;
+  font-weight:900 !important;
+  cursor:pointer !important;
+}
+
+.pub-master-controls button{
+  padding:10px 16px !important;
+  font-size:14px !important;
+}
+
+.pub-section-header{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  flex-wrap:wrap !important;
+  margin-bottom:12px !important;
+  border-bottom:1px solid #000 !important;
+  padding-bottom:12px !important;
+}
+
+.pub-section-header h2{
+  margin:0 !important;
+}
+
+.pub-section-inline-controls{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+
+.pub-section-inline-controls button{
+  padding:9px 16px !important;
+  font-size:14px !important;
+}
+
+.pub-item-toggle{
+  padding:5px 12px !important;
+  font-size:12px !important;
+  white-space:nowrap !important;
+}
+
+.pub-publication-section.section-collapsed > .pub-count-note,
+.pub-publication-section.section-collapsed > .pub-list,
+.pub-publication-section.section-collapsed > .pub-empty{
+  display:none !important;
+}
+
+.pub-item{
+  border-color:#000 !important;
+}
+
+.pub-item-title{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  cursor:pointer !important;
+}
+
+.pub-item.is-collapsed .pub-item-details{
+  display:none !important;
+}
+
+.pub-item-details{
+  margin-top:10px !important;
+}
+
+.pub-metrics{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin-top:12px !important;
+  padding-top:12px !important;
+  border-top:1px solid #000 !important;
+  overflow:visible !important;
+}
+
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  padding:7px 12px !important;
+}
+
+.altmetric-embed,
+.__dimensions_badge_embed__{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:72px !important;
+  min-height:58px !important;
+}
+
+.altmetric-embed,
+.altmetric-embed *,
+.no-altmetric-popup,
+.no-altmetric-popup *{
+  pointer-events:none !important;
+}
+
+.altmetric-popover,
+.altmetric_badge_popover,
+.altmetric-details,
+.altmetric-embed .popover,
+[id*="altmetric"][id*="popover"],
+[class*="altmetric"][class*="popover"],
+[class*="altmetric"][class*="popup"]{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.pub-plumx-widget,
+.pub-plumx-widget *,
+.plumx-plum-print-popup,
+.plumx-plum-print-popup *{
+  display:inline-block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+.pub-plumx-widget{
+  width:110px !important;
+  min-width:110px !important;
+  height:110px !important;
+  min-height:110px !important;
+  vertical-align:middle !important;
+  overflow:visible !important;
+}
+
+@media(max-width:768px){
+  .pub-master-controls{
+    position:static !important;
+  }
+  .pub-section-header{
+    align-items:flex-start !important;
+  }
+  .pub-master-controls button,
+  .pub-section-inline-controls button{
+    padding:8px 12px !important;
+    font-size:13px !important;
+  }
+  .pub-plumx-widget{
+    width:90px !important;
+    min-width:90px !important;
+    height:90px !important;
+    min-height:90px !important;
+  }
+}
+
+
+/* Real Altmetric widget and popup-safe metrics */
+.altmetric-embed{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-width:86px !important;
+  min-height:86px !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  pointer-events:auto !important;
+}
+
+.altmetric-embed *{
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+.altmetric-popover,
+.altmetric_badge_popover,
+.altmetric-details,
+[id*="altmetric"][id*="popover"],
+[class*="altmetric"][class*="popover"],
+[class*="altmetric"][class*="popup"]{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.pub-metrics{
+  align-items:center !important;
+  gap:16px !important;
+}
+
+.pub-metric-label{
+  color:#000 !important;
+  background:#fff !important;
+  border:1px solid #000 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+}
+
+
+.pub-crossref-section{
+  border:1px solid #86efac !important;
+}
+
+.pub-crossref-badge{
+  background:#dcfce7 !important;
+  color:#166534 !important;
+  border:1px solid #86efac !important;
+}
+
+
+/* BEGIN OPAC SOURCE AUTHOR NAMES V7 CSS */
+
+.ri-source-author-names {
+    margin: 12px 0;
+    padding: 12px;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.ri-source-author-heading {
+    margin-bottom: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #334155;
+}
+
+.ri-source-author-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 7px;
+}
+
+.ri-source-author-icon {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 28px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.ri-source-author-scopus .ri-source-author-icon {
+    background: #e9711c;
+}
+
+.ri-source-author-wos .ri-source-author-icon {
+    background: #2563a8;
+}
+
+.ri-source-author-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ri-source-author-details strong {
+    font-size: 0.76rem;
+    color: #475569;
+}
+
+.ri-source-author-details span {
+    overflow-wrap: anywhere;
+    font-size: 0.91rem;
+    color: #0f172a;
+}
+
+/* END OPAC SOURCE AUTHOR NAMES V7 CSS */
+
+
+.ri-source-author-profile-link {
+    color: #0b57a4;
+    font-size: 0.91rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ri-source-author-profile-link:hover,
+.ri-source-author-profile-link:focus {
+    color: #073b70;
+    text-decoration: underline;
+}
+
+
+/* BEGIN HIDE WOS CITATIONS V1 */
+
+/*
+ * WoS publication/source badges remain visible.
+ * Only WoS citation values/cards are hidden.
+ */
+.ri-source-metric-wos,
+[data-source-metric="wos-citations"],
+[data-metric="wos-citations"],
+.wos-citations,
+.wos-citation-card,
+.ri-wos-citations {
+    display: none !important;
+}
+
+/* END HIDE WOS CITATIONS V1 */
+
+
+/* BEGIN PROFILE DISPLAY NAME STYLE V1 */
+
+.ri-profile-display-note {
+    margin: 0 0 14px;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.ri-profile-display-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.ri-profile-display-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 14px;
+    border: 1px solid #dbe3ec;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.ri-profile-display-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.ri-profile-display-scopus
+.ri-profile-display-icon {
+    background: #e9711c;
+}
+
+.ri-profile-display-wos
+.ri-profile-display-icon {
+    background: #2563a8;
+}
+
+.ri-profile-display-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ri-profile-display-content strong {
+    color: #475569;
+    font-size: 0.78rem;
+}
+
+.ri-profile-display-content a,
+.ri-profile-display-content span {
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* END PROFILE DISPLAY NAME STYLE V1 */
+
+</style>
+</head>
+
+[% INCLUDE 'bodytag.inc' bodyid='opac-researcher-profile' bodyclass='scrollto' %]
+[% INCLUDE 'masthead.inc' %]
+
+<div class="main">
+  <div class="container-fluid">
+    <div class="pub-wrap">
+
+      [% IF error %]
+        <div class="pub-alert">[% error | html %]</div>
+        <div class="pub-actions"><a href="/cgi-bin/koha/opac-researcher-search.pl">Search Researchers</a></div>
+
+      [% ELSIF !has_profile %]
+        <div class="pub-empty">Research profile is not complete yet.</div>
+        <div class="pub-actions">
+          <a href="/cgi-bin/koha/opac-researcher-search.pl">Search Researchers</a>
+          [% IF can_edit %]<a href="/cgi-bin/koha/opac-custom-profile.pl">Complete Profile</a>[% END %]
+        </div>
+
+      [% ELSE %]
+
+      <div class="pub-top">
+        [% IF has_photo %]
+          <img class="pub-photo" src="/cgi-bin/koha/opac-researcher-photo.pl?id=[% profile.borrowernumber | html %]&t=[% now | html %]" alt="Profile photo">
+        [% ELSE %]
+          <div class="pub-no-photo">No Photo</div>
+        [% END %]
+
+        <div>
+          <h1 class="pub-name">[% profile.preferred_name | html %]</h1>
+          <div class="pub-job">[% profile.job_title | html %]</div>
+          <div class="pub-aff">[% profile.main_affiliation | html %]</div>
+
+          <div class="pub-status-row">
+            [% IF profile.is_verified %]
+              <span class="pub-status-badge pub-status-verified">
+                Verified Research Profile
+              </span>
+            [% ELSE %]
+              <span class="pub-status-badge pub-status-pending">
+                [% profile.verification_label | html %]
+              </span>
+            [% END %]
+
+            [% IF profile.is_current %]
+              <span class="pub-status-badge pub-status-active">
+                Current Institutional Researcher
+              </span>
+            [% ELSIF profile.is_former %]
+              <span class="pub-status-badge pub-status-former">
+                Former Institutional Researcher
+              </span>
+            [% ELSE %]
+              <span class="pub-status-badge pub-status-inactive">
+                [% profile.employment_label | html %]
+              </span>
+            [% END %]
+          </div>
+
+          <div class="pub-actions">
+            <a class="secondary" href="/cgi-bin/koha/opac-researcher-search.pl">Search Researchers</a>
+            [% IF profile.website_url %]
+              <a class="secondary" href="[% profile.website_url | html %]" target="_blank" rel="noopener">Visit Website</a>
+            [% END %]
+            [% IF can_edit %]
+              <a href="/cgi-bin/koha/opac-custom-profile.pl">Edit Profile</a>
+            [% END %]
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-grid">
+
+        <div class="pub-card full">
+          <h2>Biography</h2>
+          <div class="pub-text">[% profile.biography | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Person Basic Information</h2>
+          <div class="pub-line"><span class="pub-label">Full Name:</span> [% profile.preferred_name | html %]</div>
+          <div class="pub-line"><span class="pub-label">First Name:</span> [% profile.first_name | html %]</div>
+          <div class="pub-line"><span class="pub-label">Last Name:</span> [% profile.last_name | html %]</div>
+          <div class="pub-line"><span class="pub-label">Official Name:</span> [% profile.official_name | html %]</div>
+          <div class="pub-line"><span class="pub-label">Alternative Name:</span> [% profile.alternative_name | html %]</div>
+          <div class="pub-line"><span class="pub-label">Gender:</span> [% profile.gender | html %]</div>
+          <div class="pub-line"><span class="pub-label">User Type:</span> [% profile.user_type | html %]</div>
+          <div class="pub-line">
+            <span class="pub-label">Verification Status:</span>
+            [% profile.verification_label | html %]
+          </div>
+          <div class="pub-line">
+            <span class="pub-label">Researcher Status:</span>
+            [% profile.employment_label | html %]
+          </div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Professional Details</h2>
+          <div class="pub-line"><span class="pub-label">Job Title:</span> [% profile.job_title | html %]</div>
+          <div class="pub-line"><span class="pub-label">Affiliation:</span> [% profile.main_affiliation | html %]</div>
+          <div class="pub-line"><span class="pub-label">Department / Group:</span> [% profile.working_group | html %]</div>
+          <div class="pub-line"><span class="pub-label">Email:</span> [% profile.email | html %]</div>
+          <div class="pub-line"><span class="pub-label">Employee ID:</span> [% profile.employee_id | html %]</div>
+          <div class="pub-line"><span class="pub-label">Enrollment ID:</span> [% profile.enrollment_id | html %]</div>
+        </div>
+
+        
+        <!-- BEGIN SOURCE PROFILE DISPLAY NAMES V1 -->
+        [% IF source_profile_display_names
+           && source_profile_display_names.size %]
+            <div class="pub-card ri-profile-display-names">
+                <h2>Scholarly Profile Display Names</h2>
+
+                <p class="ri-profile-display-note">
+                    Profile names below are obtained from the
+                    connected scholarly source APIs. The API
+                    spelling, punctuation and name order are
+                    displayed without manual modification.
+                </p>
+
+                <div class="ri-profile-display-grid">
+                    [% FOREACH source_identity
+                               IN source_profile_display_names %]
+                        [% IF source_identity.profile_display_name %]
+                            <div class="ri-profile-display-row
+                                [% IF source_identity.source_name
+                                      == 'scopus' %]
+                                    ri-profile-display-scopus
+                                [% ELSE %]
+                                    ri-profile-display-wos
+                                [% END %]">
+
+                                <span class="ri-profile-display-icon"
+                                      aria-hidden="true">
+                                    [% IF source_identity.source_name
+                                          == 'scopus' %]
+                                        S
+                                    [% ELSE %]
+                                        W
+                                    [% END %]
+                                </span>
+
+                                <span class="ri-profile-display-content">
+                                    <strong>
+                                        [% IF source_identity.source_name
+                                              == 'scopus' %]
+                                            Scopus Profile Display Name
+                                        [% ELSE %]
+                                            Web of Science Profile
+                                            Display Name
+                                        [% END %]
+                                    </strong>
+
+                                    [% IF source_identity.profile_url %]
+                                        <a
+                                          href="[% source_identity.profile_url | html %]"
+                                          target="_blank"
+                                          rel="noopener noreferrer">
+                                            [% source_identity.profile_display_name | html %]
+                                        </a>
+                                    [% ELSE %]
+                                        <span>
+                                            [% source_identity.profile_display_name | html %]
+                                        </span>
+                                    [% END %]
+                                </span>
+                            </div>
+                        [% END %]
+                    [% END %]
+                </div>
+            </div>
+        [% END %]
+        <!-- END SOURCE PROFILE DISPLAY NAMES V1 -->
+
+
+        <!-- BEGIN ALL API AUTHOR NAME VARIANTS V11 -->
+        [% IF profile.has_source_name_groups %]
+          
+        <!-- Old publication-indexed author-name variants section removed.
+             Source profile display names are shown once above. -->
+
+
+          <style>
+            .ri-api-author-name-card {
+              overflow: hidden;
+            }
+
+            .ri-api-name-intro {
+              margin: -2px 0 16px;
+              color: #52606d;
+              font-size: 0.92rem;
+              line-height: 1.55;
+            }
+
+            .ri-api-name-groups {
+              display: grid;
+              grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+              gap: 16px;
+            }
+
+            .ri-api-name-group {
+              border: 1px solid #d9e2ec;
+              border-radius: 12px;
+              background: #ffffff;
+              overflow: hidden;
+            }
+
+            .ri-api-name-source-header {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              padding: 13px 14px;
+              border-bottom: 1px solid #e5e7eb;
+              background: #f8fafc;
+            }
+
+            .ri-api-name-source-icon {
+              display: inline-flex;
+              width: 32px;
+              height: 32px;
+              align-items: center;
+              justify-content: center;
+              flex: 0 0 32px;
+              border-radius: 50%;
+              color: #ffffff;
+              font-size: 0.84rem;
+              font-weight: 800;
+            }
+
+            .ri-api-name-group-scopus
+            .ri-api-name-source-icon {
+              background: #e9711c;
+            }
+
+            .ri-api-name-group-wos
+            .ri-api-name-source-icon {
+              background: #2563a8;
+            }
+
+            .ri-api-name-source-header strong {
+              display: block;
+              color: #172b4d;
+              font-size: 0.97rem;
+            }
+
+            .ri-api-name-source-count {
+              margin-top: 2px;
+              color: #64748b;
+              font-size: 0.78rem;
+            }
+
+            .ri-api-name-profile-link {
+              margin-left: auto;
+              color: #0b57a4;
+              font-size: 0.82rem;
+              font-weight: 650;
+              text-decoration: none;
+              white-space: nowrap;
+            }
+
+            .ri-api-name-profile-link:hover,
+            .ri-api-name-profile-link:focus {
+              text-decoration: underline;
+            }
+
+            .ri-api-name-list {
+              padding: 8px 14px 12px;
+            }
+
+            .ri-api-name-item {
+              padding: 10px 0;
+              border-bottom: 1px solid #edf2f7;
+            }
+
+            .ri-api-name-item:last-child {
+              border-bottom: 0;
+            }
+
+            .ri-api-name-value {
+              overflow-wrap: anywhere;
+              color: #0f172a;
+              font-size: 0.96rem;
+              font-weight: 650;
+              line-height: 1.4;
+            }
+
+            .ri-api-name-primary {
+              display: inline-block;
+              margin-left: 7px;
+              padding: 2px 7px;
+              border-radius: 999px;
+              background: #dcfce7;
+              color: #166534;
+              font-size: 0.67rem;
+              font-weight: 750;
+              vertical-align: middle;
+            }
+
+            .ri-api-name-meta {
+              margin-top: 3px;
+              color: #64748b;
+              font-size: 0.75rem;
+              overflow-wrap: anywhere;
+            }
+
+            @media (max-width: 600px) {
+              .ri-api-name-source-header {
+                align-items: flex-start;
+                flex-wrap: wrap;
+              }
+
+              .ri-api-name-profile-link {
+                width: 100%;
+                margin-left: 42px;
+              }
+            }
+          </style>
+        [% END %]
+        <!-- END ALL API AUTHOR NAME VARIANTS V11 -->
+
+        <div class="pub-card">
+          <h2>Researcher Identifiers</h2>
+          <div class="pub-line"><span class="pub-label">ORCID:</span> [% profile.orcid | html %]</div>
+          <div class="pub-line"><span class="pub-label">Scopus Author ID:</span> [% profile.scopus_author_id | html %]</div>
+          <div class="pub-line"><span class="pub-label">Web of Science ID:</span> [% profile.researcher_id | html %]</div>
+
+          [% IF profile.google_scholar_profile %]
+            <div class="pub-line"><span class="pub-label">Google Scholar:</span>
+              <a class="pub-link" href="[% profile.google_scholar_profile | html %]" target="_blank" rel="noopener">Open Profile</a>
+            </div>
+          [% END %]
+
+          <div class="pub-line"><span class="pub-label">Vidwan ID:</span> [% profile.vidwan_id | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Country & Language</h2>
+          <div class="pub-line"><span class="pub-label">Country:</span> [% profile.country | html %]</div>
+          <div class="pub-line"><span class="pub-label">Language:</span></div>
+          <div class="pub-text">[% profile.knows_language | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Research Interests / Keywords</h2>
+          <div class="pub-text">[% profile.research_interests | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Fields of Science and Technology (OECD)</h2>
+          <div class="pub-text">[% profile.oecd_areas | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Affiliation</h2>
+          <div class="pub-line"><span class="pub-label">Role:</span> [% profile.affiliation_role | html %]</div>
+          <div class="pub-line"><span class="pub-label">Organisation:</span> [% profile.affiliation_organisation | html %]</div>
+          <div class="pub-line"><span class="pub-label">Start:</span> [% profile.affiliation_start | html %]</div>
+          <div class="pub-line"><span class="pub-label">End:</span> [% profile.affiliation_end | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Education</h2>
+          <div class="pub-line"><span class="pub-label">Degree:</span> [% profile.education_role | html %]</div>
+          <div class="pub-line"><span class="pub-label">Organisation:</span> [% profile.education_organisation | html %]</div>
+          <div class="pub-line"><span class="pub-label">Start:</span> [% profile.education_start | html %]</div>
+          <div class="pub-line"><span class="pub-label">End:</span> [% profile.education_end | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Eperson Policy</h2>
+          <div class="pub-text">[% profile.eperson_policy | html %]</div>
+        </div>
+
+        <div class="pub-card">
+          <h2>Group Policy</h2>
+          <div class="pub-text">[% profile.group_policy | html %]</div>
+        </div>
+        <div class="pub-card full pub-crossref-section">
+          <h2>
+            Crossref Verified Publications
+            ([% crossref_verified_count | html %])
+          </h2>
+
+          <div class="pub-count-note">
+            These records are verified from stored Crossref metadata.
+            Crossref data does not automatically change publication DOI
+            or authorship.
+            [% IF crossref_last_synced %]
+              Last verified:
+              [% crossref_last_synced | html %]
+            [% END %]
+          </div>
+
+          [% IF crossref_verified_count == 0 %]
+            <div class="pub-empty">
+              No locally verified Crossref publication metadata
+              is available for this researcher.
+            </div>
+          [% ELSE %]
+            <div class="pub-list">
+              [% FOREACH p IN crossref_verified_pubs %]
+                <div class="pub-item">
+                  <div class="pub-item-title">
+                    [% IF p.crossref_url %]
+                      <a
+                        class="pub-link"
+                        href="[% p.crossref_url | html %]"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        [% p.title | html %]
+                      </a>
+                    [% ELSE %]
+                      [% p.title | html %]
+                    [% END %]
+                  </div>
+
+                  <div class="pub-meta">
+                    <span class="pub-badge pub-crossref-badge">
+                      Crossref Verified
+                    </span>
+
+                    [% IF p.source %]
+                      [% p.source | html %]
+                    [% END %]
+
+                    [% IF p.display_year %]
+                      • [% p.display_year | html %]
+                    [% END %]
+
+                    [% IF p.document_type %]
+                      • [% p.document_type | html %]
+                    [% END %]
+
+                    [% IF p.citation_count != '' %]
+                      • Crossref citations:
+                      [% p.citation_count | html %]
+                    [% END %]
+
+                    [% IF p.last_synced_at %]
+                      • Verified:
+                      [% p.last_synced_at | html %]
+                    [% END %]
+                  </div>
+
+                  [% IF p.doi %]
+                    <div class="pub-meta">
+                      DOI:
+                      <a
+                        class="pub-link"
+                        href="[% p.doi_url | html %]"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        [% p.doi | html %]
+                      </a>
+                    </div>
+
+                    <div class="pub-metrics">
+                      <div
+                        class="altmetric-embed"
+                        data-badge-type="donut"
+                        data-doi="[% p.doi | html %]"
+                        data-hide-no-mentions="false"
+                      ></div>
+
+                      <span class="pub-metric-label">
+                        Dimensions citations
+                      </span>
+
+                      <span
+                        class="__dimensions_badge_embed__"
+                        data-doi="[% p.doi | html %]"
+                        data-style="small_circle"
+                        data-hide-zero-citations="false"
+                      ></span>
+                    </div>
+                  [% END %]
+                </div>
+              [% END %]
+            </div>
+          [% END %]
+        </div>
+
+
+
+        <div class="pub-card full">
+          <h2>Scopus Indexed Publications ([% scopus_count | html %])</h2>
+          <div class="pub-count-note">Available records are loaded page by page from the Scopus Author ID.</div>
+
+          [% IF scopus_error %]
+            <div class="pub-empty">Scopus data could not be loaded: [% scopus_error | html %]</div>
+          [% ELSIF scopus_count == 0 %]
+            <div class="pub-empty">No publication data was found for this Scopus Author ID.</div>
+          [% ELSE %]
+            <div class="pub-list">
+              [% FOREACH p IN scopus_pubs %]
+                <div class="pub-item">
+                  <div class="pub-item-title">
+                    [% IF p.url %]
+                      <a class="pub-link" href="[% p.url | html %]" target="_blank" rel="noopener">[% p.title | html %]</a>
+                    [% ELSE %]
+                      [% p.title | html %]
+                    [% END %]
+                  </div>
+                  <div class="pub-meta">
+                    <span class="pub-badge">Scopus</span>
+                    [% p.source | html %]
+                    [% IF p.date %] • [% p.date | html %][% END %]
+                    [% IF p.doi %] • DOI: [% p.doi | html %][% END %]
+                    [% IF p.cites %] • Scopus Citations: [% p.cites | html %][% END %]
+                  </div>
+                  [% IF p.doi %]
+                    <div class="pub-metrics">
+                      <span class="pub-metric-label">Altmetric attention</span>
+                      <div class="altmetric-embed" data-badge-type="donut" data-doi="[% p.doi | html %]" data-hide-no-mentions="false"></div>
+                      <span class="pub-metric-label">Dimensions citations</span>
+                      <span class="__dimensions_badge_embed__" data-doi="[% p.doi | html %]" data-style="small_circle" data-hide-zero-citations="false"></span>
+                      <span class="pub-metric-label">PlumX Metrics</span>
+                      <a href="https://plu.mx/plum/a/?doi=[% p.doi | html %]" class="plumx-plum-print-popup pub-plumx-widget" data-popup="right" data-size="large" data-hide-when-empty="false" data-detail-same-page="false" target="_blank" rel="noopener noreferrer"></a>
+                    </div>
+                  [% END %]
+                </div>
+              [% END %]
+            </div>
+          [% END %]
+        </div>
+
+        <div class="pub-card full">
+          <h2>Web of Science Indexed Publications ([% wos_count | html %])</h2>
+          <div class="pub-count-note">Available records are loaded page by page from the Web of Science ResearcherID / ORCID.</div>
+
+          [% IF wos_error %]
+            <div class="pub-empty">Web of Science data could not be loaded: [% wos_error | html %]</div>
+          [% ELSIF wos_count == 0 %]
+            <div class="pub-empty">No Web of Science publication data was found for this ResearcherID / ORCID.</div>
+          [% ELSE %]
+            <div class="pub-list">
+              [% FOREACH p IN wos_pubs %]
+                <div class="pub-item">
+                  <div class="pub-item-title">
+                    [% IF p.url %]
+                      <a class="pub-link" href="[% p.url | html %]" target="_blank" rel="noopener">[% p.title | html %]</a>
+                    [% ELSE %]
+                      [% p.title | html %]
+                    [% END %]
+                  </div>
+                  <div class="pub-meta">
+                    <span class="pub-badge">Web of Science</span>
+                    [% p.source | html %]
+                    [% IF p.date %] • [% p.date | html %][% END %]
+                    [% IF p.doi %] • DOI: [% p.doi | html %][% END %]
+                    [% IF p.cites %] • WOS Citations: [% p.cites | html %][% END %]
+                  </div>
+                  [% IF p.doi %]
+                    <div class="pub-metrics">
+                      <span class="pub-metric-label">Altmetric attention</span>
+                      <div class="altmetric-embed" data-badge-type="donut" data-doi="[% p.doi | html %]" data-hide-no-mentions="false"></div>
+                      <span class="pub-metric-label">Dimensions citations</span>
+                      <span class="__dimensions_badge_embed__" data-doi="[% p.doi | html %]" data-style="small_circle" data-hide-zero-citations="false"></span>
+                      <span class="pub-metric-label">PlumX Metrics</span>
+                      <a href="https://plu.mx/plum/a/?doi=[% p.doi | html %]" class="plumx-plum-print-popup pub-plumx-widget" data-popup="right" data-size="large" data-hide-when-empty="false" data-detail-same-page="false" target="_blank" rel="noopener noreferrer"></a>
+                    </div>
+                  [% END %]
+                </div>
+              [% END %]
+            </div>
+          [% END %]
+        </div>
+
+      </div>
+      [% END %]
+
+    </div>
+  </div>
+</div>
+
+
+<!-- BEGIN OPAC UNIFIED RESEARCH INTELLIGENCE -->
+
+<style>
+.ri-unified-shell{
+    max-width:1150px;
+    margin:24px auto;
+    padding:0 12px;
+    color:#0f172a;
+}
+
+.ri-unified-card{
+    background:#fff;
+    border:1px solid #dbe3ec;
+    border-radius:18px;
+    box-shadow:0 14px 38px rgba(15,23,42,.08);
+    padding:24px;
+}
+
+.ri-heading-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.ri-heading{
+    margin:0 0 6px;
+    font-size:27px;
+    font-weight:900;
+    color:#071b3a !important;
+}
+
+.ri-subtitle{
+    margin:0;
+    color:#64748b !important;
+}
+
+.ri-kpis{
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:12px;
+    margin:18px 0 22px;
+}
+
+.ri-kpi{
+    border:1px solid #dbe3ec;
+    border-radius:14px;
+    padding:16px;
+    background:#f8fafc;
+}
+
+.ri-kpi-value{
+    display:block;
+    font-size:27px;
+    line-height:1;
+    font-weight:900;
+    color:#071b3a !important;
+    margin-bottom:7px;
+}
+
+.ri-kpi-label{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    color:#64748b !important;
+}
+
+.ri-tools{
+    display:grid;
+    grid-template-columns:minmax(220px,2fr) repeat(3,minmax(135px,1fr));
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.ri-tools input,
+.ri-tools select{
+    width:100%;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    padding:11px 12px;
+    background:#fff;
+    color:#0f172a;
+}
+
+.ri-result-note{
+    margin:8px 0 14px;
+    color:#64748b !important;
+    font-weight:700;
+}
+
+.ri-publication-list{
+    display:grid;
+    gap:13px;
+}
+
+.ri-publication{
+    border:1px solid #dbe3ec;
+    border-radius:14px;
+    padding:17px;
+    background:#fff;
+}
+
+.ri-publication-title{
+    margin:0 0 8px;
+    font-size:17px;
+    line-height:1.45;
+    font-weight:900;
+    color:#071b3a !important;
+}
+
+.ri-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 10px;
+    margin-bottom:10px;
+    font-size:13px;
+    color:#475569 !important;
+}
+
+.ri-badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin:10px 0;
+}
+
+.ri-badge{
+    display:inline-flex;
+    align-items:center;
+    border-radius:999px;
+    padding:5px 10px;
+    font-size:12px;
+    font-weight:900;
+    border:1px solid #cbd5e1;
+    background:#f8fafc;
+    color:#0f172a !important;
+}
+
+.ri-badge-scopus{
+    background:#fff7ed;
+    border-color:#fdba74;
+}
+
+.ri-badge-wos{
+    background:#eff6ff;
+    border-color:#93c5fd;
+}
+
+.ri-badge-crossref{
+    background:#f0fdf4;
+    border-color:#86efac;
+}
+
+.ri-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:11px;
+}
+
+.ri-links a{
+    display:inline-flex;
+    align-items:center;
+    border:1px solid #0f172a;
+    border-radius:999px;
+    padding:7px 12px;
+    color:#0f172a !important;
+    background:#fff;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:900;
+}
+
+.ri-links a:hover{
+    background:#0f172a;
+    color:#fff !important;
+}
+
+/* BEGIN OPAC UNIFIED METRIC CSS V2 */
+
+.ri-metric-panel{
+    display:grid;
+    grid-template-columns:
+        repeat(3, minmax(150px, 1fr));
+    gap:12px;
+    margin-top:14px;
+    padding:14px;
+    border:1px solid #dbe3ec;
+    border-radius:12px;
+    background:#f8fafc;
+}
+
+.ri-metric-box{
+    min-width:0;
+    min-height:72px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+    gap:8px;
+    padding:10px;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    background:#ffffff;
+}
+
+.ri-metric-title{
+    display:block;
+    font-size:11px;
+    line-height:1.3;
+    font-weight:900;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:#64748b !important;
+}
+
+.ri-metric-box .altmetric-embed,
+.ri-metric-box .__dimensions_badge_embed__,
+.ri-metric-box .plumx-plum-print-popup{
+    display:inline-block;
+    max-width:100%;
+}
+
+.ri-plumx-widget{
+    font-size:13px;
+    font-weight:800;
+    color:#0f172a !important;
+    text-decoration:none;
+}
+
+.ri-plumx-widget:hover{
+    text-decoration:underline;
+}
+
+@media(max-width:720px){
+    .ri-metric-panel{
+        grid-template-columns:1fr;
+    }
+}
+
+/* END OPAC UNIFIED METRIC CSS V2 */
+
+
+/* BEGIN OPAC UNIFIED METRIC CSS V3 */
+
+/*
+ * Clean borderless metrics row.
+ * The individual Altmetric, Dimensions and PlumX widgets remain clickable.
+ */
+.ri-metric-panel{
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:flex-start !important;
+    flex-wrap:wrap !important;
+    gap:30px !important;
+
+    margin:16px 0 8px 0 !important;
+    padding:0 !important;
+
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    background:transparent !important;
+}
+
+.ri-metric-box{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    justify-content:flex-start !important;
+
+    width:auto !important;
+    min-width:115px !important;
+    min-height:0 !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    background:transparent !important;
+}
+
+.ri-metric-title{
+    display:block !important;
+    margin:0 0 8px 0 !important;
+    padding:0 !important;
+
+    font-size:12px !important;
+    line-height:1.25 !important;
+    font-weight:800 !important;
+    letter-spacing:.035em !important;
+    text-transform:uppercase !important;
+    color:#526985 !important;
+}
+
+/*
+ * Prevent older profile CSS from stretching or boxing the embeds.
+ */
+.ri-metric-box .altmetric-embed,
+.ri-metric-box .__dimensions_badge_embed__,
+.ri-metric-box .dimensions_badge,
+.ri-metric-box .plumx-plum-print-popup{
+    display:inline-block !important;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:0 !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    background:transparent !important;
+    overflow:visible !important;
+}
+
+/*
+ * Reset nested Dimensions elements that were affected by older generic CSS.
+ */
+.ri-metric-box .__dimensions_badge_embed__ *,
+.ri-metric-box .dimensions_badge *{
+    box-sizing:border-box;
+    max-width:none !important;
+}
+
+/*
+ * Keep external widget images at their natural proportions.
+ */
+.ri-metric-box img,
+.ri-metric-box svg,
+.ri-metric-box iframe{
+    max-width:none !important;
+    height:auto;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+/*
+ * PlumX must show its real widget icon rather than styled link text.
+ */
+.ri-plumx-widget{
+    display:inline-block !important;
+    width:auto !important;
+    height:auto !important;
+
+    font-size:0 !important;
+    line-height:0 !important;
+    text-decoration:none !important;
+    color:inherit !important;
+}
+
+/*
+ * Hide text fallback only after PlumX script has produced the icon.
+ */
+.ri-plumx-widget img,
+.ri-plumx-widget svg{
+    display:block !important;
+}
+
+/*
+ * Compact mobile layout.
+ */
+@media(max-width:720px){
+    .ri-metric-panel{
+        gap:22px !important;
+    }
+
+    .ri-metric-box{
+        min-width:105px !important;
+    }
+}
+
+/* END OPAC UNIFIED METRIC CSS V3 */
+
+
+
+.ri-pagination{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:20px;
+}
+
+.ri-pagination button{
+    border:1px solid #0f172a;
+    background:#fff;
+    color:#0f172a;
+    border-radius:999px;
+    padding:8px 14px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.ri-pagination button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+.ri-empty{
+    padding:18px;
+    border-radius:12px;
+    background:#fef3c7;
+    color:#92400e !important;
+    font-weight:800;
+}
+
+.ri-hidden{
+    display:none !important;
+}
+
+@media(max-width:900px){
+    .ri-kpis{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .ri-tools{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:600px){
+    .ri-kpis,
+    .ri-tools{
+        grid-template-columns:1fr;
+    }
+
+    .ri-unified-card{
+        padding:17px;
+    }
+
+    .ri-heading{
+        font-size:23px;
+    }
+}
+
+/* BEGIN OPAC RESEARCH DASHBOARD V4 CSS */
+
+.pub-master-controls,
+.pub-section-inline-controls,
+.pub-toggle-toolbar,
+.pub-section-controls{
+    display:none !important;
+}
+
+.ri-heading-row-v4{
+    margin-bottom:22px !important;
+}
+
+.ri-heading-row-v4 .ri-heading{
+    margin:0 !important;
+}
+
+.ri-kpis-v4{
+    position:relative;
+    overflow:visible !important;
+}
+
+.ri-kpi-v4{
+    appearance:none;
+    position:relative;
+    display:flex !important;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+
+    min-height:145px;
+    padding:20px !important;
+
+    color:#062552 !important;
+    text-align:left;
+
+    border:1px solid #d8e2ef !important;
+    border-radius:18px !important;
+    background:#f7faff !important;
+    box-shadow:none !important;
+
+    cursor:pointer;
+    overflow:hidden;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.ri-kpi-v4::after{
+    content:"";
+    position:absolute;
+    right:-30px;
+    bottom:-35px;
+
+    width:105px;
+    height:105px;
+
+    border-radius:50%;
+    background:rgba(6,37,82,.045);
+    pointer-events:none;
+}
+
+.ri-kpi-v4:hover,
+.ri-kpi-v4:focus-visible{
+    z-index:4;
+    transform:translateY(-4px);
+
+    border-color:#96b5dd !important;
+    background:#fff !important;
+
+    box-shadow:
+        0 16px 38px rgba(15,23,42,.14) !important;
+
+    outline:none;
+}
+
+.ri-kpi-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    width:34px;
+    height:34px;
+    margin-bottom:12px;
+
+    border-radius:10px;
+
+    color:#fff !important;
+    background:#062552;
+
+    font-size:15px;
+    line-height:1;
+    font-weight:900;
+}
+
+.ri-kpi-scopus .ri-kpi-icon{
+    background:#f28c28;
+}
+
+.ri-kpi-wos .ri-kpi-icon{
+    background:#2b74d6;
+}
+
+.ri-kpi-crossref .ri-kpi-icon{
+    background:#19a862;
+}
+
+.ri-kpi-citations .ri-kpi-icon{
+    background:#7246b6;
+}
+
+.ri-kpi-v4 .ri-kpi-value{
+    position:relative;
+    z-index:1;
+
+    margin:0 0 3px !important;
+
+    color:#062552 !important;
+    font-size:38px !important;
+    line-height:1 !important;
+    font-weight:950 !important;
+}
+
+.ri-kpi-v4 .ri-kpi-label{
+    position:relative;
+    z-index:1;
+
+    color:#455d79 !important;
+    font-size:15px !important;
+    line-height:1.3 !important;
+    font-weight:850 !important;
+}
+
+.ri-kpi-hint{
+    position:relative;
+    z-index:1;
+
+    display:block;
+    margin-top:8px;
+
+    color:#7a8ca3 !important;
+    font-size:11px;
+    font-weight:700;
+}
+
+.ri-kpi-popover{
+    position:fixed;
+    z-index:10050;
+
+    width:min(340px, calc(100vw - 30px));
+    padding:0;
+
+    border:1px solid #cbd8e8;
+    border-radius:14px;
+    background:#fff;
+
+    box-shadow:
+        0 20px 50px rgba(15,23,42,.22);
+
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(8px);
+    pointer-events:none;
+
+    transition:
+        opacity .14s ease,
+        visibility .14s ease,
+        transform .14s ease;
+}
+
+.ri-kpi-popover.is-visible{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(0);
+}
+
+.ri-kpi-popover-title{
+    padding:15px 17px 11px;
+
+    color:#062552 !important;
+    border-bottom:1px solid #e4eaf2;
+
+    font-size:16px;
+    line-height:1.3;
+    font-weight:900;
+}
+
+.ri-kpi-popover-body{
+    padding:13px 17px 16px;
+}
+
+.ri-kpi-detail-grid{
+    display:grid;
+    gap:0;
+}
+
+.ri-kpi-detail-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+
+    padding:8px 0;
+    border-bottom:1px solid #edf1f6;
+}
+
+.ri-kpi-detail-row:last-child{
+    border-bottom:0;
+}
+
+.ri-kpi-detail-label{
+    color:#526985 !important;
+    font-size:13px;
+    line-height:1.4;
+    font-weight:700;
+}
+
+.ri-kpi-detail-value{
+    color:#061f46 !important;
+    font-size:13px;
+    line-height:1.4;
+    font-weight:900;
+    text-align:right;
+}
+
+.ri-kpi-detail-title{
+    max-width:200px;
+    word-break:break-word;
+}
+
+.ri-kpi-modal{
+    position:fixed;
+    inset:0;
+    z-index:11000;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+}
+
+.ri-kpi-modal.is-open{
+    display:flex;
+}
+
+.ri-kpi-modal-backdrop{
+    position:absolute;
+    inset:0;
+    background:rgba(4,17,38,.62);
+    backdrop-filter:blur(2px);
+}
+
+.ri-kpi-modal-dialog{
+    position:relative;
+    z-index:1;
+
+    width:min(620px, 100%);
+    max-height:min(760px, calc(100vh - 40px));
+    overflow:auto;
+
+    border-radius:18px;
+    background:#fff;
+
+    box-shadow:
+        0 28px 75px rgba(0,0,0,.32);
+}
+
+.ri-kpi-modal-header{
+    position:sticky;
+    top:0;
+    z-index:2;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+
+    padding:20px 22px;
+
+    border-bottom:1px solid #e3eaf3;
+    background:#fff;
+}
+
+.ri-kpi-modal-header h3{
+    margin:0 !important;
+
+    color:#062552 !important;
+    font-size:22px;
+    line-height:1.25;
+    font-weight:950;
+}
+
+.ri-kpi-modal-close{
+    appearance:none;
+
+    width:40px;
+    height:40px;
+
+    border:1px solid #ccd8e7 !important;
+    border-radius:50% !important;
+    background:#f7faff !important;
+    color:#062552 !important;
+
+    font-size:27px;
+    line-height:1;
+    font-weight:500;
+    cursor:pointer;
+}
+
+.ri-kpi-modal-close:hover,
+.ri-kpi-modal-close:focus-visible{
+    background:#e9f1fc !important;
+    outline:none;
+}
+
+.ri-kpi-modal-body{
+    padding:20px 22px 24px;
+}
+
+body.ri-modal-open{
+    overflow:hidden;
+}
+
+@media(max-width:900px){
+    .ri-kpi-v4{
+        min-height:132px;
+    }
+}
+
+@media(max-width:600px){
+    .ri-kpi-hint{
+        display:none;
+    }
+
+    .ri-kpi-v4{
+        min-height:110px;
+    }
+
+    .ri-kpi-v4 .ri-kpi-value{
+        font-size:32px !important;
+    }
+
+    .ri-kpi-modal{
+        padding:10px;
+    }
+
+    .ri-kpi-modal-dialog{
+        max-height:calc(100vh - 20px);
+    }
+}
+
+/* END OPAC RESEARCH DASHBOARD V4 CSS */
+
+
+/* BEGIN OPAC RESEARCH DASHBOARD V6 CSS */
+
+.ri-source-metrics{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:14px 0 10px;
+}
+
+.ri-source-metric{
+    display:inline-flex;
+    align-items:center;
+    gap:11px;
+
+    min-width:190px;
+    min-height:68px;
+    padding:10px 13px;
+
+    border:1px solid #dce4ee;
+    border-radius:10px;
+    background:#fff;
+
+    box-shadow:
+        0 2px 8px rgba(15,23,42,.06);
+
+    transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        border-color .16s ease;
+}
+
+.ri-source-metric:hover{
+    transform:translateY(-2px);
+    border-color:#afc1d8;
+
+    box-shadow:
+        0 8px 20px rgba(15,23,42,.12);
+}
+
+.ri-source-metric-icon{
+    flex:0 0 auto;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    width:45px;
+    height:45px;
+
+    border-radius:9px;
+
+    color:#fff;
+    font-size:18px;
+    line-height:1;
+    font-weight:900;
+}
+
+.ri-source-metric-scopus .ri-source-metric-icon{
+    background:#f28c28;
+}
+
+.ri-source-metric-wos .ri-source-metric-icon{
+    background:#2264a7;
+}
+
+.ri-source-metric-content{
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    line-height:1.15;
+}
+
+.ri-source-metric-count{
+    color:#111827;
+
+    font-size:24px;
+    line-height:1;
+    font-weight:850;
+}
+
+.ri-source-metric-label{
+    margin-top:6px;
+
+    color:#4b5563;
+
+    font-size:11px;
+    line-height:1.25;
+    font-weight:800;
+    letter-spacing:.025em;
+    text-transform:uppercase;
+}
+
+.ri-crossref-symbol{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+
+    padding:8px;
+
+    border:1px solid #dfe4ea;
+    background:#f8fafc;
+}
+
+.ri-crossref-symbol i{
+    display:block;
+
+    width:27px;
+    height:7px;
+
+    transform:skewY(-13deg);
+}
+
+.ri-crossref-symbol i:nth-child(1){
+    background:#f5c400;
+}
+
+.ri-crossref-symbol i:nth-child(2){
+    background:#ed6a2c;
+}
+
+.ri-crossref-symbol i:nth-child(3){
+    background:#cf2533;
+}
+
+@media(max-width:650px){
+    .ri-source-metrics{
+        display:grid;
+        grid-template-columns:1fr;
+    }
+
+    .ri-source-metric{
+        width:100%;
+        min-width:0;
+    }
+}
+
+/* END OPAC RESEARCH DASHBOARD V6 CSS */
+
+</style>
+
+[% IF has_profile %]
+<div class="ri-unified-shell">
+    <section class="ri-unified-card" id="research-intelligence-publications">
+
+        
+        <div class="ri-heading-row ri-heading-row-v4">
+            <h2 class="ri-heading">
+                Research Publications
+            </h2>
+        </div>
+
+
+        
+        <div
+            class="ri-kpis ri-kpis-v4"
+            id="ri-kpi-dashboard"
+            aria-label="Research publication summary"
+        >
+            <button
+                type="button"
+                class="ri-kpi ri-kpi-v4"
+                data-kpi="unique"
+                aria-haspopup="dialog"
+            >
+                <span class="ri-kpi-icon" aria-hidden="true">◆</span>
+
+                <span class="ri-kpi-value">
+                    [% unified_summary.total_publications | html %]
+                </span>
+
+                <span class="ri-kpi-label">
+                    Publications
+                </span>
+
+                <span class="ri-kpi-hint">
+                    Hover or click for details
+                </span>
+            </button>
+
+            <button
+                type="button"
+                class="ri-kpi ri-kpi-v4 ri-kpi-scopus"
+                data-kpi="scopus"
+                aria-haspopup="dialog"
+            >
+                <span class="ri-kpi-icon" aria-hidden="true">S</span>
+
+                <span class="ri-kpi-value">
+                    [% unified_summary.scopus_publications | html %]
+                </span>
+
+                <span class="ri-kpi-label">
+                    Scopus
+                </span>
+
+                <span class="ri-kpi-hint">
+                    Hover or click for details
+                </span>
+            </button>
+
+            <button
+                type="button"
+                class="ri-kpi ri-kpi-v4 ri-kpi-wos"
+                data-kpi="wos"
+                aria-haspopup="dialog"
+            >
+                <span class="ri-kpi-icon" aria-hidden="true">W</span>
+
+                <span class="ri-kpi-value">
+                    [% unified_summary.wos_publications | html %]
+                </span>
+
+                <span class="ri-kpi-label">
+                    Web of Science
+                </span>
+
+                <span class="ri-kpi-hint">
+                    Hover or click for details
+                </span>
+            </button>
+
+            <button
+                type="button"
+                class="ri-kpi ri-kpi-v4 ri-kpi-crossref"
+                data-kpi="crossref"
+                aria-haspopup="dialog"
+            >
+                <span class="ri-kpi-icon" aria-hidden="true">C</span>
+
+                <span class="ri-kpi-value">
+                    [% unified_summary.crossref_publications | html %]
+                </span>
+
+                <span class="ri-kpi-label">
+                    Crossref
+                </span>
+
+                <span class="ri-kpi-hint">
+                    Hover or click for details
+                </span>
+            </button>
+
+            <button
+                type="button"
+                class="ri-kpi ri-kpi-v4 ri-kpi-citations"
+                data-kpi="citations"
+                aria-haspopup="dialog"
+            >
+                <span class="ri-kpi-icon" aria-hidden="true">↗</span>
+
+                <span class="ri-kpi-value">
+                    [% unified_summary.total_citations | html %]
+                </span>
+
+                <span class="ri-kpi-label">
+                    Citations
+                </span>
+
+                <span class="ri-kpi-hint">
+                    Hover or click for details
+                </span>
+            </button>
+        </div>
+
+        <div
+            class="ri-kpi-popover"
+            id="ri-kpi-popover"
+            role="tooltip"
+            aria-hidden="true"
+        >
+            <div class="ri-kpi-popover-title"></div>
+            <div class="ri-kpi-popover-body"></div>
+        </div>
+
+        <!-- BEGIN OPAC RESEARCH DASHBOARD V4 MODAL -->
+        <div
+            class="ri-kpi-modal"
+            id="ri-kpi-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ri-kpi-modal-title"
+            aria-hidden="true"
+        >
+            <div
+                class="ri-kpi-modal-backdrop"
+                data-ri-modal-close="1"
+            ></div>
+
+            <div class="ri-kpi-modal-dialog">
+                <div class="ri-kpi-modal-header">
+                    <h3 id="ri-kpi-modal-title">
+                        Publication Details
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="ri-kpi-modal-close"
+                        data-ri-modal-close="1"
+                        aria-label="Close publication details"
+                    >
+                        ×
+                    </button>
+                </div>
+
+                <div
+                    class="ri-kpi-modal-body"
+                    id="ri-kpi-modal-body"
+                ></div>
+            </div>
+        </div>
+        <!-- END OPAC RESEARCH DASHBOARD V4 MODAL -->
+
+<div class="ri-tools">
+            <input
+                type="search"
+                id="ri-publication-search"
+                placeholder="Search title, journal, DOI or document type"
+                aria-label="Search publications"
+            >
+
+            <select id="ri-year-filter" aria-label="Filter by year">
+                <option value="">All years</option>
+            </select>
+
+            <select
+                id="ri-source-filter"
+                aria-label="Filter publications by source combination"
+            >
+                <option value="">All publications</option>
+
+                <optgroup label="Indexed or verified in">
+                    <option value="scopus">
+                        Any Scopus publication
+                    </option>
+
+                    <option value="wos">
+                        Any Web of Science publication
+                    </option>
+
+                    <option value="crossref">
+                        Crossref verified
+                    </option>
+                </optgroup>
+
+                <optgroup label="Source combinations">
+                    <option value="scopus-wos-crossref">
+                        Scopus + WoS + Crossref
+                    </option>
+
+                    <option value="scopus-wos-any-crossref">
+                        Scopus + WoS
+                    </option>
+
+                    <option value="scopus-crossref-not-wos">
+                        Scopus + Crossref, not WoS
+                    </option>
+
+                    <option value="wos-crossref-not-scopus">
+                        WoS + Crossref, not Scopus
+                    </option>
+                </optgroup>
+
+                <optgroup label="Source comparison">
+                    <option value="scopus-not-wos">
+                        Scopus, not WoS
+                    </option>
+
+                    <option value="wos-not-scopus">
+                        WoS, not Scopus
+                    </option>
+
+                    <option value="only-scopus">
+                        Scopus Exclusive (not in WoS/Crossref)
+                    </option>
+
+                    <option value="only-wos">
+                        WoS Exclusive (not in Scopus/Crossref)
+                    </option>
+
+                    <option value="only-crossref">
+                        Crossref Exclusive
+                    </option>
+                </optgroup>
+            </select>
+
+            <select id="ri-page-size" aria-label="Publications per page">
+                <option value="10">10 per page</option>
+                <option value="25" selected>25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+        </div>
+
+        <div class="ri-result-note" id="ri-result-note"></div>
+
+        [% IF unified_publication_count %]
+            <div class="ri-publication-list" id="ri-publication-list">
+
+                [% FOREACH publication IN unified_publications %]
+                    <article
+                        class="ri-publication"
+                        data-year="[% publication.publication_year | html %]"
+                        data-scopus="[% publication.has_scopus | html %]"
+                        data-wos="[% publication.has_wos | html %]"
+                        data-crossref="[% publication.has_crossref | html %]"
+                        data-search="[% publication.search_text | html %]"
+                        data-title="[% publication.title | html %]"
+                        data-type="[% publication.document_type | html %]"
+                        data-best-citations="[% publication.best_citation_count | html %]"
+                        data-scopus-citations="[% publication.scopus_citations | html %]"
+                        data-wos-citations="[% publication.wos_citations | html %]"
+                        data-crossref-citations="[% publication.crossref_citations | html %]"
+                    >
+                        <h3 class="ri-publication-title">
+                            [% publication.title | html %]
+                        </h3>
+
+                        <div class="ri-meta">
+                            [% IF publication.journal %]
+                                <span>
+                                    <strong>Journal:</strong>
+                                    [% publication.journal | html %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.publication_year %]
+                                <span>
+                                    <strong>Year:</strong>
+                                    [% publication.publication_year | html %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.document_type %]
+                                <span>
+                                    <strong>Type:</strong>
+                                    [% publication.document_type | html %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.best_citation_count %]
+                                <span>
+                                    <strong>Citations:</strong>
+                                    [% publication.best_citation_count | html %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.author_position %]
+                                <span>
+                                    <strong>Author position:</strong>
+                                    [% publication.author_position | html %]
+                                </span>
+                            [% END %]
+                        </div>
+
+                        <div class="ri-badges">
+                            [% IF publication.has_scopus %]
+                                <span class="ri-badge ri-badge-scopus">
+                                    Scopus
+                                    [% IF publication.scopus_citations %]
+                                        · [% publication.scopus_citations | html %] citations
+                                    [% END %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.has_wos %]
+                                <span class="ri-badge ri-badge-wos">
+                                    Web of Science
+                                    [% IF publication.wos_citations %]
+                                        · [% publication.wos_citations | html %] citations
+                                    [% END %]
+                                </span>
+                            [% END %]
+
+                            [% IF publication.has_crossref %]
+                                <span class="ri-badge ri-badge-crossref">
+                                    Crossref Verified
+                                    [% IF publication.crossref_citations %]
+                                        · [% publication.crossref_citations | html %] citations
+                                    [% END %]
+                                </span>
+                            [% END %]
+                        </div>
+
+                        <!-- BEGIN OPAC SOURCE AUTHOR NAMES V7 -->
+                        
+                        <!-- Repeated publication-level author
+                             names removed. Profile display names
+                             are shown once above. -->
+
+                        <!-- END OPAC SOURCE AUTHOR NAMES V7 -->
+
+                        <!-- BEGIN OPAC RESEARCH DASHBOARD V6 SOURCE METRICS -->
+                        <div
+                            class="ri-source-metrics"
+                            aria-label="Citation counts reported by individual sources"
+                        >
+                            [% IF publication.has_scopus %]
+                                <div
+                                    class="ri-source-metric ri-source-metric-scopus"
+                                    title="Citation count reported by Scopus"
+                                >
+                                    <span
+                                        class="ri-source-metric-icon"
+                                        aria-hidden="true"
+                                    >
+                                        S
+                                    </span>
+
+                                    <span class="ri-source-metric-content">
+                                        <span class="ri-source-metric-count">
+                                            [% IF publication.scopus_citations %]
+                                                [% publication.scopus_citations | html %]
+                                            [% ELSE %]
+                                                0
+                                            [% END %]
+                                        </span>
+
+                                        <span class="ri-source-metric-label">
+                                            Scopus citations
+                                        </span>
+                                    </span>
+                                </div>
+                            [% END %]
+
+                            [% IF publication.has_wos %]
+                                <div
+                                    class="ri-source-metric ri-source-metric-wos"
+                                    title="Citation count reported by Web of Science"
+                                >
+                                    <span
+                                        class="ri-source-metric-icon"
+                                        aria-hidden="true"
+                                    >
+                                        W
+                                    </span>
+
+                                    <span class="ri-source-metric-content">
+                                        <span class="ri-source-metric-count">
+                                            [% IF publication.wos_citations %]
+                                                [% publication.wos_citations | html %]
+                                            [% ELSE %]
+                                                0
+                                            [% END %]
+                                        </span>
+
+                                        <span class="ri-source-metric-label">
+                                            Web of Science citations
+                                        </span>
+                                    </span>
+                                </div>
+                            [% END %]
+
+                            [% IF publication.has_crossref %]
+                                <div
+                                    class="ri-source-metric ri-source-metric-crossref"
+                                    title="Crossref is-referenced-by-count for this DOI"
+                                >
+                                    <span
+                                        class="ri-source-metric-icon ri-crossref-symbol"
+                                        aria-hidden="true"
+                                    >
+                                        <i></i>
+                                        <i></i>
+                                        <i></i>
+                                    </span>
+
+                                    <span class="ri-source-metric-content">
+                                        <span class="ri-source-metric-count">
+                                            [% IF publication.crossref_citations %]
+                                                [% publication.crossref_citations | html %]
+                                            [% ELSE %]
+                                                0
+                                            [% END %]
+                                        </span>
+
+                                        <span class="ri-source-metric-label">
+                                            Cited by in Crossref
+                                        </span>
+                                    </span>
+                                </div>
+                            [% END %]
+                        </div>
+                        <!-- END OPAC RESEARCH DASHBOARD V6 SOURCE METRICS -->
+
+                        [% IF publication.doi %]
+                            <div class="ri-meta">
+                                <span>
+                                    <strong>DOI:</strong>
+                                    [% publication.doi | html %]
+                                </span>
+                            </div>
+                        [% END %]
+
+                        <!-- BEGIN OPAC UNIFIED METRIC MARKUP V2 -->
+                        [% IF publication.doi %]
+                            <div
+                                class="ri-metric-panel"
+                                aria-label="Research impact metrics"
+                            >
+                                <div class="ri-metric-box">
+                                    <span class="ri-metric-title">
+                                        Altmetric Attention
+                                    </span>
+
+                                    <div
+                                        class="altmetric-embed"
+                                        data-badge-type="donut"
+                                        data-badge-popover="right"
+                                        data-link-target="_blank"
+                                        data-hide-no-mentions="false"
+                                        data-doi="[% publication.doi | html %]"
+                                    ></div>
+                                </div>
+
+                                <div class="ri-metric-box">
+                                    <span class="ri-metric-title">
+                                        Dimensions Citations
+                                    </span>
+
+                                    <span
+                                        class="__dimensions_badge_embed__"
+                                        data-doi="[% publication.doi | html %]"
+                                        data-style="small_circle"
+                                        data-legend="always"
+                                        data-hide-zero-citations="false"
+                                    ></span>
+                                </div>
+
+                                <div class="ri-metric-box">
+                                    <span class="ri-metric-title">
+                                        PlumX Metrics
+                                    </span>
+
+                                    <a href="https://plu.mx/plum/a/?doi=[% publication.doi | html %]" class="plumx-plum-print-popup pub-plumx-widget" data-popup="right" data-size="large" data-hide-when-empty="false" data-detail-same-page="false" target="_blank" rel="noopener noreferrer"></a>
+                                </div>
+                            </div>
+                        [% END %]
+                        <!-- END OPAC UNIFIED METRIC MARKUP V2 -->
+
+
+                        <div class="ri-links">
+                            [% IF publication.doi_url %]
+                                <a
+                                    href="[% publication.doi_url | html %]"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    View DOI
+                                </a>
+                            [% END %]
+
+                            [% IF publication.scopus_url %]
+                                <a
+                                    href="[% publication.scopus_url | html %]"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    View Scopus
+                                </a>
+                            [% END %]
+
+                            [% IF publication.wos_url %]
+                                <a
+                                    href="[% publication.wos_url | html %]"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    View Web of Science
+                                </a>
+                            [% END %]
+
+                            [% IF publication.crossref_url %]
+                                <a
+                                    href="[% publication.crossref_url | html %]"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    View Crossref
+                                </a>
+                            [% END %]
+                        </div>
+                    </article>
+                [% END %]
+            </div>
+
+            <div class="ri-empty ri-hidden" id="ri-filter-empty">
+                No publications match the selected filters.
+            </div>
+
+            <div class="ri-pagination">
+                <button type="button" id="ri-prev-page">
+                    Previous
+                </button>
+
+                <span id="ri-page-status"></span>
+
+                <button type="button" id="ri-next-page">
+                    Next
+                </button>
+            </div>
+
+        [% ELSE %]
+            <div class="ri-empty">
+                No confirmed publication records are currently available.
+            </div>
+        [% END %]
+    </section>
+</div>
+[% END %]
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    /*
+     * Hide the older source-wise publication sections.
+     * The data remains untouched in the database and CGI.
+     */
+    document.querySelectorAll('.pub-card.full').forEach(function (section) {
+        var heading = section.querySelector('h2');
+
+        if (!heading) {
+            return;
+        }
+
+        var title = (heading.textContent || '').trim();
+
+        if (
+            title.indexOf('Crossref Verified Publications') !== -1 ||
+            title.indexOf('Scopus Indexed Publications') !== -1 ||
+            title.indexOf('Web of Science Indexed Publications') !== -1
+        ) {
+            section.classList.add('ri-hidden');
+        }
+    });
+
+    document.querySelectorAll(
+        '.pub-master-controls, .pub-toggle-toolbar, .pub-section-controls'
+    ).forEach(function (element) {
+        element.classList.add('ri-hidden');
+    });
+
+    var list = document.getElementById('ri-publication-list');
+
+    if (!list) {
+        return;
+    }
+
+    var publications = Array.prototype.slice.call(
+        list.querySelectorAll('.ri-publication')
+    );
+
+    var searchInput = document.getElementById('ri-publication-search');
+    var yearFilter = document.getElementById('ri-year-filter');
+    var sourceFilter = document.getElementById('ri-source-filter');
+    var pageSizeSelect = document.getElementById('ri-page-size');
+    var resultNote = document.getElementById('ri-result-note');
+    var emptyMessage = document.getElementById('ri-filter-empty');
+    var previousButton = document.getElementById('ri-prev-page');
+    var nextButton = document.getElementById('ri-next-page');
+    var pageStatus = document.getElementById('ri-page-status');
+
+    var currentPage = 1;
+
+    var years = [];
+
+    publications.forEach(function (publication) {
+        var year = publication.getAttribute('data-year');
+
+        if (year && years.indexOf(year) === -1) {
+            years.push(year);
+        }
+    });
+
+    years.sort(function (a, b) {
+        return Number(b) - Number(a);
+    });
+
+    years.forEach(function (year) {
+        var option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearFilter.appendChild(option);
+    });
+
+    function filteredPublications() {
+        var query = (searchInput.value || '').toLowerCase().trim();
+        var selectedYear = yearFilter.value;
+        var selectedSource = sourceFilter.value;
+
+        return publications.filter(function (publication) {
+            var searchText =
+                (publication.getAttribute('data-search') || '').toLowerCase();
+
+            var publicationYear =
+                publication.getAttribute('data-year') || '';
+
+            var queryMatches =
+                !query || searchText.indexOf(query) !== -1;
+
+            var yearMatches =
+                !selectedYear || publicationYear === selectedYear;
+
+            var hasScopus =
+                publication.getAttribute('data-scopus') === '1';
+
+            var hasWos =
+                publication.getAttribute('data-wos') === '1';
+
+            var hasCrossref =
+                publication.getAttribute('data-crossref') === '1';
+
+            var sourceMatches = true;
+
+            switch (selectedSource) {
+                case 'scopus':
+                    sourceMatches = hasScopus;
+                    break;
+
+                case 'wos':
+                    sourceMatches = hasWos;
+                    break;
+
+                case 'crossref':
+                    sourceMatches = hasCrossref;
+                    break;
+
+                case 'scopus-wos-crossref':
+                    sourceMatches =
+                        hasScopus &&
+                        hasWos &&
+                        hasCrossref;
+                    break;
+
+                case 'scopus-wos-any-crossref':
+                    sourceMatches =
+                        hasScopus &&
+                        hasWos;
+                    break;
+
+                case 'scopus-crossref-not-wos':
+                    sourceMatches =
+                        hasScopus &&
+                        hasCrossref &&
+                        !hasWos;
+                    break;
+
+                case 'wos-crossref-not-scopus':
+                    sourceMatches =
+                        hasWos &&
+                        hasCrossref &&
+                        !hasScopus;
+                    break;
+
+                case 'scopus-not-wos':
+                    sourceMatches =
+                        hasScopus &&
+                        !hasWos;
+                    break;
+
+                case 'wos-not-scopus':
+                    sourceMatches =
+                        hasWos &&
+                        !hasScopus;
+                    break;
+
+                case 'only-scopus':
+                    sourceMatches =
+                        hasScopus &&
+                        !hasWos &&
+                        !hasCrossref;
+                    break;
+
+                case 'only-wos':
+                    sourceMatches =
+                        hasWos &&
+                        !hasScopus &&
+                        !hasCrossref;
+                    break;
+
+                case 'only-crossref':
+                    sourceMatches =
+                        hasCrossref &&
+                        !hasScopus &&
+                        !hasWos;
+                    break;
+            }
+
+            return queryMatches && yearMatches && sourceMatches;
+        });
+    }
+
+    function render() {
+        var matches = filteredPublications();
+        var pageSize = Number(pageSizeSelect.value || 25);
+        var totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        var start = (currentPage - 1) * pageSize;
+        var end = start + pageSize;
+        var visible = matches.slice(start, end);
+
+        publications.forEach(function (publication) {
+            publication.classList.add('ri-hidden');
+        });
+
+        visible.forEach(function (publication) {
+            publication.classList.remove('ri-hidden');
+        });
+
+        emptyMessage.classList.toggle(
+            'ri-hidden',
+            matches.length !== 0
+        );
+
+        resultNote.textContent =
+            matches.length +
+            ' publication' +
+            (matches.length === 1 ? '' : 's') +
+            ' found';
+
+        pageStatus.textContent =
+            matches.length
+            ? 'Page ' + currentPage + ' of ' + totalPages
+            : 'No results';
+
+        previousButton.disabled =
+            currentPage <= 1 || matches.length === 0;
+
+        nextButton.disabled =
+            currentPage >= totalPages || matches.length === 0;
+    }
+
+    function resetAndRender() {
+        currentPage = 1;
+        render();
+    }
+
+    searchInput.addEventListener('input', resetAndRender);
+    yearFilter.addEventListener('change', resetAndRender);
+    sourceFilter.addEventListener('change', resetAndRender);
+    pageSizeSelect.addEventListener('change', resetAndRender);
+
+    previousButton.addEventListener('click', function () {
+        if (currentPage > 1) {
+            currentPage -= 1;
+            render();
+            document
+                .getElementById('research-intelligence-publications')
+                .scrollIntoView({behavior: 'smooth'});
+        }
+    });
+
+    nextButton.addEventListener('click', function () {
+        var matches = filteredPublications();
+        var pageSize = Number(pageSizeSelect.value || 25);
+        var totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
+
+        if (currentPage < totalPages) {
+            currentPage += 1;
+            render();
+            document
+                .getElementById('research-intelligence-publications')
+                .scrollIntoView({behavior: 'smooth'});
+        }
+    });
+
+    render();
+});
+</script>
+
+
+<!-- BEGIN OPAC UNIFIED METRICS V2 -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    var controlLabels = [
+        'Publication Controls',
+        'Expand Scopus Articles',
+        'Collapse Scopus Articles',
+        'Expand WOS Articles',
+        'Collapse WOS Articles',
+        'Expand All Articles',
+        'Collapse All Articles'
+    ];
+
+    function normalizedText(element) {
+        return (element.textContent || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    /*
+     * First attempt: find the smallest parent containing the complete
+     * obsolete publication-control block and remove it.
+     */
+    var candidates = Array.prototype.slice.call(
+        document.querySelectorAll(
+            'section, article, fieldset, .card, .panel, .well, div'
+        )
+    );
+
+    candidates.sort(function (first, second) {
+        return first.querySelectorAll('*').length -
+            second.querySelectorAll('*').length;
+    });
+
+    candidates.some(function (container) {
+        if (
+            container.id === 'research-intelligence-publications' ||
+            container.closest('#research-intelligence-publications')
+        ) {
+            return false;
+        }
+
+        var text = normalizedText(container);
+
+        var hasAllControls = controlLabels.every(
+            function (label) {
+                return text.indexOf(label) !== -1;
+            }
+        );
+
+        if (
+            hasAllControls &&
+            text.indexOf('Unified Research Publications') === -1
+        ) {
+            container.remove();
+            return true;
+        }
+
+        return false;
+    });
+
+    /*
+     * Fallback: remove any remaining obsolete heading or button.
+     */
+    Array.prototype.slice.call(
+        document.querySelectorAll(
+            'h1, h2, h3, h4, h5, h6, legend, button, a'
+        )
+    ).forEach(function (element) {
+        if (
+            element.closest('#research-intelligence-publications')
+        ) {
+            return;
+        }
+
+        if (
+            controlLabels.indexOf(normalizedText(element)) !== -1
+        ) {
+            var parent = element.parentElement;
+
+            element.remove();
+
+            if (
+                parent &&
+                normalizedText(parent) === ''
+            ) {
+                parent.remove();
+            }
+        }
+    });
+
+    /*
+     * Some metric scripts may already have loaded elsewhere in the
+     * original template. Reinitialize them after DOM creation.
+     */
+    window.setTimeout(function () {
+        if (
+            typeof window._altmetric_embed_init === 'function'
+        ) {
+            window._altmetric_embed_init(
+                document.getElementById(
+                    'research-intelligence-publications'
+                )
+            );
+        }
+    }, 500);
+});
+</script>
+
+
+
+
+
+
+
+<!-- END OPAC UNIFIED METRICS V2 -->
+
+
+
+<script
+    async
+    src="https://embed.altmetric.com/assets/embed.js"
+></script>
+
+<script
+    async
+    charset="utf-8"
+    src="https://integration-badge.dimensions.ai/static/ai/badge.js"
+></script>
+
+
+
+
+
+
+
+
+
+<!-- BEGIN REAL PLUMX WIDGET FIX -->
+<style>
+.pub-metrics .pub-plumx-widget,
+.pub-plumx-widget{
+    display:inline-block !important;
+    width:131px !important;
+    min-width:131px !important;
+    max-width:131px !important;
+    height:131px !important;
+    min-height:131px !important;
+    max-height:131px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    vertical-align:middle !important;
+    overflow:visible !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+    box-sizing:border-box !important;
+}
+
+/*
+Do not apply display:inline-block to every PlumX child.
+The official script controls its generated SVG, popup and internal layout.
+*/
+.pub-plumx-widget img,
+.pub-plumx-widget svg{
+    max-width:131px !important;
+    max-height:131px !important;
+}
+
+.pub-plumx-direct-link{
+    display:none !important;
+}
+
+@media(max-width:768px){
+    .pub-metrics .pub-plumx-widget,
+    .pub-plumx-widget{
+        width:131px !important;
+        min-width:131px !important;
+        height:131px !important;
+        min-height:131px !important;
+    }
+}
+</style>
+<!-- END REAL PLUMX WIDGET FIX -->
+
+
+
+<!-- Official PlumX complete widget loader -->
+<script type="text/javascript"
+        src="https://cdn.plu.mx/widget-all.js"></script>
+
+
+<!-- BEGIN OPAC RESEARCH DASHBOARD V4 JS -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    var dashboard = document.getElementById('ri-kpi-dashboard');
+    var publicationList = document.getElementById('ri-publication-list');
+    var popover = document.getElementById('ri-kpi-popover');
+    var modal = document.getElementById('ri-kpi-modal');
+    var modalTitle = document.getElementById('ri-kpi-modal-title');
+    var modalBody = document.getElementById('ri-kpi-modal-body');
+
+    if (
+        !dashboard ||
+        !publicationList ||
+        !popover ||
+        !modal ||
+        !modalTitle ||
+        !modalBody
+    ) {
+        return;
+    }
+
+    document.querySelectorAll(
+        '.pub-master-controls, .pub-section-inline-controls'
+    ).forEach(function (element) {
+        element.remove();
+    });
+
+    var articles = Array.prototype.slice.call(
+        publicationList.querySelectorAll('.ri-publication')
+    );
+
+    function flag(article, source) {
+        return String(
+            article.getAttribute('data-' + source) || ''
+        ) === '1';
+    }
+
+    function numberValue(article, name) {
+        var raw = article.getAttribute('data-' + name);
+        var parsed = Number(raw || 0);
+
+        return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function sourceCount(source) {
+        return articles.filter(function (article) {
+            return flag(article, source);
+        }).length;
+    }
+
+    function citationSum(field) {
+        return articles.reduce(function (total, article) {
+            return total + numberValue(article, field);
+        }, 0);
+    }
+
+    function sourceCombination(article) {
+        return [
+            flag(article, 'scopus'),
+            flag(article, 'wos'),
+            flag(article, 'crossref')
+        ].filter(Boolean).length;
+    }
+
+    function onlySourceCount(source) {
+        return articles.filter(function (article) {
+            return (
+                flag(article, source) &&
+                sourceCombination(article) === 1
+            );
+        }).length;
+    }
+
+    function multiSourceCount() {
+        return articles.filter(function (article) {
+            return sourceCombination(article) > 1;
+        }).length;
+    }
+
+    function exactCombinationCount(
+        requireScopus,
+        requireWos,
+        requireCrossref
+    ) {
+        return articles.filter(function (article) {
+            return (
+                flag(article, 'scopus') === requireScopus &&
+                flag(article, 'wos') === requireWos &&
+                flag(article, 'crossref') === requireCrossref
+            );
+        }).length;
+    }
+
+    function typeSummary(source) {
+        var counts = {};
+
+        articles.forEach(function (article) {
+            if (source && !flag(article, source)) {
+                return;
+            }
+
+            var type = (
+                article.getAttribute('data-type') ||
+                'Not specified'
+            ).trim();
+
+            if (!type) {
+                type = 'Not specified';
+            }
+
+            counts[type] = (counts[type] || 0) + 1;
+        });
+
+        return Object.keys(counts)
+            .sort(function (first, second) {
+                if (counts[second] !== counts[first]) {
+                    return counts[second] - counts[first];
+                }
+
+                return first.localeCompare(second);
+            })
+            .map(function (type) {
+                return {
+                    label: type,
+                    value: counts[type]
+                };
+            });
+    }
+
+    function highestCited() {
+        var result = {
+            count: 0,
+            title: 'No citation data available'
+        };
+
+        articles.forEach(function (article) {
+            var count = numberValue(article, 'best-citations');
+
+            if (count > result.count) {
+                result.count = count;
+                result.title =
+                    article.getAttribute('data-title') ||
+                    'Untitled publication';
+            }
+        });
+
+        return result;
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function row(label, value, valueClass) {
+        return (
+            '<div class="ri-kpi-detail-row">' +
+                '<span class="ri-kpi-detail-label">' +
+                    escapeHtml(label) +
+                '</span>' +
+                '<span class="ri-kpi-detail-value ' +
+                    escapeHtml(valueClass || '') +
+                '">' +
+                    escapeHtml(value) +
+                '</span>' +
+            '</div>'
+        );
+    }
+
+    function rowsHtml(rows) {
+        return (
+            '<div class="ri-kpi-detail-grid">' +
+                rows.map(function (item) {
+                    return row(
+                        item.label,
+                        item.value,
+                        item.valueClass
+                    );
+                }).join('') +
+            '</div>'
+        );
+    }
+
+    function typeRows(source) {
+        var rows = typeSummary(source);
+
+        if (!rows.length) {
+            return [{
+                label: 'Document types',
+                value: 'No records'
+            }];
+        }
+
+        return rows;
+    }
+
+    function detailsFor(kind) {
+        var totalPublications = articles.length;
+        var scopus = sourceCount('scopus');
+        var wos = sourceCount('wos');
+        var crossref = sourceCount('crossref');
+
+        var totalBestCitations = citationSum('best-citations');
+        var average = totalPublications
+            ? (totalBestCitations / totalPublications).toFixed(2)
+            : '0.00';
+
+        var highest = highestCited();
+
+        if (kind === 'unique') {
+            return {
+                title: 'Research Publications',
+                rows: [
+                    {
+                        label: 'Total publications',
+                        value: totalPublications
+                    },
+                    {
+                        label: 'Scopus + WoS + Crossref',
+                        value: exactCombinationCount(
+                            true,
+                            true,
+                            true
+                        )
+                    },
+                    {
+                        label: 'Scopus + WoS, without Crossref',
+                        value: exactCombinationCount(
+                            true,
+                            true,
+                            false
+                        )
+                    },
+                    {
+                        label: 'Scopus + Crossref, not WoS',
+                        value: exactCombinationCount(
+                            true,
+                            false,
+                            true
+                        )
+                    },
+                    {
+                        label: 'WoS + Crossref, not Scopus',
+                        value: exactCombinationCount(
+                            false,
+                            true,
+                            true
+                        )
+                    },
+                    {
+                        label: 'Scopus Exclusive (not in WoS/Crossref)',
+                        value: exactCombinationCount(
+                            true,
+                            false,
+                            false
+                        )
+                    },
+                    {
+                        label: 'WoS Exclusive (not in Scopus/Crossref)',
+                        value: exactCombinationCount(
+                            false,
+                            true,
+                            false
+                        )
+                    },
+                    {
+                        label: 'Crossref Exclusive',
+                        value: exactCombinationCount(
+                            false,
+                            false,
+                            true
+                        )
+                    }
+                ]
+            };
+        }
+
+        if (kind === 'scopus') {
+            return {
+                title: 'Scopus Publications',
+                rows: [
+                    {
+                        label: 'Indexed publications',
+                        value: scopus
+                    },
+                    {
+                        label: 'Scopus-only publications',
+                        value: onlySourceCount('scopus')
+                    },
+                    {
+                        label: 'Scopus citation total',
+                        value: citationSum('scopus-citations')
+                    }
+                ].concat(typeRows('scopus'))
+            };
+        }
+
+        if (kind === 'wos') {
+            return {
+                title: 'Web of Science Publications',
+                rows: [
+                    {
+                        label: 'Indexed publications',
+                        value: wos
+                    },
+                    {
+                        label: 'Web of Science-only publications',
+                        value: onlySourceCount('wos')
+                    },
+                    {
+                        label: 'Web of Science citation total',
+                        value: citationSum('wos-citations')
+                    }
+                ].concat(typeRows('wos'))
+            };
+        }
+
+        if (kind === 'crossref') {
+            return {
+                title: 'Crossref Records',
+                rows: [
+                    {
+                        label: 'Verified DOI records',
+                        value: crossref
+                    },
+                    {
+                        label: 'Crossref-only records',
+                        value: onlySourceCount('crossref')
+                    },
+                    {
+                        label: 'Crossref citation total',
+                        value: citationSum('crossref-citations')
+                    }
+                ].concat(typeRows('crossref'))
+            };
+        }
+
+        return {
+            title: 'Citation Summary',
+            rows: [
+                {
+                    label: 'Deduplicated citation total',
+                    value: totalBestCitations
+                },
+                {
+                    label: 'Average citations per publication',
+                    value: average
+                },
+                {
+                    label: 'Highest citation count',
+                    value: highest.count
+                },
+                {
+                    label: 'Highest cited publication',
+                    value: highest.title,
+                    valueClass: 'ri-kpi-detail-title'
+                },
+                {
+                    label: 'Scopus citation total',
+                    value: citationSum('scopus-citations')
+                },
+                {
+                    label: 'Web of Science citation total',
+                    value: citationSum('wos-citations')
+                },
+                {
+                    label: 'Crossref citation total',
+                    value: citationSum('crossref-citations')
+                }
+            ]
+        };
+    }
+
+    function positionPopover(card) {
+        var cardRect = card.getBoundingClientRect();
+        var popoverRect = popover.getBoundingClientRect();
+
+        var left =
+            cardRect.left +
+            (cardRect.width / 2) -
+            (popoverRect.width / 2);
+
+        left = Math.max(
+            12,
+            Math.min(
+                left,
+                window.innerWidth - popoverRect.width - 12
+            )
+        );
+
+        var top = cardRect.bottom + 10;
+
+        if (
+            top + popoverRect.height >
+            window.innerHeight - 12
+        ) {
+            top = cardRect.top - popoverRect.height - 10;
+        }
+
+        popover.style.left = Math.round(left) + 'px';
+        popover.style.top = Math.max(12, Math.round(top)) + 'px';
+    }
+
+    function showPopover(card) {
+        var details = detailsFor(
+            card.getAttribute('data-kpi')
+        );
+
+        popover.querySelector(
+            '.ri-kpi-popover-title'
+        ).textContent = details.title;
+
+        popover.querySelector(
+            '.ri-kpi-popover-body'
+        ).innerHTML = rowsHtml(details.rows);
+
+        popover.classList.add('is-visible');
+        popover.setAttribute('aria-hidden', 'false');
+
+        window.requestAnimationFrame(function () {
+            positionPopover(card);
+        });
+    }
+
+    function hidePopover() {
+        popover.classList.remove('is-visible');
+        popover.setAttribute('aria-hidden', 'true');
+    }
+
+    function openModal(card) {
+        var details = detailsFor(
+            card.getAttribute('data-kpi')
+        );
+
+        hidePopover();
+
+        modalTitle.textContent = details.title;
+        modalBody.innerHTML = rowsHtml(details.rows);
+
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+
+        document.body.classList.add('ri-modal-open');
+
+        var closeButton = modal.querySelector(
+            '.ri-kpi-modal-close'
+        );
+
+        if (closeButton) {
+            closeButton.focus();
+        }
+    }
+
+    function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('ri-modal-open');
+    }
+
+    dashboard.querySelectorAll('.ri-kpi-v4').forEach(
+        function (card) {
+            card.addEventListener('mouseenter', function () {
+                showPopover(card);
+            });
+
+            card.addEventListener('mouseleave', hidePopover);
+
+            card.addEventListener('focus', function () {
+                showPopover(card);
+            });
+
+            card.addEventListener('blur', hidePopover);
+
+            card.addEventListener('click', function () {
+                openModal(card);
+            });
+        }
+    );
+
+    modal.querySelectorAll('[data-ri-modal-close]').forEach(
+        function (element) {
+            element.addEventListener('click', closeModal);
+        }
+    );
+
+    document.addEventListener('keydown', function (event) {
+        if (
+            event.key === 'Escape' &&
+            modal.classList.contains('is-open')
+        ) {
+            closeModal();
+        }
+    });
+
+    window.addEventListener('resize', hidePopover);
+    window.addEventListener('scroll', hidePopover, true);
+});
+</script>
+
+<!-- END OPAC RESEARCH DASHBOARD V4 JS -->
+
+<!-- END OPAC UNIFIED RESEARCH INTELLIGENCE -->
+
+
+[% INCLUDE 'opac-bottom.inc' %]
+[% BLOCK jsinclude %]
+
+
+<script>
+function refreshAltmetricBadges(){
+  try {
+    if (typeof _altmetric_embed_init === 'function') {
+      _altmetric_embed_init();
+    }
+  } catch(e) {}
+}
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(refreshAltmetricBadges, 300);
+  setTimeout(refreshAltmetricBadges, 1000);
+  setTimeout(refreshAltmetricBadges, 2500);
+});
+window.addEventListener('load', function(){
+  setTimeout(refreshAltmetricBadges, 500);
+  setTimeout(refreshAltmetricBadges, 1800);
+});
+</script>
+
+
+
+
+<!-- final multi section publication controller -->
+<script>
+(function () {
+  var leakPattern = /readers on Mendeley|See more details|Blogged by|Posted by|Referenced by|Picked up by|Reddited by|Mentioned by/i;
+
+  function removeAltmetricLeaks() {
+    document.querySelectorAll(
+      '.altmetric-popover, .altmetric_badge_popover, .altmetric-details, [id*="altmetric"][id*="popover"], [class*="altmetric"][class*="popover"], [class*="altmetric"][class*="popup"]'
+    ).forEach(function(el) {
+      el.remove();
+    });
+
+    Array.prototype.slice.call(document.body.children).forEach(function(el) {
+      if (el.querySelector && el.querySelector('.pub-wrap')) return;
+      if (el.closest && el.closest('.pub-wrap')) return;
+      var txt = (el.textContent || '').trim();
+      if (txt && txt.length < 1200 && leakPattern.test(txt)) {
+        el.remove();
+      }
+    });
+  }
+
+  function getSection(type) {
+    var found = null;
+    document.querySelectorAll('.pub-card.full').forEach(function(section) {
+      var h2 = section.querySelector('h2');
+      if (!h2) return;
+      var title = (h2.textContent || '').trim();
+
+      if (type === 'scopus' && title.indexOf('Scopus Indexed Publications') !== -1) {
+        found = section;
+      }
+
+      if (type === 'wos' && title.indexOf('Web of Science Indexed Publications') !== -1) {
+        found = section;
+      }
+    });
+    return found;
+  }
+
+  function prepareItems(section) {
+    section.querySelectorAll('.pub-item').forEach(function(item) {
+      var title = item.querySelector('.pub-item-title');
+      if (!title) return;
+
+      item.querySelectorAll('.pub-item-toggle').forEach(function(btn) {
+        btn.remove();
+      });
+
+      var details = item.querySelector('.pub-item-details');
+
+      if (!details) {
+        details = document.createElement('div');
+        details.className = 'pub-item-details';
+
+        while (title.nextSibling) {
+          details.appendChild(title.nextSibling);
+        }
+
+        item.appendChild(details);
+      }
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pub-item-toggle';
+      btn.textContent = 'Show details';
+      title.appendChild(btn);
+
+      function setOpen(open) {
+        item.classList.toggle('is-collapsed', !open);
+        btn.textContent = open ? 'Hide details' : 'Show details';
+      }
+
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(item.classList.contains('is-collapsed'));
+      });
+
+      title.addEventListener('click', function(e) {
+        if (e.target.closest('a') || e.target.closest('button')) return;
+        setOpen(item.classList.contains('is-collapsed'));
+      });
+
+      setOpen(false);
+    });
+  }
+
+  function openSection(section) {
+    if (!section) return;
+    section.classList.remove('section-collapsed');
+    prepareItems(section);
+    section.querySelectorAll('.pub-item').forEach(function(item) {
+      item.classList.remove('is-collapsed');
+      var btn = item.querySelector('.pub-item-toggle');
+      if (btn) btn.textContent = 'Hide details';
+    });
+
+    setTimeout(function () {
+      if (window.__plumX && window.__plumX.widgets && window.__plumX.widgets.init) {
+        window.__plumX.widgets.init();
+      }
+    }, 200);
+  }
+
+  function closeSection(section) {
+    if (!section) return;
+    prepareItems(section);
+    section.querySelectorAll('.pub-item').forEach(function(item) {
+      item.classList.add('is-collapsed');
+      var btn = item.querySelector('.pub-item-toggle');
+      if (btn) btn.textContent = 'Show details';
+    });
+    section.classList.add('section-collapsed');
+  }
+
+  function prepareSectionHeaders() {
+    document.querySelectorAll('.pub-toggle-toolbar, .pub-section-controls').forEach(function(el) {
+      el.remove();
+    });
+
+    document.querySelectorAll('.pub-card.full').forEach(function(section) {
+      var h2 = section.querySelector('h2');
+      if (!h2) return;
+
+      var title = (h2.textContent || '').trim();
+      var type = '';
+
+      if (title.indexOf('Scopus Indexed Publications') !== -1) {
+        type = 'scopus';
+      } else if (title.indexOf('Web of Science Indexed Publications') !== -1) {
+        type = 'wos';
+      } else {
+        return;
+      }
+
+      section.classList.add('pub-publication-section');
+      section.setAttribute('data-pub-section', type);
+
+      section.querySelectorAll('.pub-section-inline-controls').forEach(function(oldControls) {
+        oldControls.remove();
+      });
+
+      var header = h2.closest('.pub-section-header');
+
+      if (!header) {
+        header = document.createElement('div');
+        header.className = 'pub-section-header';
+        section.insertBefore(header, h2);
+        header.appendChild(h2);
+      }
+
+      var label = type === 'scopus' ? 'Scopus' : 'Web of Science';
+
+      var controls = document.createElement('div');
+      controls.className = 'pub-section-inline-controls';
+      controls.innerHTML =
+        '<button type="button" class="pub-inline-expand">Expand ' + label + '</button>' +
+        '<button type="button" class="pub-inline-collapse">Collapse ' + label + '</button>';
+
+      header.appendChild(controls);
+
+      controls.querySelector('.pub-inline-expand').addEventListener('click', function() {
+        openSection(section);
+      });
+
+      controls.querySelector('.pub-inline-collapse').addEventListener('click', function() {
+        closeSection(section);
+      });
+
+      prepareItems(section);
+      closeSection(section);
+    });
+  }
+
+  function addMasterControls() {
+    /*
+     * Disabled by OPAC Research Dashboard V4.
+     * Unified publication controls now use search and filters only.
+     */
+    document.querySelectorAll(
+        '.pub-master-controls, .pub-section-inline-controls'
+    ).forEach(function (element) {
+        element.remove();
+    });
+    return;
+
+    var wrap = document.querySelector('.pub-wrap');
+    if (!wrap) return;
+
+    document.querySelectorAll('.pub-master-controls').forEach(function(el) {
+      el.remove();
+    });
+
+    var firstPublication = null;
+    document.querySelectorAll('.pub-publication-section').forEach(function(section) {
+      if (!firstPublication) firstPublication = section;
+    });
+
+    if (!firstPublication) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'pub-master-controls';
+    bar.innerHTML =
+      '<strong>Publication Controls</strong>' +
+      '<button type="button" data-action="expand-scopus">Expand Scopus Articles</button>' +
+      '<button type="button" data-action="collapse-scopus">Collapse Scopus Articles</button>' +
+      '<button type="button" data-action="expand-wos">Expand WOS Articles</button>' +
+      '<button type="button" data-action="collapse-wos">Collapse WOS Articles</button>' +
+      '<button type="button" data-action="expand-all">Expand All Articles</button>' +
+      '<button type="button" data-action="collapse-all">Collapse All Articles</button>';
+
+    firstPublication.parentNode.insertBefore(bar, firstPublication);
+
+    bar.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+
+      var action = btn.getAttribute('data-action');
+      var scopus = getSection('scopus');
+      var wos = getSection('wos');
+
+      if (action === 'expand-scopus') openSection(scopus);
+      if (action === 'collapse-scopus') closeSection(scopus);
+      if (action === 'expand-wos') openSection(wos);
+      if (action === 'collapse-wos') closeSection(wos);
+      if (action === 'expand-all') {
+        openSection(scopus);
+        openSection(wos);
+      }
+      if (action === 'collapse-all') {
+        closeSection(scopus);
+        closeSection(wos);
+      }
+    });
+  }
+
+  function init() {
+    removeAltmetricLeaks();
+    prepareSectionHeaders();
+    addMasterControls();
+
+    setTimeout(function () {
+      if (window.__plumX && window.__plumX.widgets && window.__plumX.widgets.init) {
+        window.__plumX.widgets.init();
+      }
+    }, 300);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    init();
+    setTimeout(init, 300);
+    setTimeout(removeAltmetricLeaks, 800);
+  });
+
+  window.addEventListener('load', function () {
+    setTimeout(init, 300);
+    setTimeout(removeAltmetricLeaks, 1200);
+  });
+
+  setInterval(removeAltmetricLeaks, 2000);
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var textReplacements = [
+    ['Available records are loaded page by page from the Scopus Author ID.', 'Available records are loaded page by page from the Scopus Author ID.'],
+    ['Available records are loaded page by page from the Web of Science ResearcherID / ORCID.', 'Available records are loaded page by page from the Web of Science ResearcherID / ORCID.'],
+    ['Scopus data could not be loaded:', 'Scopus data could not be loaded:'],
+    ['Web of Science data could not be loaded:', 'Web of Science data could not be loaded:'],
+    ['No publication data was found for this Scopus Author ID.', 'No publication data was found for this Scopus Author ID.'],
+    ['No Web of Science publication data was found for this ResearcherID / ORCID.', 'No Web of Science publication data was found for this ResearcherID / ORCID.'],
+    ['Research profile is not complete yet.', 'Research profile is not complete yet.']
+  ];
+
+  function replaceTextNodes(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var node;
+    while ((node = walker.nextNode())) {
+      var value = node.nodeValue;
+      textReplacements.forEach(function(pair) {
+        value = value.split(pair[0]).join(pair[1]);
+      });
+      node.nodeValue = value;
+    }
+  }
+
+  replaceTextNodes(document.body);
+
+  var wrap = document.querySelector('.pub-wrap');
+  if (!wrap) return;
+
+  var publicationSections = [];
+  document.querySelectorAll('.pub-card.full').forEach(function(card) {
+    var h2 = card.querySelector('h2');
+    if (!h2) return;
+    var title = (h2.textContent || '').trim();
+    if (title.indexOf('Scopus Indexed Publications') !== -1 || title.indexOf('Web of Science Indexed Publications') !== -1) {
+      card.classList.add('pub-publication-section');
+      publicationSections.push(card);
+    }
+  });
+
+  if (!publicationSections.length) return;
+
+  var toolbar = document.createElement('div');
+  toolbar.className = 'pub-toggle-toolbar';
+  toolbar.innerHTML = '<button type="button" id="pubExpandAll">Expand All</button><button type="button" id="pubCollapseAll">Collapse All</button>';
+  var firstSection = publicationSections[0];
+  firstSection.parentNode.insertBefore(toolbar, firstSection);
+
+  function prepareItem(item) {
+    if (item.dataset.prepared === '1') return;
+    item.dataset.prepared = '1';
+
+    var title = item.querySelector('.pub-item-title');
+    if (!title) return;
+
+    var details = document.createElement('div');
+    details.className = 'pub-item-details';
+
+    while (title.nextSibling) {
+      details.appendChild(title.nextSibling);
+    }
+    item.appendChild(details);
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'pub-item-toggle';
+    toggle.textContent = 'Show details';
+    title.appendChild(toggle);
+
+    function toggleItem(forceOpen) {
+      var open = typeof forceOpen === 'boolean' ? forceOpen : item.classList.contains('is-collapsed');
+      item.classList.toggle('is-collapsed', !open);
+      toggle.textContent = open ? 'Hide details' : 'Show details';
+    }
+
+    toggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleItem();
+    });
+
+    title.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      toggleItem();
+    });
+
+    toggleItem(false);
+  }
+
+  publicationSections.forEach(function(section) {
+    if (!section.querySelector('.pub-section-controls')) {
+      var controls = document.createElement('div');
+      controls.className = 'pub-section-controls';
+      controls.innerHTML = '<button type="button" class="pub-section-expand">Expand Section</button><button type="button" class="pub-section-collapse">Collapse Section</button>';
+
+      var note = section.querySelector('.pub-count-note');
+      if (note) {
+        note.parentNode.insertBefore(controls, note.nextSibling);
+      } else {
+        var h2 = section.querySelector('h2');
+        h2.parentNode.insertBefore(controls, h2.nextSibling);
+      }
+
+      controls.querySelector('.pub-section-expand').addEventListener('click', function() {
+        section.querySelectorAll('.pub-item').forEach(function(item) {
+          var btn = item.querySelector('.pub-item-toggle');
+          item.classList.remove('is-collapsed');
+          if (btn) btn.textContent = 'Hide details';
+        });
+      });
+
+      controls.querySelector('.pub-section-collapse').addEventListener('click', function() {
+        section.querySelectorAll('.pub-item').forEach(function(item) {
+          var btn = item.querySelector('.pub-item-toggle');
+          item.classList.add('is-collapsed');
+          if (btn) btn.textContent = 'Show details';
+        });
+      });
+    }
+
+    section.querySelectorAll('.pub-item').forEach(prepareItem);
+  });
+
+  document.getElementById('pubExpandAll').addEventListener('click', function() {
+    document.querySelectorAll('.pub-item').forEach(function(item) {
+      var btn = item.querySelector('.pub-item-toggle');
+      item.classList.remove('is-collapsed');
+      if (btn) btn.textContent = 'Hide details';
+    });
+  });
+
+  document.getElementById('pubCollapseAll').addEventListener('click', function() {
+    document.querySelectorAll('.pub-item').forEach(function(item) {
+      var btn = item.querySelector('.pub-item-toggle');
+      item.classList.add('is-collapsed');
+      if (btn) btn.textContent = 'Show details';
+    });
+  });
+
+  if (window.__plumX && window.__plumX.widgets && window.__plumX.widgets.init) {
+    window.__plumX.widgets.init();
+  }
+});
+</script>
+
+
+
+<!-- hide empty Education / Eperson / Group Policy cards -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.pub-card, .final-card').forEach(function(card) {
+    var h = card.querySelector('h2');
+    if (!h) return;
+
+    var title = (h.textContent || '').trim();
+    var body = (card.textContent || '').replace(title, '').trim();
+
+    if (title === 'Education' || title === 'Group Policy') {
+      card.remove();
+      return;
+    }
+
+    if (title === 'Eperson Policy' && body === '') {
+      card.remove();
+      return;
+    }
+  });
+});
+</script>
+
+<!-- hide Education and Group Policy -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  ['Education', 'Group Policy'].forEach(function (title) {
+    document.querySelectorAll('h2').forEach(function (h) {
+      if ((h.textContent || '').trim() === title) {
+        var card = h.closest('.pub-card, .final-card, .research-card, .profile-card');
+        if (card) card.remove();
+      }
+    });
+  });
+});
+</script>
+[% END %]
+
+
+
