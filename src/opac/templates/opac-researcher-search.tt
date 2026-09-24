@@ -1,0 +1,4870 @@
+[%# RESEARCHER DIRECTORY V6 PREMIUM EXPERT DISCOVERY UI %]
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Researcher Directory | Example University Library</title>
+[% BLOCK cssinclude %]
+<link
+    rel="stylesheet"
+    href="/opac-tmpl/bootstrap/css/researcher-app.css"
+>
+[% END %]
+[% INCLUDE 'doc-head-close.inc' %]
+
+<style>
+:root {
+    --rd-navy: #08234a;
+    --rd-blue: #155eef;
+    --rd-slate: #475569;
+    --rd-border: #dbe3ee;
+    --rd-soft: #f5f8fc;
+    --rd-green: #15803d;
+    --rd-green-soft: #ecfdf3;
+    --rd-green-border: #86efac;
+    --rd-grey: #475569;
+    --rd-grey-soft: #f1f5f9;
+    --rd-grey-border: #cbd5e1;
+}
+
+.rd-page {
+    max-width: 1240px;
+    margin: 28px auto 50px;
+    padding: 0 18px;
+    color: #172033;
+}
+
+.rd-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 34px;
+    border-radius: 24px;
+    color: #fff;
+    background:
+        radial-gradient(circle at top right,
+            rgba(59,130,246,.42),
+            transparent 34%),
+        linear-gradient(135deg, #071b3a, #123b71);
+    box-shadow: 0 20px 50px rgba(15,23,42,.16);
+}
+
+.rd-eyebrow {
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .82;
+}
+
+.rd-title {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 38px;
+    line-height: 1.15;
+    font-weight: 900;
+}
+
+.rd-intro {
+    max-width: 780px;
+    margin: 0;
+    color: rgba(255,255,255,.88);
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.rd-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 14px;
+    margin-top: 25px;
+}
+
+.rd-stat {
+    padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 16px;
+    background: rgba(255,255,255,.10);
+    backdrop-filter: blur(8px);
+}
+
+.rd-stat-number {
+    display: block;
+    color: #fff;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.rd-stat-label {
+    color: rgba(255,255,255,.82);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.rd-search-panel {
+    position: relative;
+    z-index: 2;
+    margin: -18px 24px 28px;
+    padding: 22px;
+    border: 1px solid var(--rd-border);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 14px 36px rgba(15,23,42,.10);
+}
+
+.rd-search-label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--rd-navy);
+    font-weight: 900;
+}
+
+.rd-search-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 10px;
+}
+
+.rd-search-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px 17px;
+    border: 1px solid #b9c7da;
+    border-radius: 13px;
+    color: #172033;
+    background: #fff;
+    font-size: 15px;
+}
+
+.rd-search-input:focus {
+    border-color: var(--rd-blue);
+    outline: 3px solid rgba(21,94,239,.13);
+}
+
+.rd-select {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 38px 10px 14px;
+    border: 1px solid #b9c7da;
+    border-radius: 13px;
+    color: #172033;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.rd-select:focus {
+    border-color: var(--rd-blue);
+    outline: 3px solid rgba(21,94,239,.13);
+}
+
+.rd-search-fields {
+    display: grid;
+    grid-template-columns:
+        minmax(260px, 1fr)
+        minmax(180px, .42fr)
+        minmax(180px, .42fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rd-search-button {
+    min-height: 48px;
+    padding: 11px 24px;
+    border: 0;
+    border-radius: 13px;
+    color: #fff;
+    background: var(--rd-navy);
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.rd-search-help {
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.rd-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 17px;
+}
+
+.rd-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: 1px solid var(--rd-border);
+    border-radius: 999px;
+    color: #334155 !important;
+    background: #fff;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.rd-filter:hover,
+.rd-filter.active {
+    border-color: var(--rd-navy);
+    color: #fff !important;
+    background: var(--rd-navy);
+}
+
+.rd-result-summary {
+    margin: 0 0 22px;
+    padding: 12px 16px;
+    border: 1px solid #bfdbfe;
+    border-radius: 13px;
+    color: #1e3a8a;
+    background: #eff6ff;
+    font-weight: 700;
+}
+
+.rd-section {
+    margin: 30px 0;
+    border: 1px solid var(--rd-border);
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 11px 30px rgba(15,23,42,.07);
+    overflow: hidden;
+}
+
+.rd-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 23px 25px;
+    border-bottom: 1px solid var(--rd-border);
+}
+
+.rd-section-current .rd-section-header {
+    background:
+        linear-gradient(90deg, var(--rd-green-soft), #fff);
+}
+
+.rd-section-former .rd-section-header {
+    background:
+        linear-gradient(90deg, var(--rd-grey-soft), #fff);
+}
+
+.rd-section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.rd-section-icon {
+    display: flex;
+    flex: 0 0 43px;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.rd-section-current .rd-section-icon {
+    color: var(--rd-green);
+    background: #dcfce7;
+}
+
+.rd-section-former .rd-section-icon {
+    color: var(--rd-grey);
+    background: #e2e8f0;
+}
+
+.rd-section-title {
+    margin: 0 0 5px;
+    color: var(--rd-navy);
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.rd-section-description {
+    max-width: 720px;
+    margin: 0;
+    color: #64748b;
+    line-height: 1.55;
+}
+
+.rd-section-count {
+    flex: 0 0 auto;
+    padding: 7px 12px;
+    border-radius: 999px;
+    color: #334155;
+    background: #fff;
+    border: 1px solid var(--rd-border);
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.rd-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 17px;
+    padding: 23px;
+}
+
+.rd-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--rd-border);
+    border-radius: 17px;
+    background: #fff;
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.rd-card:hover {
+    transform: translateY(-2px);
+    border-color: #b6c5da;
+    box-shadow: 0 12px 26px rgba(15,23,42,.09);
+}
+
+.rd-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 13px;
+}
+
+.rd-avatar {
+    display: flex;
+    flex: 0 0 54px;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    color: #fff;
+    background: var(--rd-navy);
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.rd-identity {
+    flex: 1;
+    min-width: 0;
+}
+
+.rd-name {
+    margin: 0 0 4px;
+    color: var(--rd-navy);
+    font-size: 20px;
+    line-height: 1.3;
+    font-weight: 900;
+}
+
+.rd-designation {
+    margin: 0;
+    color: #475569;
+    font-weight: 700;
+}
+
+.rd-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.rd-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.rd-badge-verified {
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+    background: #dbeafe;
+}
+
+.rd-badge-current {
+    color: #166534;
+    border: 1px solid var(--rd-green-border);
+    background: #dcfce7;
+}
+
+.rd-badge-former {
+    color: #334155;
+    border: 1px solid var(--rd-grey-border);
+    background: #e2e8f0;
+}
+
+.rd-institution {
+    margin-top: 14px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    color: #334155;
+    background: var(--rd-soft);
+    line-height: 1.5;
+}
+
+.rd-identifier-list {
+    display: grid;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.rd-identifier {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    color: #334155;
+    font-size: 13px;
+}
+
+.rd-id-label {
+    flex: 0 0 112px;
+    color: #64748b;
+    font-weight: 800;
+}
+
+.rd-id-value {
+    overflow-wrap: anywhere;
+    font-weight: 700;
+}
+
+.rd-former-note {
+    margin-top: 14px;
+    padding: 11px 13px;
+    border: 1px solid #d7dee8;
+    border-radius: 12px;
+    color: #475569;
+    background: #f8fafc;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.rd-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 11px;
+    margin-top: auto;
+    padding-top: 17px;
+}
+
+.rd-profile-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 16px;
+    border-radius: 11px;
+    color: #fff !important;
+    background: var(--rd-navy);
+    text-decoration: none !important;
+    font-weight: 900;
+}
+
+.rd-profile-button:hover {
+    color: #fff !important;
+    background: #123b71;
+}
+
+.rd-sync-note {
+    color: #64748b;
+    font-size: 12px;
+    text-align: right;
+}
+
+.rd-empty {
+    margin: 22px;
+    padding: 20px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 15px;
+    color: #64748b;
+    background: #f8fafc;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.rd-global-empty {
+    padding: 30px;
+    border: 1px solid #fde68a;
+    border-radius: 17px;
+    color: #854d0e;
+    background: #fffbeb;
+    text-align: center;
+    line-height: 1.65;
+}
+
+
+.rd-photo-wrap {
+    position: relative;
+    flex: 0 0 72px;
+    width: 72px;
+    height: 72px;
+}
+
+.rd-photo-wrap .rd-avatar {
+    position: absolute;
+    inset: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    font-size: 25px;
+}
+
+.rd-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    width: 72px;
+    height: 72px;
+    border: 3px solid #fff;
+    border-radius: 18px;
+    object-fit: cover;
+    object-position: center;
+    background: #e2e8f0;
+    box-shadow: 0 5px 16px rgba(15,23,42,.14);
+}
+
+.rd-institution {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rd-institution-label {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.rd-former-note {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rd-former-note strong {
+    color: #334155;
+}
+
+.rd-card {
+    min-height: 280px;
+}
+
+.rd-actions {
+    justify-content: flex-start;
+}
+
+@media (max-width: 900px) {
+    .rd-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .rd-page {
+        padding: 0 10px;
+        margin-top: 14px;
+    }
+
+    .rd-hero {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .rd-title {
+        font-size: 29px;
+    }
+
+    .rd-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-search-panel {
+        margin: 14px 0 23px;
+        padding: 17px;
+    }
+
+    .rd-search-row,
+    .rd-search-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-section-header {
+        flex-direction: column;
+        padding: 19px;
+    }
+
+    .rd-list {
+        padding: 15px;
+    }
+
+    .rd-card-top {
+        flex-wrap: wrap;
+    }
+
+    .rd-badges {
+        justify-content: flex-start;
+    }
+
+    .rd-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .rd-sync-note {
+        text-align: left;
+    }
+}
+
+/* BEGIN RESEARCHER DIRECTORY V5 FINAL UI */
+
+.rd-search-fields {
+    grid-template-columns:
+        minmax(250px, 1.5fr)
+        repeat(2, minmax(165px, .72fr));
+}
+
+.rd-search-fields-secondary {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rd-search-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.rd-clear-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 10px 19px;
+    border: 1px solid #b9c7da;
+    border-radius: 13px;
+    color: #334155 !important;
+    background: #fff;
+    text-decoration: none !important;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.rd-clear-button:hover {
+    border-color: var(--rd-navy);
+    color: var(--rd-navy) !important;
+    background: #f8fafc;
+}
+
+.rd-coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.rd-coverage-card {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 14px;
+    background: rgba(255,255,255,.08);
+}
+
+.rd-coverage-icon {
+    display: flex;
+    flex: 0 0 37px;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border-radius: 11px;
+    color: #fff;
+    background: rgba(255,255,255,.16);
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.rd-coverage-number {
+    display: block;
+    color: #fff;
+    font-size: 19px;
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.rd-coverage-label {
+    display: block;
+    margin-top: 3px;
+    color: rgba(255,255,255,.78);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.rd-id-link {
+    color: #164eaa !important;
+    text-decoration: none !important;
+    font-weight: 800;
+}
+
+.rd-id-link:hover {
+    color: #08234a !important;
+    text-decoration: underline !important;
+}
+
+.rd-id-external {
+    margin-left: 3px;
+    font-size: 11px;
+    opacity: .7;
+}
+
+.rd-filter-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.rd-filter-summary a {
+    flex: 0 0 auto;
+    color: #1e3a8a !important;
+    font-weight: 900;
+}
+
+.rd-field-label {
+    display: block;
+    margin: 0 0 5px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+.rd-field-group {
+    min-width: 0;
+}
+
+@media (max-width: 1050px) {
+    .rd-search-fields,
+    .rd-search-fields-secondary {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    .rd-search-fields .rd-field-group:first-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .rd-search-fields,
+    .rd-search-fields-secondary,
+    .rd-coverage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-search-fields .rd-field-group:first-child {
+        grid-column: auto;
+    }
+
+    .rd-search-actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .rd-clear-button,
+    .rd-search-button {
+        width: 100%;
+    }
+
+    .rd-filter-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* END RESEARCHER DIRECTORY V5 FINAL UI */
+
+
+/* =====================================================
+   BEGIN RESEARCHER DIRECTORY V6 PREMIUM DISCOVERY
+   ===================================================== */
+
+body#opac-researcher-search .main > .container-fluid {
+    width: 100%;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.rd-page {
+    width: 100%;
+    max-width: none !important;
+    margin: 0 auto 60px !important;
+    padding:
+        28px
+        clamp(16px, 2.4vw, 42px)
+        50px !important;
+}
+
+.rd-hero {
+    min-height: 330px;
+    padding:
+        clamp(30px, 4vw, 60px)
+        clamp(26px, 4.5vw, 68px);
+    border-radius: 0 0 30px 30px;
+    background:
+        radial-gradient(
+            circle at 88% 12%,
+            rgba(96,165,250,.34),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 68% 96%,
+            rgba(14,165,233,.18),
+            transparent 30%
+        ),
+        linear-gradient(
+            128deg,
+            #06172f 0%,
+            #082c59 46%,
+            #124f88 100%
+        );
+}
+
+.rd-title {
+    max-width: 960px;
+    font-size: clamp(34px, 4vw, 58px);
+    letter-spacing: -.025em;
+}
+
+.rd-intro {
+    max-width: 920px;
+    font-size: clamp(15px, 1.25vw, 18px);
+}
+
+.rd-expert-law {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 880px;
+    margin-top: 24px;
+    padding: 15px 18px;
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 16px;
+    background: rgba(255,255,255,.09);
+    backdrop-filter: blur(10px);
+}
+
+.rd-expert-law-icon {
+    display: flex;
+    flex: 0 0 44px;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: rgba(255,255,255,.14);
+    font-size: 22px;
+}
+
+.rd-expert-law strong {
+    display: block;
+    color: #fff;
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+.rd-expert-law span {
+    display: block;
+    margin-top: 3px;
+    color: rgba(255,255,255,.78);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.rd-stat-grid {
+    grid-template-columns:
+        repeat(4, minmax(150px, 1fr));
+    max-width: 1150px;
+}
+
+.rd-search-panel {
+    max-width: 1640px;
+    margin:
+        -24px auto 30px !important;
+    padding:
+        clamp(18px, 2vw, 28px);
+}
+
+.rd-section,
+.rd-result-summary,
+.rd-global-empty {
+    max-width: 1640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.rd-list {
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(315px, 1fr)
+        );
+    gap: 20px;
+    padding: 24px;
+}
+
+.rd-card {
+    min-height: 100%;
+    padding: 22px;
+    border-radius: 20px;
+    box-shadow:
+        0 3px 12px rgba(15,23,42,.035);
+}
+
+.rd-card:hover {
+    transform: translateY(-4px);
+    border-color: #9fb6d3;
+    box-shadow:
+        0 18px 42px rgba(15,23,42,.11);
+}
+
+.rd-research-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.rd-metric-item {
+    min-width: 112px;
+    padding: 9px 12px;
+    border: 1px solid #dbe6f2;
+    border-radius: 12px;
+    background:
+        linear-gradient(
+            135deg,
+            #f8fbff,
+            #f1f6fc
+        );
+}
+
+.rd-metric-item strong {
+    display: block;
+    color: #08234a;
+    font-size: 17px;
+    line-height: 1.1;
+}
+
+.rd-metric-item span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+.rd-expertise {
+    margin-top: 16px;
+}
+
+.rd-expertise-title {
+    display: block;
+    margin-bottom: 8px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+}
+
+.rd-expertise-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.rd-expertise-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 27px;
+    padding: 5px 9px;
+    border: 1px solid #cfe0f3;
+    border-radius: 999px;
+    color: #164e83;
+    background: #f0f7ff;
+    font-size: 11px;
+    font-weight: 750;
+    line-height: 1.25;
+}
+
+.rd-live-status {
+    margin-top: 15px;
+    padding-top: 13px;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.rd-live-status strong {
+    color: #08234a;
+    font-size: 15px;
+}
+
+.rd-card.rd-live-hidden {
+    display: none !important;
+}
+
+.rd-section.rd-live-empty .rd-list::after {
+    content:
+        "No researcher on this page matches your live search.";
+    grid-column: 1 / -1;
+    padding: 24px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    color: #64748b;
+    background: #f8fafc;
+    text-align: center;
+}
+
+@media (min-width: 1550px) {
+    .rd-list {
+        grid-template-columns:
+            repeat(4, minmax(0,1fr));
+    }
+}
+
+@media (min-width: 1120px) and (max-width: 1549px) {
+    .rd-list {
+        grid-template-columns:
+            repeat(3, minmax(0,1fr));
+    }
+}
+
+@media (min-width: 760px) and (max-width: 1119px) {
+    .rd-list {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+    .rd-stat-grid {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+}
+
+@media (max-width: 759px) {
+    .rd-page {
+        padding:
+            14px 10px 35px !important;
+    }
+
+    .rd-hero {
+        padding: 28px 20px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .rd-stat-grid {
+        grid-template-columns:
+            repeat(2, minmax(0,1fr));
+    }
+
+    .rd-list {
+        grid-template-columns: 1fr;
+        padding: 14px;
+    }
+
+    .rd-expert-law {
+        align-items: flex-start;
+    }
+}
+
+/* =====================================================
+   END RESEARCHER DIRECTORY V6 PREMIUM DISCOVERY
+   ===================================================== */
+
+
+
+/* =====================================================
+   BEGIN RESEARCHER DIRECTORY V6.1 POLISH
+   ===================================================== */
+
+
+/* -----------------------------------------------------
+   PAGE WIDTH
+   ----------------------------------------------------- */
+
+.rd-page {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.rd-section,
+.rd-search-panel,
+.rd-result-summary,
+.rd-global-empty {
+    width: 100%;
+    max-width: 1680px;
+}
+
+
+/* -----------------------------------------------------
+   HERO - slightly more compact
+   ----------------------------------------------------- */
+
+.rd-hero {
+    min-height: auto !important;
+}
+
+.rd-stat-grid {
+    gap: 12px !important;
+}
+
+.rd-stat {
+    min-height: 105px;
+}
+
+
+/* -----------------------------------------------------
+   SEARCH FIELD
+   ----------------------------------------------------- */
+
+.rd-search-input {
+    min-width: 0;
+    font-size: 15px !important;
+}
+
+.rd-search-input::placeholder {
+    font-size: 14px !important;
+    font-style: normal !important;
+    opacity: .72;
+}
+
+
+/* -----------------------------------------------------
+   RESEARCHER GRID
+   Important:
+   cards keep their natural height instead of stretching
+   to tallest researcher card in the row.
+   ----------------------------------------------------- */
+
+.rd-list {
+    align-items: start !important;
+    grid-auto-rows: auto !important;
+}
+
+
+/* 4 researchers = 4 cards on normal desktop */
+@media (min-width: 1280px) {
+
+    .rd-list {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr))
+            !important;
+    }
+
+}
+
+
+/* Medium laptop = 3 */
+@media (min-width: 980px) and (max-width: 1279px) {
+
+    .rd-list {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr))
+            !important;
+    }
+
+}
+
+
+/* Tablet = 2 */
+@media (min-width: 700px) and (max-width: 979px) {
+
+    .rd-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr))
+            !important;
+    }
+
+}
+
+
+/* Mobile = 1 */
+@media (max-width: 699px) {
+
+    .rd-list {
+        grid-template-columns:
+            1fr !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   CARD
+   ----------------------------------------------------- */
+
+.rd-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 0 !important;
+    height: auto !important;
+
+    padding: 20px !important;
+
+    border-radius: 18px !important;
+
+    align-self: start !important;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.rd-card:hover {
+    transform: translateY(-3px);
+}
+
+
+/* -----------------------------------------------------
+   CARD HEADER
+
+   Old layout allowed badge/name collision.
+   New structure creates a clean identity block and then
+   puts badges on their own row.
+   ----------------------------------------------------- */
+
+.rd-card-top {
+    display: grid !important;
+
+    grid-template-columns:
+        78px
+        minmax(0, 1fr)
+        !important;
+
+    align-items: start !important;
+
+    column-gap: 15px !important;
+    row-gap: 10px !important;
+
+    width: 100%;
+}
+
+
+/* avatar / image */
+
+.rd-photo-wrap {
+    grid-column: 1;
+    grid-row: 1;
+
+    width: 78px !important;
+    height: 78px !important;
+
+    flex-basis: 78px !important;
+}
+
+.rd-photo-wrap .rd-avatar,
+.rd-photo {
+    width: 78px !important;
+    height: 78px !important;
+
+    border-radius: 18px !important;
+}
+
+
+/* name/designation */
+
+.rd-identity {
+    grid-column: 2;
+    grid-row: 1;
+
+    min-width: 0 !important;
+
+    padding-right: 0 !important;
+}
+
+.rd-name {
+    max-width: 100% !important;
+
+    margin:
+        2px
+        0
+        6px
+        !important;
+
+    font-size:
+        clamp(21px, 1.45vw, 27px)
+        !important;
+
+    line-height: 1.13 !important;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.rd-designation {
+    margin: 0 !important;
+
+    font-size: 16px !important;
+    line-height: 1.38 !important;
+}
+
+
+/* badges now get their own row */
+
+.rd-badges {
+    grid-column: 1 / -1 !important;
+    grid-row: 2;
+
+    display: flex !important;
+    flex-wrap: wrap !important;
+
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 7px !important;
+
+    width: 100% !important;
+
+    margin: 1px 0 0 !important;
+
+    position: static !important;
+}
+
+.rd-badge {
+    white-space: nowrap;
+}
+
+
+/* -----------------------------------------------------
+   DEPARTMENT BLOCK
+   ----------------------------------------------------- */
+
+.rd-institution {
+    margin-top: 14px !important;
+
+    padding: 13px 14px !important;
+
+    border-radius: 13px !important;
+
+    background: #f5f8fc;
+}
+
+
+/* -----------------------------------------------------
+   METRICS
+   ----------------------------------------------------- */
+
+.rd-research-metrics {
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(112px, 1fr)
+        );
+
+    gap: 8px !important;
+
+    width: 100%;
+}
+
+.rd-metric-item {
+    min-width: 0 !important;
+}
+
+
+/* -----------------------------------------------------
+   EXPERTISE
+   ----------------------------------------------------- */
+
+.rd-expertise {
+    margin-top: 16px !important;
+}
+
+.rd-expertise-tags {
+    gap: 6px !important;
+}
+
+.rd-expertise-tag {
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+
+    font-size: 10.5px !important;
+
+    padding:
+        5px
+        8px
+        !important;
+}
+
+
+/* -----------------------------------------------------
+   IDENTIFIERS
+
+   Prevent long ORCID / Scopus / WoS IDs from pushing
+   the card width.
+   ----------------------------------------------------- */
+
+.rd-identifier {
+    min-width: 0;
+}
+
+.rd-id-value {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+.rd-id-link {
+    overflow-wrap: anywhere;
+}
+
+
+/* -----------------------------------------------------
+   ACTION BUTTON
+   ----------------------------------------------------- */
+
+.rd-actions {
+    margin-top: 17px !important;
+}
+
+.rd-profile-button {
+    min-height: 42px;
+
+    padding:
+        9px
+        15px
+        !important;
+
+    border-radius: 11px !important;
+
+    font-size: 14px;
+}
+
+
+/* -----------------------------------------------------
+   SECTION HEADERS
+   ----------------------------------------------------- */
+
+.rd-section-header {
+    padding:
+        22px
+        26px
+        !important;
+}
+
+.rd-section-title {
+    font-size:
+        clamp(24px, 2vw, 31px)
+        !important;
+}
+
+
+/* -----------------------------------------------------
+   FORMER SECTION
+
+   Prevent one former profile from visually creating a
+   giant empty panel.
+   ----------------------------------------------------- */
+
+.rd-section-former .rd-list {
+    align-items: start !important;
+}
+
+.rd-section-former .rd-card {
+    min-height: 0 !important;
+}
+
+
+/* Former profile cards should not occupy whole row width */
+
+@media (min-width: 1280px) {
+
+    .rd-section-former .rd-list {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr))
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   SMALL SCREEN
+   ----------------------------------------------------- */
+
+@media (max-width: 699px) {
+
+    .rd-card {
+        padding: 17px !important;
+    }
+
+    .rd-card-top {
+        grid-template-columns:
+            66px
+            minmax(0, 1fr)
+            !important;
+    }
+
+    .rd-photo-wrap,
+    .rd-photo-wrap .rd-avatar,
+    .rd-photo {
+        width: 66px !important;
+        height: 66px !important;
+    }
+
+    .rd-name {
+        font-size: 21px !important;
+    }
+
+    .rd-stat {
+        min-height: 90px;
+    }
+
+}
+
+
+/* =====================================================
+   END RESEARCHER DIRECTORY V6.1 POLISH
+   ===================================================== */
+
+
+
+
+/* =====================================================
+   BEGIN RESEARCHER DIRECTORY V6.2 FULLWIDTH
+   ===================================================== */
+
+
+/* -----------------------------------------------------
+   BREAK OUT OF KOHA CONTENT CONTAINER
+
+   This lets only Researcher Directory use the full
+   browser viewport without changing other OPAC pages.
+   ----------------------------------------------------- */
+
+.rd-page {
+
+    position: relative;
+
+    width: 100vw !important;
+    max-width: none !important;
+
+    margin-top: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: 55px !important;
+
+    /*
+       Break safely out of Koha's centered parent
+       container.
+    */
+    margin-left:
+        calc(50% - 50vw)
+        !important;
+
+    padding:
+        26px
+        clamp(18px, 2.2vw, 42px)
+        48px
+        !important;
+
+    box-sizing: border-box;
+}
+
+
+/* -----------------------------------------------------
+   REMOVE NARROW CHILD MAX-WIDTHS
+   ----------------------------------------------------- */
+
+.rd-hero,
+.rd-search-panel,
+.rd-section,
+.rd-result-summary,
+.rd-global-empty {
+
+    width: 100% !important;
+    max-width: none !important;
+
+    box-sizing: border-box;
+}
+
+
+/* -----------------------------------------------------
+   HERO
+   Similar spacing philosophy to OPAC landing page.
+   ----------------------------------------------------- */
+
+.rd-hero {
+
+    margin: 0 !important;
+
+    padding:
+        clamp(34px, 4vw, 60px)
+        clamp(30px, 4vw, 64px)
+        !important;
+
+    border-radius: 22px 22px 0 0 !important;
+}
+
+
+/* Keep heading readable on large screens */
+
+.rd-title {
+    max-width: none !important;
+}
+
+.rd-intro {
+    max-width: 1180px !important;
+}
+
+.rd-expert-law {
+    max-width: 1200px !important;
+}
+
+
+/* -----------------------------------------------------
+   KPI AREA
+   ----------------------------------------------------- */
+
+.rd-stat-grid {
+
+    width: 100% !important;
+    max-width: none !important;
+
+    grid-template-columns:
+        repeat(4, minmax(0,1fr))
+        !important;
+}
+
+.rd-coverage-grid {
+
+    width: 100% !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0,1fr))
+        !important;
+}
+
+
+/* -----------------------------------------------------
+   SEARCH PANEL
+   ----------------------------------------------------- */
+
+.rd-search-panel {
+
+    margin:
+        -1px
+        0
+        32px
+        !important;
+
+    padding:
+        30px
+        clamp(24px, 3vw, 42px)
+        !important;
+
+    border-radius:
+        0 0 22px 22px
+        !important;
+}
+
+
+/* Search rows use available screen width */
+
+.rd-search-fields {
+
+    grid-template-columns:
+        minmax(360px, 2fr)
+        minmax(220px, .8fr)
+        minmax(220px, .8fr)
+        !important;
+
+    gap: 15px !important;
+}
+
+.rd-search-fields-secondary {
+
+    grid-template-columns:
+        repeat(3, minmax(220px,1fr))
+        !important;
+
+    gap: 15px !important;
+}
+
+
+/* -----------------------------------------------------
+   RESEARCHER SECTIONS
+   ----------------------------------------------------- */
+
+.rd-section {
+
+    margin:
+        30px 0
+        !important;
+
+    border-radius: 22px !important;
+
+    overflow: hidden;
+}
+
+
+/* -----------------------------------------------------
+   CARDS
+
+   Use 3 readable columns on desktop instead of squeezing
+   researcher names and scholarly identifiers.
+   ----------------------------------------------------- */
+
+.rd-list {
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(3, minmax(0,1fr))
+        !important;
+
+    gap: 22px !important;
+
+    width: 100%;
+
+    padding:
+        26px
+        !important;
+
+    align-items: start !important;
+}
+
+
+/* Cards are allowed to use complete grid-column width */
+
+.rd-card {
+
+    width: 100% !important;
+    max-width: none !important;
+
+    box-sizing: border-box;
+
+    min-width: 0 !important;
+
+    align-self: start !important;
+}
+
+
+/* -----------------------------------------------------
+   NAME HEADER
+   Give researcher identity more horizontal room
+   ----------------------------------------------------- */
+
+.rd-card-top {
+
+    grid-template-columns:
+        82px
+        minmax(0,1fr)
+        !important;
+}
+
+.rd-photo-wrap,
+.rd-photo-wrap .rd-avatar,
+.rd-photo {
+
+    width: 82px !important;
+    height: 82px !important;
+}
+
+.rd-name {
+
+    font-size:
+        clamp(23px, 1.55vw, 30px)
+        !important;
+
+    line-height: 1.12 !important;
+
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+}
+
+
+/* -----------------------------------------------------
+   IDENTIFIERS
+   More room so ORCID/Scopus/WoS do not break every few
+   digits.
+   ----------------------------------------------------- */
+
+.rd-identifier {
+
+    display: grid !important;
+
+    grid-template-columns:
+        110px
+        minmax(0,1fr)
+        !important;
+
+    column-gap: 12px !important;
+
+    align-items: start;
+}
+
+.rd-id-value,
+.rd-id-link {
+
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+}
+
+
+/* -----------------------------------------------------
+   FORMER RESEARCHER SECTION
+   Do not let one former profile create a giant grid.
+   ----------------------------------------------------- */
+
+.rd-section-former .rd-list {
+
+    grid-template-columns:
+        repeat(3, minmax(0,1fr))
+        !important;
+
+    align-items: start !important;
+}
+
+.rd-section-former .rd-card {
+
+    align-self: start !important;
+}
+
+
+/* -----------------------------------------------------
+   LARGE MONITORS
+   ----------------------------------------------------- */
+
+@media (min-width: 1750px) {
+
+    .rd-page {
+        padding-left: 52px !important;
+        padding-right: 52px !important;
+    }
+
+    .rd-list {
+        gap: 26px !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   LAPTOP
+   ----------------------------------------------------- */
+
+@media (min-width: 1050px) and (max-width: 1399px) {
+
+    .rd-list {
+
+        grid-template-columns:
+            repeat(3, minmax(0,1fr))
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   TABLET
+   ----------------------------------------------------- */
+
+@media (min-width: 720px) and (max-width: 1049px) {
+
+    .rd-stat-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0,1fr))
+            !important;
+    }
+
+    .rd-search-fields,
+    .rd-search-fields-secondary {
+
+        grid-template-columns:
+            repeat(2, minmax(0,1fr))
+            !important;
+    }
+
+    .rd-list,
+    .rd-section-former .rd-list {
+
+        grid-template-columns:
+            repeat(2, minmax(0,1fr))
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   MOBILE
+   ----------------------------------------------------- */
+
+@media (max-width: 719px) {
+
+    .rd-page {
+
+        width: 100vw !important;
+
+        padding:
+            12px
+            8px
+            32px
+            !important;
+    }
+
+    .rd-hero {
+
+        padding:
+            28px
+            19px
+            !important;
+
+        border-radius:
+            16px 16px 0 0
+            !important;
+    }
+
+    .rd-search-panel {
+
+        padding:
+            20px
+            15px
+            !important;
+
+        border-radius:
+            0 0 16px 16px
+            !important;
+    }
+
+    .rd-stat-grid,
+    .rd-coverage-grid {
+
+        grid-template-columns:
+            1fr 1fr
+            !important;
+    }
+
+    .rd-search-fields,
+    .rd-search-fields-secondary {
+
+        grid-template-columns:
+            1fr
+            !important;
+    }
+
+    .rd-list,
+    .rd-section-former .rd-list {
+
+        grid-template-columns:
+            1fr
+            !important;
+
+        padding:
+            14px
+            !important;
+    }
+
+    .rd-section {
+
+        border-radius:
+            16px
+            !important;
+    }
+
+}
+
+
+/* =====================================================
+   END RESEARCHER DIRECTORY V6.2 FULLWIDTH
+   ===================================================== */
+
+
+
+
+/* =====================================================
+   BEGIN EXPERT DISCOVERY V1
+   ===================================================== */
+
+.red-expert-search {
+
+    margin-top: 20px;
+
+    padding:
+        24px
+        26px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.22);
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,255,255,.11);
+
+    backdrop-filter:
+        blur(12px);
+
+    color: #fff;
+}
+
+
+.red-label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+    color:
+        rgba(255,255,255,.76);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: .08em;
+}
+
+
+.red-expert-search h2 {
+
+    margin:
+        0 0 6px;
+
+    color: #fff;
+
+    font-size:
+        clamp(
+            23px,
+            2vw,
+            31px
+        );
+
+    font-weight: 850;
+}
+
+
+.red-help {
+
+    max-width: 1050px;
+
+    margin:
+        0 0 16px;
+
+    color:
+        rgba(255,255,255,.78);
+
+    font-size: 14px;
+
+    line-height: 1.55;
+}
+
+
+.red-form {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        auto;
+
+    gap: 10px;
+
+    align-items: stretch;
+}
+
+
+.red-form textarea {
+
+    width: 100%;
+
+    min-height: 70px;
+
+    resize: vertical;
+
+    padding:
+        15px
+        17px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.32);
+
+    border-radius: 13px;
+
+    outline: none;
+
+    background: #fff;
+
+    color: #172033;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+
+    box-sizing: border-box;
+}
+
+
+.red-form textarea:focus {
+
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(147,197,253,.18);
+}
+
+
+.red-form button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    min-width: 215px;
+
+    padding:
+        0
+        20px;
+
+    border: 0;
+
+    border-radius: 13px;
+
+    background: #fff;
+
+    color: #08234a;
+
+    font-size: 14px;
+
+    font-weight: 850;
+
+    cursor: pointer;
+}
+
+
+.red-form button:hover {
+
+    background: #eff6ff;
+}
+
+
+.red-examples {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    align-items: center;
+
+    margin-top: 12px;
+
+    color:
+        rgba(255,255,255,.67);
+
+    font-size: 11px;
+}
+
+
+.red-examples button {
+
+    padding:
+        5px
+        9px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.24);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    color: #fff;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+
+.red-examples button:hover {
+
+    background:
+        rgba(255,255,255,.18);
+}
+
+
+/* RESULTS */
+
+.red-results {
+
+    width: 100%;
+
+    margin:
+        28px 0;
+
+    padding:
+        clamp(
+            22px,
+            3vw,
+            38px
+        );
+
+    border:
+        1px solid
+        #cbd9e8;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8fbff,
+            #ffffff
+        );
+
+    box-shadow:
+        0 16px 46px
+        rgba(15,23,42,.07);
+
+    box-sizing: border-box;
+}
+
+
+.red-results-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    gap: 20px;
+
+    align-items:
+        flex-start;
+
+    margin-bottom: 22px;
+}
+
+
+.red-results-eyebrow {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #0f5b9f;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: .08em;
+}
+
+
+.red-results-header h2 {
+
+    margin:
+        0 0 8px;
+
+    color: #08234a;
+
+    font-size:
+        clamp(
+            25px,
+            2.3vw,
+            34px
+        );
+
+    font-weight: 900;
+}
+
+
+.red-question-display {
+
+    margin: 0;
+
+    max-width: 1000px;
+
+    color: #475569;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+
+.red-result-count {
+
+    flex: 0 0 auto;
+
+    padding:
+        8px
+        12px;
+
+    border-radius: 999px;
+
+    background: #eaf3ff;
+
+    color: #0d4f91;
+
+    font-size: 12px;
+
+    font-weight: 850;
+}
+
+
+.red-result-list {
+
+    display: grid;
+
+    gap: 13px;
+}
+
+
+.red-result-card {
+
+    display: grid;
+
+    grid-template-columns:
+        48px
+        minmax(0,1fr);
+
+    gap: 15px;
+
+    padding: 18px;
+
+    border:
+        1px solid
+        #dbe5f0;
+
+    border-radius: 17px;
+
+    background: #fff;
+
+    box-shadow:
+        0 4px 14px
+        rgba(15,23,42,.035);
+}
+
+
+.red-rank {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: #082b59;
+
+    color: #fff;
+
+    font-size: 16px;
+
+    font-weight: 900;
+}
+
+
+.red-result-heading {
+
+    display: flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+}
+
+
+.red-result-heading h3 {
+
+    margin:
+        0 0 4px;
+
+    color: #08234a;
+
+    font-size: 21px;
+
+    font-weight: 900;
+}
+
+
+.red-designation {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.red-score {
+
+    min-width: 96px;
+
+    padding:
+        7px
+        10px;
+
+    border-radius: 12px;
+
+    background: #ecfdf3;
+
+    text-align: center;
+}
+
+
+.red-score strong {
+
+    display: block;
+
+    color: #08783e;
+
+    font-size: 21px;
+
+    line-height: 1.1;
+}
+
+
+.red-score span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: #33865a;
+
+    font-size: 9px;
+
+    font-weight: 850;
+
+    letter-spacing: .03em;
+
+    text-transform: uppercase;
+}
+
+
+.red-match-chips {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 11px;
+}
+
+
+.red-match-chip {
+
+    padding:
+        5px
+        9px;
+
+    border:
+        1px solid
+        #c7dcf2;
+
+    border-radius: 999px;
+
+    background: #f0f7ff;
+
+    color: #07559e;
+
+    font-size: 10.5px;
+
+    font-weight: 750;
+}
+
+
+.red-evidence-row {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 12px;
+}
+
+
+.red-evidence-row > span {
+
+    padding:
+        5px
+        8px;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 10px;
+
+    font-weight: 750;
+}
+
+
+.red-evidence-row .red-current {
+
+    background: #ecfdf3;
+
+    color: #08783e;
+}
+
+
+.red-why {
+
+    margin-top: 13px;
+
+    padding:
+        11px
+        13px;
+
+    border-left:
+        3px solid
+        #2d70b3;
+
+    border-radius:
+        0 10px 10px 0;
+
+    background: #f8fafc;
+
+    color: #475569;
+
+    font-size: 11px;
+}
+
+
+.red-why strong {
+
+    color: #08234a;
+}
+
+
+.red-why ul {
+
+    margin:
+        5px 0 0
+        17px;
+
+    padding: 0;
+}
+
+
+.red-why li {
+
+    margin: 2px 0;
+}
+
+
+.red-profile-link {
+
+    display: inline-flex;
+
+    margin-top: 12px;
+
+    padding:
+        8px
+        12px;
+
+    border-radius: 9px;
+
+    background: #082b59;
+
+    color: #fff !important;
+
+    font-size: 11px;
+
+    font-weight: 850;
+
+    text-decoration: none !important;
+}
+
+
+.red-method-note {
+
+    margin-top: 16px;
+
+    padding-top: 13px;
+
+    border-top:
+        1px solid
+        #e2e8f0;
+
+    color: #64748b;
+
+    font-size: 10.5px;
+
+    line-height: 1.5;
+}
+
+
+/* TABLET / MOBILE */
+
+@media (max-width: 850px) {
+
+    .red-form {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .red-form button {
+
+        min-height: 48px;
+    }
+
+}
+
+
+@media (max-width: 620px) {
+
+    .red-expert-search {
+
+        padding:
+            18px
+            15px;
+    }
+
+    .red-results-header {
+
+        display: block;
+    }
+
+    .red-result-count {
+
+        display: inline-block;
+
+        margin-top: 10px;
+    }
+
+    .red-result-card {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .red-result-heading {
+
+        display: block;
+    }
+
+    .red-score {
+
+        width: 94px;
+
+        margin-top: 9px;
+    }
+
+}
+
+
+/* =====================================================
+   END EXPERT DISCOVERY V1
+   ===================================================== */
+
+
+
+
+/* =====================================================
+   BEGIN RESEARCHER DIRECTORY V6.3
+   FINAL FULL-WIDTH LAYOUT CORRECTIONS
+   ===================================================== */
+
+
+/* -----------------------------------------------------
+   1. REMOVE HORIZONTAL SCROLLBAR
+   -----------------------------------------------------
+
+   The researcher template exists only on this page,
+   therefore this body rule affects only this OPAC page.
+
+   100vw includes browser scrollbar width on some
+   browsers. Prevent that small overflow from creating
+   the bottom horizontal scrollbar.
+   ----------------------------------------------------- */
+
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+
+
+/* -----------------------------------------------------
+   2. TRUE SCREEN-WIDTH DIRECTORY
+   ----------------------------------------------------- */
+
+.rd-page {
+
+    position: relative;
+
+    width: 100vw !important;
+    max-width: 100vw !important;
+
+    margin-left:
+        calc(50% - 50vw)
+        !important;
+
+    margin-right:
+        calc(50% - 50vw)
+        !important;
+
+    margin-bottom: 35px !important;
+
+    padding:
+        22px
+        30px
+        38px
+        !important;
+
+    box-sizing: border-box;
+
+    overflow-x: clip;
+}
+
+
+/* Main modules consume complete directory width */
+
+.rd-hero,
+.rd-search-panel,
+.rd-section,
+.rd-result-summary,
+.rd-global-empty,
+.red-results {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    box-sizing: border-box;
+}
+
+
+/* -----------------------------------------------------
+   3. HERO
+   Keep the current successful visual design.
+   ----------------------------------------------------- */
+
+.rd-hero {
+
+    margin: 0 !important;
+
+    border-radius:
+        22px 22px 0 0
+        !important;
+
+    overflow: hidden;
+}
+
+
+/* Avoid excessively long text lines */
+
+.rd-intro {
+
+    max-width: 1450px !important;
+}
+
+
+.rd-expert-law {
+
+    max-width: none !important;
+}
+
+
+.red-expert-search {
+
+    max-width: none !important;
+}
+
+
+/* -----------------------------------------------------
+   4. SEARCH PANEL
+   Direct continuation of hero.
+   ----------------------------------------------------- */
+
+.rd-search-panel {
+
+    margin:
+        0
+        0
+        28px
+        !important;
+
+    border-radius:
+        0 0 22px 22px
+        !important;
+}
+
+
+/* -----------------------------------------------------
+   5. CURRENT RESEARCHERS
+   4 cards in one row on full desktop.
+   ----------------------------------------------------- */
+
+.rd-section-current .rd-list {
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        )
+        !important;
+
+    gap: 20px !important;
+
+    align-items: start !important;
+
+    grid-auto-rows: auto !important;
+
+    min-height: 0 !important;
+}
+
+
+/* If older template does not use rd-section-current,
+   apply same rule to first non-former researcher section */
+
+.rd-section:not(.rd-section-former) .rd-list {
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        )
+        !important;
+}
+
+
+/* -----------------------------------------------------
+   6. RESEARCHER CARDS
+   Natural heights; no artificial stretching.
+   ----------------------------------------------------- */
+
+.rd-card {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    align-self: start !important;
+
+    box-sizing: border-box;
+}
+
+
+/* Keep card content readable */
+
+.rd-card-top {
+
+    grid-template-columns:
+        78px
+        minmax(0, 1fr)
+        !important;
+
+    gap:
+        12px
+        14px
+        !important;
+}
+
+
+.rd-name {
+
+    font-size:
+        clamp(
+            21px,
+            1.45vw,
+            28px
+        )
+        !important;
+
+    line-height: 1.12 !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
+
+    hyphens: none !important;
+}
+
+
+.rd-designation {
+
+    font-size: 15px !important;
+
+    line-height: 1.4 !important;
+}
+
+
+/* -----------------------------------------------------
+   7. IDENTIFIERS
+   ----------------------------------------------------- */
+
+.rd-identifier {
+
+    display: grid !important;
+
+    grid-template-columns:
+        96px
+        minmax(0, 1fr)
+        !important;
+
+    gap: 8px;
+
+    align-items: start;
+}
+
+
+.rd-id-value,
+.rd-id-link {
+
+    min-width: 0;
+
+    word-break: normal !important;
+
+    overflow-wrap: anywhere !important;
+}
+
+
+/* -----------------------------------------------------
+   8. KEEP PROFILE BUTTON NEAT
+   ----------------------------------------------------- */
+
+.rd-actions {
+
+    margin-top: 18px !important;
+}
+
+
+.rd-profile-button {
+
+    display: inline-flex !important;
+
+    width: auto !important;
+
+    min-width: 150px;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* -----------------------------------------------------
+   9. FORMER RESEARCHER SECTION
+   One historical researcher should not produce
+   a giant empty card/grid area.
+   ----------------------------------------------------- */
+
+.rd-section-former {
+
+    min-height: 0 !important;
+
+    height: auto !important;
+}
+
+
+.rd-section-former .rd-list {
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(
+            360px,
+            520px
+        )
+        !important;
+
+    justify-content: start !important;
+
+    align-items: start !important;
+
+    grid-auto-rows: auto !important;
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    padding:
+        26px
+        !important;
+}
+
+
+.rd-section-former .rd-card {
+
+    width: 100% !important;
+
+    max-width: 520px !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+}
+
+
+/* -----------------------------------------------------
+   10. PREVENT SECTION HEIGHT STRETCH
+   ----------------------------------------------------- */
+
+.rd-section,
+.rd-list {
+
+    height: auto !important;
+
+    min-height: 0 !important;
+}
+
+
+/* -----------------------------------------------------
+   11. EXPERT DISCOVERY
+   Keep it truly full width within hero.
+   ----------------------------------------------------- */
+
+.red-expert-search {
+
+    width: 100% !important;
+
+    box-sizing: border-box;
+}
+
+
+.red-form {
+
+    width: 100%;
+}
+
+
+.red-form textarea {
+
+    min-width: 0;
+}
+
+
+/* -----------------------------------------------------
+   12. LARGE DESKTOP
+   ----------------------------------------------------- */
+
+@media (min-width: 1600px) {
+
+    .rd-page {
+
+        padding-left: 30px !important;
+        padding-right: 30px !important;
+    }
+
+    .rd-section-current .rd-list,
+    .rd-section:not(.rd-section-former) .rd-list {
+
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            )
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   13. LAPTOP
+   ----------------------------------------------------- */
+
+@media (min-width: 1100px) and (max-width: 1599px) {
+
+    .rd-section-current .rd-list,
+    .rd-section:not(.rd-section-former) .rd-list {
+
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            )
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   14. TABLET
+   ----------------------------------------------------- */
+
+@media (min-width: 720px) and (max-width: 1099px) {
+
+    .rd-section-current .rd-list,
+    .rd-section:not(.rd-section-former) .rd-list {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            )
+            !important;
+    }
+
+
+    .rd-section-former .rd-list {
+
+        grid-template-columns:
+            minmax(
+                320px,
+                500px
+            )
+            !important;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   15. MOBILE
+   ----------------------------------------------------- */
+
+@media (max-width: 719px) {
+
+    .rd-page {
+
+        padding:
+            8px
+            8px
+            25px
+            !important;
+    }
+
+
+    .rd-section-current .rd-list,
+    .rd-section:not(.rd-section-former) .rd-list,
+    .rd-section-former .rd-list {
+
+        grid-template-columns:
+            1fr
+            !important;
+    }
+
+
+    .rd-section-former .rd-card {
+
+        max-width: none !important;
+    }
+
+}
+
+
+/* =====================================================
+   END RESEARCHER DIRECTORY V6.3
+   ===================================================== */
+
+
+
+
+/* =====================================================
+   BEGIN RESEARCHER DIRECTORY V6.4
+   COMPACT APP-SHELL / REACT-LIKE UI
+   ===================================================== */
+
+
+/* PAGE BACKGROUND / REMOVE WHITE VISUAL FRAME */
+
+body {
+    background: #f5f7fb !important;
+}
+
+.rd-page {
+    background: transparent !important;
+    padding-top: 14px !important;
+    padding-bottom: 24px !important;
+}
+
+
+/* HERO COMPACT */
+
+.rd-hero {
+    padding:
+        28px
+        38px
+        24px
+        !important;
+
+    border-radius:
+        18px 18px 0 0
+        !important;
+
+    min-height: 0 !important;
+}
+
+.rd-eyebrow {
+    margin-bottom: 8px !important;
+
+    font-size: 11px !important;
+
+    letter-spacing: .08em !important;
+}
+
+.rd-title {
+    margin:
+        0 0 8px
+        !important;
+
+    font-size:
+        clamp(
+            32px,
+            3vw,
+            48px
+        )
+        !important;
+
+    line-height: 1.05 !important;
+
+    letter-spacing: -.025em !important;
+}
+
+.rd-intro {
+    margin:
+        0 0 14px
+        !important;
+
+    max-width: 1100px !important;
+
+    font-size: 14px !important;
+
+    line-height: 1.55 !important;
+}
+
+
+/* PRESENT-TIME LAW COMPACT */
+
+.rd-expert-law {
+    margin-top: 12px !important;
+
+    padding:
+        11px
+        14px
+        !important;
+
+    border-radius: 12px !important;
+}
+
+.rd-expert-law-icon {
+    width: 34px !important;
+    height: 34px !important;
+
+    flex-basis: 34px !important;
+
+    border-radius: 9px !important;
+
+    font-size: 16px !important;
+}
+
+.rd-expert-law strong {
+    font-size: 14px !important;
+}
+
+.rd-expert-law span {
+    font-size: 11px !important;
+}
+
+
+/* EXPERT DISCOVERY COMPACT */
+
+.red-expert-search {
+    margin-top: 14px !important;
+
+    padding:
+        16px
+        18px
+        !important;
+
+    border-radius: 13px !important;
+}
+
+.red-label {
+    margin-bottom: 4px !important;
+
+    font-size: 9px !important;
+}
+
+.red-expert-search h2 {
+    margin:
+        0 0 3px
+        !important;
+
+    font-size:
+        clamp(
+            20px,
+            1.7vw,
+            26px
+        )
+        !important;
+}
+
+.red-help {
+    margin-bottom: 10px !important;
+
+    font-size: 11px !important;
+}
+
+.red-form textarea {
+    min-height: 54px !important;
+
+    padding:
+        11px
+        13px
+        !important;
+
+    font-size: 13px !important;
+
+    border-radius: 10px !important;
+}
+
+.red-form button {
+    min-width: 175px !important;
+
+    padding:
+        0
+        15px
+        !important;
+
+    font-size: 12px !important;
+
+    border-radius: 10px !important;
+}
+
+.red-examples {
+    margin-top: 8px !important;
+
+    font-size: 10px !important;
+}
+
+.red-examples button {
+    padding:
+        4px
+        8px
+        !important;
+
+    font-size: 9px !important;
+}
+
+
+/* KPI BLOCKS COMPACT */
+
+.rd-stat-grid {
+    margin-top: 14px !important;
+
+    gap: 9px !important;
+}
+
+.rd-stat {
+    min-height: 74px !important;
+
+    padding:
+        12px
+        14px
+        !important;
+
+    border-radius: 12px !important;
+}
+
+.rd-stat-number {
+    font-size: 24px !important;
+
+    line-height: 1 !important;
+}
+
+.rd-stat-label {
+    margin-top: 4px !important;
+
+    font-size: 10px !important;
+
+    line-height: 1.25 !important;
+}
+
+
+/* IDENTIFIER COVERAGE COMPACT */
+
+.rd-coverage-grid {
+    margin-top: 9px !important;
+
+    gap: 9px !important;
+}
+
+.rd-coverage-card {
+    min-height: 58px !important;
+
+    padding:
+        10px
+        12px
+        !important;
+
+    border-radius: 11px !important;
+}
+
+.rd-coverage-icon {
+    width: 30px !important;
+    height: 30px !important;
+
+    font-size: 13px !important;
+}
+
+.rd-coverage-count {
+    font-size: 18px !important;
+}
+
+.rd-coverage-label {
+    font-size: 9px !important;
+}
+
+
+/* SEARCH PANEL CLEANER */
+
+.rd-search-panel {
+    padding:
+        20px
+        28px
+        !important;
+
+    margin-bottom: 20px !important;
+
+    background: #ffffff !important;
+
+    border:
+        1px solid
+        #e3e9f1
+        !important;
+
+    box-shadow:
+        0 8px 22px
+        rgba(15,23,42,.04)
+        !important;
+}
+
+.rd-search-panel h2 {
+    font-size: 20px !important;
+}
+
+.rd-field label {
+    font-size: 10px !important;
+}
+
+.rd-field input,
+.rd-field select {
+    min-height: 42px !important;
+
+    padding:
+        9px
+        12px
+        !important;
+
+    font-size: 12px !important;
+
+    border-radius: 10px !important;
+}
+
+.rd-filter-help {
+    font-size: 10px !important;
+}
+
+.rd-apply-button {
+    min-height: 42px !important;
+
+    padding:
+        8px
+        16px
+        !important;
+
+    font-size: 12px !important;
+
+    border-radius: 10px !important;
+}
+
+
+/* FILTER TABS SMALLER */
+
+.rd-status-nav a {
+    padding:
+        7px
+        11px
+        !important;
+
+    font-size: 10px !important;
+}
+
+.rd-live-status {
+    font-size: 10px !important;
+}
+
+
+/* SECTIONS */
+
+.rd-section {
+    margin:
+        20px 0
+        !important;
+
+    border:
+        1px solid
+        #e4eaf2
+        !important;
+
+    box-shadow:
+        0 8px 22px
+        rgba(15,23,42,.035)
+        !important;
+}
+
+.rd-section-header {
+    padding:
+        16px
+        20px
+        !important;
+}
+
+.rd-section-title {
+    font-size: 24px !important;
+}
+
+.rd-section-description {
+    font-size: 11px !important;
+}
+
+
+/* CARDS NORMALIZED */
+
+.rd-list {
+    padding:
+        18px
+        !important;
+
+    gap: 16px !important;
+}
+
+.rd-card {
+    padding:
+        16px
+        !important;
+
+    border-radius: 14px !important;
+
+    box-shadow:
+        0 3px 12px
+        rgba(15,23,42,.03)
+        !important;
+}
+
+.rd-card-top {
+    grid-template-columns:
+        68px
+        minmax(0,1fr)
+        !important;
+}
+
+.rd-photo-wrap,
+.rd-photo-wrap .rd-avatar,
+.rd-photo {
+    width: 68px !important;
+    height: 68px !important;
+
+    border-radius: 14px !important;
+}
+
+.rd-name {
+    font-size: 20px !important;
+}
+
+.rd-designation {
+    font-size: 12px !important;
+}
+
+.rd-badge {
+    padding:
+        4px
+        7px
+        !important;
+
+    font-size: 9px !important;
+}
+
+.rd-institution {
+    margin-top: 10px !important;
+
+    padding:
+        9px
+        11px
+        !important;
+}
+
+.rd-institution-label {
+    font-size: 9px !important;
+}
+
+.rd-institution-value {
+    font-size: 11px !important;
+}
+
+
+/* METRICS */
+
+.rd-research-metrics {
+    margin-top: 10px !important;
+}
+
+.rd-metric-item {
+    padding:
+        8px
+        10px
+        !important;
+}
+
+.rd-metric-item strong {
+    font-size: 16px !important;
+}
+
+.rd-metric-item span {
+    font-size: 8px !important;
+}
+
+
+/* EXPERTISE CHIPS */
+
+.rd-expertise {
+    margin-top: 11px !important;
+}
+
+.rd-expertise-title {
+    font-size: 9px !important;
+}
+
+.rd-expertise-tag {
+    padding:
+        4px
+        7px
+        !important;
+
+    font-size: 9px !important;
+}
+
+
+/* IDENTIFIERS */
+
+.rd-identifier-list {
+    margin-top: 12px !important;
+}
+
+.rd-identifier {
+    grid-template-columns:
+        80px
+        minmax(0,1fr)
+        !important;
+
+    font-size: 10px !important;
+}
+
+.rd-id-label {
+    font-size: 9px !important;
+}
+
+.rd-id-link {
+    font-size: 10px !important;
+}
+
+
+/* BUTTON */
+
+.rd-profile-button {
+    min-height: 36px !important;
+
+    min-width: 125px !important;
+
+    padding:
+        7px
+        11px
+        !important;
+
+    font-size: 10px !important;
+
+    border-radius: 9px !important;
+}
+
+
+/* FORMER SECTION COMPACT */
+
+.rd-section-former .rd-list {
+    padding:
+        18px
+        !important;
+}
+
+.rd-section-former .rd-card {
+    max-width: 420px !important;
+}
+
+
+/* FOOTER SPACE */
+
+#opaccredits,
+#opaccredits + div,
+footer {
+    margin-top: 12px !important;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    .rd-hero {
+        padding:
+            22px
+            18px
+            !important;
+    }
+
+    .red-form {
+        grid-template-columns:
+            1fr
+            !important;
+    }
+
+    .red-form button {
+        min-height: 40px !important;
+    }
+
+}
+
+@media (max-width: 620px) {
+
+    .rd-title {
+        font-size: 30px !important;
+    }
+
+    .rd-stat-grid,
+    .rd-coverage-grid {
+        grid-template-columns:
+            repeat(2,1fr)
+            !important;
+    }
+
+}
+
+
+/* =====================================================
+   END RESEARCHER DIRECTORY V6.4
+   ===================================================== */
+
+
+</style>
+</head>
+
+[% INCLUDE 'bodytag.inc'
+    bodyid='opac-researcher-search'
+    bodyclass='scrollto'
+%]
+
+[% INCLUDE 'masthead.inc' %]
+
+<div class="main">
+    <div class="container-fluid">
+
+        <main class="rd-page" aria-labelledby="researcher-directory-title">
+
+            <section class="rd-hero">
+                <div class="rd-eyebrow">
+                    Example University Library
+                </div>
+
+                <h1
+                    class="rd-title"
+                    id="researcher-directory-title"
+                >
+                    Researcher Discovery
+                </h1>
+
+                <p class="rd-intro">
+                    Discover verified Example University researchers,
+                    scholarly expertise, research outputs and potential
+                    collaborators through one unified research identity platform.
+                </p>
+
+                <div class="rd-expert-law">
+                    <div class="rd-expert-law-icon" aria-hidden="true">
+                        ✦
+                    </div>
+
+                    <div>
+                        <strong>
+                            Every Research Question Its Right Expert
+                        </strong>
+
+                        <span>
+                            Search verified expertise, scholarly identities
+                            and research outputs to discover the most
+                            relevant institutional researcher.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="rd-stat-grid">
+                    <div class="rd-stat">
+                        <span class="rd-stat-number">
+                            [% total_count | html %]
+                        </span>
+                        <span class="rd-stat-label">
+                            Verified Profiles
+                        </span>
+                    </div>
+
+                    <div class="rd-stat">
+                        <span class="rd-stat-number">
+                            [% current_count | html %]
+                        </span>
+                        <span class="rd-stat-label">
+                            Current Researchers
+                        </span>
+                    </div>
+
+                    <div class="rd-stat">
+                        <span class="rd-stat-number">
+                            [% former_count | html %]
+                        </span>
+                        <span class="rd-stat-label">
+                            Former Researchers
+                        </span>
+                    </div>
+
+                    <div class="rd-stat">
+                        <span class="rd-stat-number">
+                            [% total_publication_links | html %]
+                        </span>
+                        <span class="rd-stat-label">
+                            Linked Research Outputs
+                        </span>
+                    </div>
+                </div>
+
+                <div
+                    class="rd-coverage-grid"
+                    aria-label="Scholarly identifier coverage"
+                >
+                    <div class="rd-coverage-card">
+                        <div
+                            class="rd-coverage-icon"
+                            aria-hidden="true"
+                        >
+                            iD
+                        </div>
+
+                        <div>
+                            <span class="rd-coverage-number">
+                                [% orcid_count | html %]
+                            </span>
+                            <span class="rd-coverage-label">
+                                Profiles with ORCID
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="rd-coverage-card">
+                        <div
+                            class="rd-coverage-icon"
+                            aria-hidden="true"
+                        >
+                            S
+                        </div>
+
+                        <div>
+                            <span class="rd-coverage-number">
+                                [% scopus_count | html %]
+                            </span>
+                            <span class="rd-coverage-label">
+                                Profiles with Scopus ID
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="rd-coverage-card">
+                        <div
+                            class="rd-coverage-icon"
+                            aria-hidden="true"
+                        >
+                            W
+                        </div>
+
+                        <div>
+                            <span class="rd-coverage-number">
+                                [% wos_count | html %]
+                            </span>
+                            <span class="rd-coverage-label">
+                                Profiles with Web of Science ID
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section
+                class="rd-search-panel"
+                aria-label="Researcher search"
+            >
+                <form
+                    method="get"
+                    action="/cgi-bin/koha/opac-researcher-search.pl"
+                >
+                    <label
+                        class="rd-search-label"
+                        for="researcher-directory-query"
+                    >
+                        Find a Researcher or Explore Expertise
+                    </label>
+                    <div class="rd-search-fields">
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-query"
+                            >
+                                Search
+                            </label>
+
+                            <input
+                                class="rd-search-input"
+                                id="researcher-directory-query"
+                                type="search"
+                                name="q"
+                                value="[% q | html %]"
+                                placeholder="Try: artificial intelligence, bibliometrics, digital libraries, ORCID, researcher name..."
+                                autocomplete="off"
+                            >
+                        </div>
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-type"
+                            >
+                                Researcher Type
+                            </label>
+
+                            <select
+                                class="rd-select"
+                                id="researcher-directory-type"
+                                name="type"
+                            >
+                                <option
+                                    value="all"
+                                    [% IF type_filter == 'all' %]selected[% END %]
+                                >
+                                    All Researcher Types
+                                </option>
+
+                                [% FOREACH researcher_type IN researcher_types %]
+                                    <option
+                                        value="[% researcher_type.value | html %]"
+                                        [% IF researcher_type.selected %]selected[% END %]
+                                    >
+                                        [% researcher_type.label | html %]
+                                        ([% researcher_type.profile_count | html %])
+                                    </option>
+                                [% END %]
+                            </select>
+                        </div>
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-status"
+                            >
+                                Employment Status
+                            </label>
+
+                            <select
+                                class="rd-select"
+                                id="researcher-directory-status"
+                                name="status"
+                            >
+                                <option
+                                    value="all"
+                                    [% IF status_filter == 'all' %]selected[% END %]
+                                >
+                                    All Employment Statuses
+                                </option>
+
+                                <option
+                                    value="current"
+                                    [% IF status_filter == 'current' %]selected[% END %]
+                                >
+                                    Current Researchers
+                                </option>
+
+                                <option
+                                    value="former"
+                                    [% IF status_filter == 'former' %]selected[% END %]
+                                >
+                                    Former Researchers
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="rd-search-fields-secondary">
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-department"
+                            >
+                                Department / Unit
+                            </label>
+
+                            <select
+                                class="rd-select"
+                                id="researcher-directory-department"
+                                name="department"
+                            >
+                                <option
+                                    value="all"
+                                    [% IF department_filter == 'all' %]selected[% END %]
+                                >
+                                    All Departments / Units
+                                </option>
+
+                                [% FOREACH department IN departments %]
+                                    <option
+                                        value="[% department.value | html %]"
+                                        [% IF department.selected %]selected[% END %]
+                                    >
+                                        [% department.label | html %]
+                                        ([% department.profile_count | html %])
+                                    </option>
+                                [% END %]
+                            </select>
+                        </div>
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-school"
+                            >
+                                School
+                            </label>
+
+                            <select
+                                class="rd-select"
+                                id="researcher-directory-school"
+                                name="school"
+                            >
+                                <option
+                                    value="all"
+                                    [% IF school_filter == 'all' %]selected[% END %]
+                                >
+                                    All Schools
+                                </option>
+
+                                [% FOREACH school IN schools %]
+                                    <option
+                                        value="[% school.value | html %]"
+                                        [% IF school.selected %]selected[% END %]
+                                    >
+                                        [% school.label | html %]
+                                        ([% school.profile_count | html %])
+                                    </option>
+                                [% END %]
+                            </select>
+                        </div>
+
+                        <div class="rd-field-group">
+                            <label
+                                class="rd-field-label"
+                                for="researcher-directory-sort"
+                            >
+                                Sort By
+                            </label>
+
+                            <select
+                                class="rd-select"
+                                id="researcher-directory-sort"
+                                name="sort"
+                            >
+                                <option
+                                    value="name_az"
+                                    [% IF sort_filter == 'name_az' %]selected[% END %]
+                                >
+                                    Name A–Z
+                                </option>
+
+                                <option
+                                    value="name_za"
+                                    [% IF sort_filter == 'name_za' %]selected[% END %]
+                                >
+                                    Name Z–A
+                                </option>
+
+                                <option
+                                    value="recently_updated"
+                                    [% IF sort_filter == 'recently_updated' %]selected[% END %]
+                                >
+                                    Recently Updated
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="rd-search-row">
+                        <div class="rd-search-help">
+                            Search by researcher name, expertise, topic,
+                            department or scholarly identifier. Results below
+                            also update instantly while you type.
+                        </div>
+
+                        <div class="rd-search-actions">
+                            [% IF has_filters %]
+                                <a
+                                    class="rd-clear-button"
+                                    href="/cgi-bin/koha/opac-researcher-search.pl"
+                                >
+                                    Clear Filters
+                                </a>
+                            [% END %]
+
+                            <button
+                                class="rd-search-button"
+                                type="submit"
+                            >
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <nav
+                    class="rd-filter-row"
+                    aria-label="Researcher status filters"
+                >
+                    <a
+                        class="rd-filter [% IF status_filter == 'all' %]active[% END %]"
+                        href="/cgi-bin/koha/opac-researcher-search.pl?status=all"
+                    >
+                        All Profiles
+                        <span>[% total_count | html %]</span>
+                    </a>
+
+                    <a
+                        class="rd-filter [% IF status_filter == 'current' %]active[% END %]"
+                        href="/cgi-bin/koha/opac-researcher-search.pl?status=current"
+                    >
+                        Current Researchers
+                        <span>[% current_count | html %]</span>
+                    </a>
+
+                    <a
+                        class="rd-filter [% IF status_filter == 'former' %]active[% END %]"
+                        href="/cgi-bin/koha/opac-researcher-search.pl?status=former"
+                    >
+                        Former Researchers
+                        <span>[% former_count | html %]</span>
+                    </a>
+                </nav>
+
+                <div
+                    class="rd-live-status"
+                    id="rd-live-status"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Showing
+                    <strong id="rd-live-count">
+                        [% result_count | html %]
+                    </strong>
+                    researcher profile(s)
+                </div>
+
+            </section>
+            [% IF has_filters %]
+                <div
+                    class="rd-result-summary rd-filter-summary"
+                    role="status"
+                >
+                    <span>
+                        <strong>[% result_count | html %]</strong>
+                        verified researcher profile(s) match the selected
+                        search and filters.
+                    </span>
+
+                    <a href="/cgi-bin/koha/opac-researcher-search.pl">
+                        Clear all filters
+                    </a>
+                </div>
+            [% END %]
+
+
+            [% IF result_count == 0 %]
+
+                <div class="rd-global-empty">
+                    <strong>No verified researcher profile was found.</strong>
+                    <br>
+                    Try a different name, department, research area or
+                    researcher identifier.
+                </div>
+
+            [% ELSE %]
+
+                [% IF status_filter != 'former' %]
+                    <section class="rd-section rd-section-current">
+
+                        <header class="rd-section-header">
+                            <div class="rd-section-heading">
+                                <div
+                                    class="rd-section-icon"
+                                    aria-hidden="true"
+                                >
+                                    ✓
+                                </div>
+
+                                <div>
+                                    <h2 class="rd-section-title">
+                                        Current Institutional Researchers
+                                    </h2>
+
+                                    <p class="rd-section-description">
+                                        Verified researchers currently associated with
+                                        Example University.
+                                    </p>
+                                </div>
+                            </div>
+
+                            
+                        </header>
+
+                        [% IF current_result_count %]
+                            <div class="rd-list">
+
+                                [% FOREACH r IN current_results %]
+                                    <article class="rd-card">
+
+                                        <div class="rd-card-top">
+
+                                            <div class="rd-photo-wrap">
+                                                <div
+                                                    class="rd-avatar rd-photo-fallback"
+                                                    aria-hidden="true"
+                                                >
+                                                    [% r.initial | html %]
+                                                </div>
+
+                                                <img
+                                                    class="rd-photo"
+                                                    src="/cgi-bin/koha/opac-researcher-photo.pl?id=[% r.borrowernumber | html %]"
+                                                    alt="Photo of [% r.display_name | html %]"
+                                                    loading="lazy"
+                                                    onerror="this.style.display='none';"
+                                                >
+                                            </div>
+
+                                            <div class="rd-identity">
+                                                <h3 class="rd-name">
+                                                    [% r.display_name | html %]
+                                                </h3>
+
+                                                [% IF r.display_designation %]
+                                                    <p class="rd-designation">
+                                                        [% r.display_designation | html %]
+                                                    </p>
+                                                [% END %]
+                                            </div>
+
+                                            <div class="rd-badges">
+                                                <span class="rd-badge rd-badge-verified">
+                                                    Verified
+                                                </span>
+
+                                                <span class="rd-badge rd-badge-current">
+                                                    Current Researcher
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        [% IF r.institution_line %]
+                                            <div class="rd-institution">
+                                                <span class="rd-institution-label">
+                                                    Department / Unit
+                                                </span>
+                                                <span>
+                                                    [% r.institution_line | html %]
+                                                </span>
+                                            </div>
+                                        [% END %]
+
+                                        <div class="rd-research-metrics">
+                                            <div class="rd-metric-item">
+                                                <strong>
+                                                    [% r.publication_count || 0 | html %]
+                                                </strong>
+                                                <span>Linked Outputs</span>
+                                            </div>
+
+                                            [% IF r.has_expertise %]
+                                                <div class="rd-metric-item rd-metric-expertise">
+                                                    <strong>
+                                                        [% r.expertise_tags.size | html %]
+                                                    </strong>
+                                                    <span>Expertise Areas</span>
+                                                </div>
+                                            [% END %]
+                                        </div>
+
+                                        [% IF r.has_expertise %]
+                                            <div class="rd-expertise">
+                                                <span class="rd-expertise-title">
+                                                    Research Expertise
+                                                </span>
+
+                                                <div class="rd-expertise-tags">
+                                                    [% FOREACH interest IN r.expertise_tags %]
+                                                        <span class="rd-expertise-tag">
+                                                            [% interest | html %]
+                                                        </span>
+                                                    [% END %]
+                                                </div>
+                                            </div>
+                                        [% END %]
+
+                                        [% IF r.orcid || r.scopus_author_id || r.researcher_id %]
+                                            <div class="rd-identifier-list">
+
+                                                [% IF r.orcid %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            ORCID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            <a
+                                                                class="rd-id-link"
+                                                                href="[% r.orcid_url | html %]"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                aria-label="Open ORCID profile for [% r.display_name | html %]"
+                                                            >
+                                                                [% r.orcid_clean | html %]
+                                                                <span
+                                                                    class="rd-id-external"
+                                                                    aria-hidden="true"
+                                                                >↗</span>
+                                                            </a>
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                                [% IF r.scopus_author_id %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            Scopus ID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            [% IF r.scopus_url %]
+                                                                <a
+                                                                    class="rd-id-link"
+                                                                    href="[% r.scopus_url | html %]"
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    aria-label="Open Scopus author profile for [% r.display_name | html %]"
+                                                                >
+                                                                    [% r.scopus_author_id | html %]
+                                                                    <span
+                                                                        class="rd-id-external"
+                                                                        aria-hidden="true"
+                                                                    >↗</span>
+                                                                </a>
+                                                            [% ELSE %]
+                                                                [% r.scopus_author_id | html %]
+                                                            [% END %]
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                                [% IF r.researcher_id %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            WoS ID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            [% IF r.wos_url %]
+                                                                <a
+                                                                    class="rd-id-link"
+                                                                    href="[% r.wos_url | html %]"
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    aria-label="Open Web of Science author profile for [% r.display_name | html %]"
+                                                                >
+                                                                    [% r.researcher_id | html %]
+                                                                    <span
+                                                                        class="rd-id-external"
+                                                                        aria-hidden="true"
+                                                                    >↗</span>
+                                                                </a>
+                                                            [% ELSE %]
+                                                                [% r.researcher_id | html %]
+                                                            [% END %]
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                            </div>
+                                        [% END %]
+
+                                        <div class="rd-actions">
+                                            <a
+                                                class="rd-profile-button"
+                                                href="/cgi-bin/koha/opac-researcher-profile.pl?id=[% r.borrowernumber | html %]"
+                                            >
+                                                View Profile <span aria-hidden="true">&rarr;</span>
+                                            </a>
+
+                                            
+                                        </div>
+
+                                    </article>
+                                [% END %]
+
+                            </div>
+                        [% ELSE %]
+                            <div class="rd-empty">
+                                No current researcher matches the selected
+                                search or filter.
+                            </div>
+                        [% END %]
+
+                    </section>
+                [% END %]
+
+                [% IF status_filter != 'current' %]
+                    <section class="rd-section rd-section-former">
+
+                        <header class="rd-section-header">
+                            <div class="rd-section-heading">
+                                <div
+                                    class="rd-section-icon"
+                                    aria-hidden="true"
+                                >
+                                    ◷
+                                </div>
+
+                                <div>
+                                    <h2 class="rd-section-title">
+                                        Former Institutional Researchers
+                                    </h2>
+
+                                    <p class="rd-section-description">
+                                        Verified historical profiles of former
+                                        Example University researchers.
+                                    </p>
+                                </div>
+                            </div>
+
+                            
+                        </header>
+
+                        [% IF former_result_count %]
+                            <div class="rd-list">
+
+                                [% FOREACH r IN former_results %]
+                                    <article class="rd-card">
+
+                                        <div class="rd-card-top">
+
+                                            <div class="rd-photo-wrap">
+                                                <div
+                                                    class="rd-avatar rd-photo-fallback"
+                                                    aria-hidden="true"
+                                                >
+                                                    [% r.initial | html %]
+                                                </div>
+
+                                                <img
+                                                    class="rd-photo"
+                                                    src="/cgi-bin/koha/opac-researcher-photo.pl?id=[% r.borrowernumber | html %]"
+                                                    alt="Photo of [% r.display_name | html %]"
+                                                    loading="lazy"
+                                                    onerror="this.style.display='none';"
+                                                >
+                                            </div>
+
+                                            <div class="rd-identity">
+                                                <h3 class="rd-name">
+                                                    [% r.display_name | html %]
+                                                </h3>
+
+                                                [% IF r.display_designation %]
+                                                    <p class="rd-designation">
+                                                        [% r.display_designation | html %]
+                                                    </p>
+                                                [% END %]
+                                            </div>
+
+                                            <div class="rd-badges">
+                                                <span class="rd-badge rd-badge-verified">
+                                                    Verified
+                                                </span>
+
+                                                <span class="rd-badge rd-badge-former">
+                                                    Former Researcher
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        [% IF r.institution_line %]
+                                            <div class="rd-institution">
+                                                <span class="rd-institution-label">
+                                                    Department / Unit
+                                                </span>
+                                                <span>
+                                                    [% r.institution_line | html %]
+                                                </span>
+                                            </div>
+                                        [% END %]
+
+                                        <div class="rd-research-metrics">
+                                            <div class="rd-metric-item">
+                                                <strong>
+                                                    [% r.publication_count || 0 | html %]
+                                                </strong>
+                                                <span>Linked Outputs</span>
+                                            </div>
+
+                                            [% IF r.has_expertise %]
+                                                <div class="rd-metric-item rd-metric-expertise">
+                                                    <strong>
+                                                        [% r.expertise_tags.size | html %]
+                                                    </strong>
+                                                    <span>Expertise Areas</span>
+                                                </div>
+                                            [% END %]
+                                        </div>
+
+                                        [% IF r.has_expertise %]
+                                            <div class="rd-expertise">
+                                                <span class="rd-expertise-title">
+                                                    Research Expertise
+                                                </span>
+
+                                                <div class="rd-expertise-tags">
+                                                    [% FOREACH interest IN r.expertise_tags %]
+                                                        <span class="rd-expertise-tag">
+                                                            [% interest | html %]
+                                                        </span>
+                                                    [% END %]
+                                                </div>
+                                            </div>
+                                        [% END %]
+
+                                        [% IF r.orcid || r.scopus_author_id || r.researcher_id %]
+                                            <div class="rd-identifier-list">
+
+                                                [% IF r.orcid %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            ORCID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            <a
+                                                                class="rd-id-link"
+                                                                href="[% r.orcid_url | html %]"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                aria-label="Open ORCID profile for [% r.display_name | html %]"
+                                                            >
+                                                                [% r.orcid_clean | html %]
+                                                                <span
+                                                                    class="rd-id-external"
+                                                                    aria-hidden="true"
+                                                                >↗</span>
+                                                            </a>
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                                [% IF r.scopus_author_id %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            Scopus ID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            [% IF r.scopus_url %]
+                                                                <a
+                                                                    class="rd-id-link"
+                                                                    href="[% r.scopus_url | html %]"
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    aria-label="Open Scopus author profile for [% r.display_name | html %]"
+                                                                >
+                                                                    [% r.scopus_author_id | html %]
+                                                                    <span
+                                                                        class="rd-id-external"
+                                                                        aria-hidden="true"
+                                                                    >↗</span>
+                                                                </a>
+                                                            [% ELSE %]
+                                                                [% r.scopus_author_id | html %]
+                                                            [% END %]
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                                [% IF r.researcher_id %]
+                                                    <div class="rd-identifier">
+                                                        <span class="rd-id-label">
+                                                            WoS ID
+                                                        </span>
+                                                        
+                                                        <span class="rd-id-value">
+                                                            [% IF r.wos_url %]
+                                                                <a
+                                                                    class="rd-id-link"
+                                                                    href="[% r.wos_url | html %]"
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    aria-label="Open Web of Science author profile for [% r.display_name | html %]"
+                                                                >
+                                                                    [% r.researcher_id | html %]
+                                                                    <span
+                                                                        class="rd-id-external"
+                                                                        aria-hidden="true"
+                                                                    >↗</span>
+                                                                </a>
+                                                            [% ELSE %]
+                                                                [% r.researcher_id | html %]
+                                                            [% END %]
+                                                        </span>
+
+                                                    </div>
+                                                [% END %]
+
+                                            </div>
+                                        [% END %]
+
+                                        <div class="rd-former-note">
+                                            <strong>Former Institutional Researcher</strong>
+                                            [% IF r.relieving_date %]
+                                                <span>
+                                                    Affiliation ended:
+                                                    [% r.relieving_date | html %]
+                                                </span>
+                                            [% END %]
+                                        </div>
+
+                                        <div class="rd-actions">
+                                            <a
+                                                class="rd-profile-button"
+                                                href="/cgi-bin/koha/opac-researcher-profile.pl?id=[% r.borrowernumber | html %]"
+                                            >
+                                                View Profile <span aria-hidden="true">&rarr;</span>
+                                            </a>
+
+                                            
+                                        </div>
+
+                                    </article>
+                                [% END %]
+
+                            </div>
+                        [% ELSE %]
+                            <div class="rd-empty">
+                                No former researcher matches the selected
+                                search or filter.
+                            </div>
+                        [% END %]
+
+                    </section>
+                [% END %]
+
+            [% END %]
+
+        </main>
+
+    </div>
+</div>
+
+[% INCLUDE 'opac-bottom.inc' %]
+
+[% BLOCK jsinclude %]
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const input =
+        document.getElementById(
+            "researcher-directory-query"
+        );
+
+    const countNode =
+        document.getElementById(
+            "rd-live-count"
+        );
+
+    const cards =
+        Array.from(
+            document.querySelectorAll(
+                ".rd-card"
+            )
+        );
+
+    const sections =
+        Array.from(
+            document.querySelectorAll(
+                ".rd-section"
+            )
+        );
+
+    if (!input || !cards.length) {
+        return;
+    }
+
+    function normalize(value) {
+        return (value || "")
+            .toLocaleLowerCase()
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function applyLiveSearch() {
+
+        const query =
+            normalize(input.value);
+
+        let visible = 0;
+
+        cards.forEach(function (card) {
+
+            const content =
+                normalize(card.textContent);
+
+            const show =
+                !query
+                || content.includes(query);
+
+            card.classList.toggle(
+                "rd-live-hidden",
+                !show
+            );
+
+            if (show) {
+                visible++;
+            }
+        });
+
+        sections.forEach(function (section) {
+
+            const visibleInSection =
+                section.querySelectorAll(
+                    ".rd-card:not(.rd-live-hidden)"
+                ).length;
+
+            section.classList.toggle(
+                "rd-live-empty",
+                visibleInSection === 0
+            );
+        });
+
+        if (countNode) {
+            countNode.textContent =
+                String(visible);
+        }
+    }
+
+    let timer = null;
+
+    input.addEventListener(
+        "input",
+        function () {
+
+            window.clearTimeout(timer);
+
+            timer = window.setTimeout(
+                applyLiveSearch,
+                120
+            );
+        }
+    );
+
+});
+</script>
+
+<script src="/opac-tmpl/bootstrap/js/researcher-app.js"></script>
+
+<script src="/opac-tmpl/bootstrap/js/researcher-expert-discovery.js"></script>
+[% END %]

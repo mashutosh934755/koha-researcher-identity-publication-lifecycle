@@ -1,0 +1,3 @@
+# Identifier-bound Web of Science publication synchronization.
+# Runs after the main publication sync and before disambiguation.
+35 2 * * * INSTANCE-koha HOME=/tmp /usr/share/koha/bin/bu-run-wos-publication-sync.sh >> /var/log/koha/INSTANCE/wos-publication-sync.log 2>&1

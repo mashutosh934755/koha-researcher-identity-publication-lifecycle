@@ -1,0 +1,3 @@
+# Optional AI query-understanding configuration.
+# Keep credentials outside the repository.
+GEMINI_API_KEY=

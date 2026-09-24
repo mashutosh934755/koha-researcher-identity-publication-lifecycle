@@ -1,0 +1,4 @@
+# Koha RIMS researcher publication sync
+# Runs daily at 02:20 server time.
+
+20 2 * * * INSTANCE-koha KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/bin/perl /usr/share/koha/bin/bu-researcher-publication-sync.pl INSTANCE >> /var/log/koha/INSTANCE/researcher-publication-sync.log 2>&1

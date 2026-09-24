@@ -1,0 +1,4 @@
+# Koha RIMS Crossref metadata verification
+# Runs daily after Scopus/WoS synchronization.
+# flock prevents overlapping Crossref API jobs.
+35 3 * * * INSTANCE-koha flock -n /var/lock/koha/INSTANCE/crossref-publication-sync.lock env KOHA_CONF=/etc/koha/sites/INSTANCE/koha-conf.xml PERL5LIB=/usr/share/koha/lib /usr/share/koha/bin/bu-crossref-publication-sync.pl --apply >> /var/log/koha/INSTANCE/crossref-publication-sync.log 2>&1

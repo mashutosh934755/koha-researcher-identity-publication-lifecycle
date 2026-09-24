@@ -1,4 +1,4 @@
-# Secrets and local configuration
+# Secrets and active local configuration
 .env
 .env.*
 !.env.example
@@ -9,11 +9,11 @@
 *.pfx
 credentials*
 secrets*
-config/local.conf
-config/researcher-system.conf
+research-api.env
+gemini-expert-discovery.conf
 koha-conf.xml
 
-# Database and private exports
+# Database/private exports
 *.sql.gz
 *.dump
 *.bak
@@ -22,23 +22,22 @@ database/backups/
 database/production/
 database/snapshots/
 
-# Logs and runtime data
+# Logs/runtime/private data
 *.log
 logs/
 cache/
 raw-data/
 raw-json/
 api-responses/
-*.jsonl
-
-# Personal data and uploads
 patron-data/
 researcher-data/
 exports/
 uploads/
 photos/
 
-# Temporary and editor files
+# Generated/editor files
+__pycache__/
+*.pyc
 *.tmp
 *.swp
 *.swo
@@ -54,11 +53,3 @@ Thumbs.db
 *.tgz
 *.zip
 *.7z
-
-# Perl generated files
-Makefile
-Makefile.old
-MYMETA.json
-MYMETA.yml
-blib/
-pm_to_blib

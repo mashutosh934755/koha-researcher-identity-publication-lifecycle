@@ -1,0 +1,2 @@
+# Researcher onboarding: checks eligible Koha patrons every 10 minutes.
+*/10 * * * * root koha-shell INSTANCE -c "/usr/share/koha/bin/cronjobs/researcher_onboarding.pl" >> /var/log/koha/INSTANCE/researcher-onboarding.log 2>&1

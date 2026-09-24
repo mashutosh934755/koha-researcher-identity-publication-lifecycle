@@ -1,0 +1,2500 @@
+[% USE raw %]
+[% SET footerjs = 1 %]
+
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Researcher Verification</title>
+[% INCLUDE 'doc-head-close.inc' %]
+
+<style>
+.rv-wrap {
+    margin: 20px;
+}
+.rv-title {
+    margin-bottom: 4px;
+}
+.rv-subtitle {
+    color: #64748b;
+    margin-bottom: 18px;
+}
+.rv-message,
+.rv-error {
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+.rv-message {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+.rv-error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+.rv-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(155px, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+}
+.rv-card {
+    border: 1px solid #dbe3eb;
+    border-radius: 10px;
+    background: #fff;
+    padding: 14px;
+}
+.rv-card strong {
+    display: block;
+    font-size: 25px;
+}
+.rv-card span {
+    color: #64748b;
+    font-size: 13px;
+}
+.rv-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    border: 1px solid #dbe3eb;
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 14px;
+    margin: 18px 0;
+}
+.rv-filter label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.rv-filter input,
+.rv-filter select {
+    min-height: 38px;
+}
+.rv-table-wrap {
+    overflow-x: auto;
+}
+.rv-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+.rv-table th,
+.rv-table td {
+    border: 1px solid #dbe3eb;
+    padding: 9px;
+    vertical-align: top;
+}
+.rv-table th {
+    background: #f1f5f9;
+    white-space: nowrap;
+}
+.rv-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 2px;
+}
+.rv-pending {
+    background: #fef9c3;
+    color: #854d0e;
+}
+.rv-verified,
+.rv-active {
+    background: #dcfce7;
+    color: #166534;
+}
+.rv-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.rv-former {
+    background: #e2e8f0;
+    color: #334155;
+}
+.rv-id {
+    font-size: 12px;
+    word-break: break-all;
+}
+.rv-actions form {
+    border-top: 1px solid #e2e8f0;
+    margin-top: 7px;
+    padding-top: 7px;
+}
+.rv-actions textarea {
+    width: 100%;
+    min-width: 230px;
+    min-height: 48px;
+    margin-bottom: 5px;
+}
+.rv-actions button {
+    margin: 2px;
+}
+.rv-danger {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: #fff;
+}
+.rv-secondary {
+    background: #475569;
+    border-color: #475569;
+    color: #fff;
+}
+
+/* RIMS_CORE_MANAGEMENT_V1 */
+
+.rm-editor {
+    margin: 20px 0;
+    padding: 22px;
+    border: 1px solid #d8dee6;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.rm-editor h2 {
+    margin-top: 0;
+}
+
+.rm-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.rm-grid label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.rm-grid input,
+.rm-grid select,
+.rm-grid textarea {
+    width: 100%;
+    min-height: 38px;
+}
+
+.rm-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 18px 0;
+}
+
+.rm-checkboxes label {
+    font-weight: 600;
+}
+
+.rm-editor-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.rm-readonly {
+    margin-bottom: 16px;
+    color: #5f6b76;
+}
+
+@media (max-width: 1000px) {
+    .rm-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* RIMS_MANAGEMENT_TABS_V1 */
+
+.rm-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 20px 0 0;
+    padding: 0;
+    border-bottom: 1px solid #d7dee7;
+}
+
+.rm-tab-button {
+    appearance: none;
+    border: 1px solid #d7dee7;
+    border-bottom: 0;
+    border-radius: 7px 7px 0 0;
+    padding: 10px 15px;
+    background: #f4f6f8;
+    color: #25313c;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rm-tab-button:hover {
+    background: #e8edf2;
+}
+
+.rm-tab-button.is-active {
+    background: #ffffff;
+    color: #0055a5;
+    position: relative;
+    top: 1px;
+}
+
+.rm-tab-panel {
+    display: none;
+    padding: 20px;
+    border: 1px solid #d7dee7;
+    border-top: 0;
+    background: #ffffff;
+}
+
+.rm-tab-panel.is-active {
+    display: block;
+}
+
+.rm-tab-panel h3 {
+    margin-top: 0;
+}
+
+.rm-module-notice {
+    padding: 18px;
+    border: 1px dashed #aeb9c4;
+    border-radius: 8px;
+    background: #f8fafb;
+}
+
+.rm-module-notice strong {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.rm-module-list {
+    margin: 10px 0 0 20px;
+}
+
+.rm-core-form {
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .rm-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .rm-tab-button {
+        border-bottom: 1px solid #d7dee7;
+        border-radius: 6px;
+        text-align: left;
+    }
+
+    .rm-tab-button.is-active {
+        top: 0;
+    }
+
+    .rm-tab-panel {
+        border-top: 1px solid #d7dee7;
+    }
+}
+
+
+/* RIMS_IDENTIFIERS_MODULE_V1 */
+
+.rm-identifiers-table {
+    width: 100%;
+    margin-bottom: 22px;
+    border-collapse: collapse;
+}
+
+.rm-identifiers-table th,
+.rm-identifiers-table td {
+    padding: 10px;
+    border: 1px solid #d9e0e7;
+    vertical-align: top;
+}
+
+.rm-identifiers-table th {
+    background: #f3f6f8;
+}
+
+.rm-identifier-form {
+    padding: 18px;
+    border: 1px solid #d9e0e7;
+    border-radius: 8px;
+    background: #f9fbfc;
+}
+
+.rm-identifier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(210px, 1fr));
+    gap: 14px;
+}
+
+.rm-identifier-grid label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.rm-identifier-grid input,
+.rm-identifier-grid select {
+    width: 100%;
+    min-height: 38px;
+}
+
+.rm-identifier-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 16px 0;
+}
+
+.rm-status-verified {
+    color: #087830;
+    font-weight: 700;
+}
+
+.rm-status-pending {
+    color: #8a5b00;
+    font-weight: 700;
+}
+
+.rm-status-rejected {
+    color: #a00000;
+    font-weight: 700;
+}
+
+.rm-identifier-edit {
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .rm-identifier-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rm-identifiers-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+
+/* RIMS_IDENTIFIER_EDIT_BUTTON_FIX_V2 */
+.rm-identifiers-table td:last-child {
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.rm-identifier-edit {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    min-width: 76px !important;
+    min-height: 32px !important;
+    padding: 5px 10px !important;
+    color: #333333 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #b9b9b9 !important;
+    border-radius: 3px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 20px !important;
+    text-indent: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    cursor: pointer !important;
+}
+
+.rm-identifier-edit:hover,
+.rm-identifier-edit:focus {
+    color: #ffffff !important;
+    background-color: #006699 !important;
+    border-color: #005580 !important;
+}
+
+.rm-identifier-edit-label,
+.rm-identifier-edit-text {
+    display: inline-block !important;
+    color: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* RIMS_AFFILIATIONS_STYLE_V1 */
+
+.rm-affiliation-help {
+    margin-bottom: 16px;
+    color: #52606d;
+}
+
+.rm-affiliations-table-wrap {
+    width: 100%;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.rm-affiliations-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rm-affiliations-table th,
+.rm-affiliations-table td {
+    padding: 10px;
+    border: 1px solid #d9e0e7;
+    vertical-align: top;
+}
+
+.rm-affiliations-table th {
+    background: #f3f6f8;
+}
+
+.rm-affiliations-table td:last-child {
+    min-width: 90px;
+    white-space: nowrap;
+}
+
+.rm-current-affiliation {
+    color: #087830;
+}
+
+.rm-affiliation-form {
+    padding: 18px;
+    border: 1px solid #d9e0e7;
+    border-radius: 8px;
+    background: #f9fbfc;
+}
+
+.rm-affiliation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(210px, 1fr));
+    gap: 14px;
+}
+
+.rm-affiliation-grid label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.rm-affiliation-grid input,
+.rm-affiliation-grid select {
+    width: 100%;
+    min-height: 38px;
+}
+
+.rm-affiliation-flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 16px 0;
+}
+
+.rm-affiliation-edit {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    min-width: 76px !important;
+    min-height: 32px !important;
+    padding: 5px 10px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 900px) {
+    .rm-affiliation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rm-affiliations-table {
+        min-width: 1050px;
+    }
+}
+
+
+/* RIMS_NAME_VARIANTS_STYLE_V1 */
+.rm-variants-table-wrap { width: 100%; overflow-x: auto; margin-bottom: 20px; }
+.rm-variants-table { width: 100%; border-collapse: collapse; }
+.rm-variants-table th, .rm-variants-table td { padding: 10px; border: 1px solid #d9e0e7; vertical-align: top; }
+.rm-variants-table th { background: #f3f6f8; }
+.rm-variant-form { padding: 18px; border: 1px solid #d9e0e7; border-radius: 8px; background: #f9fbfc; }
+.rm-variant-grid { display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 14px; }
+.rm-variant-grid label { display: block; margin-bottom: 5px; font-weight: 600; }
+.rm-variant-grid input, .rm-variant-grid select { width: 100%; min-height: 38px; }
+.rm-variant-flags { margin: 16px 0; }
+.rm-variant-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 900px) { .rm-variant-grid { grid-template-columns: 1fr; } }
+
+</style>
+
+</head>
+
+<body id="tools_researcher_verification"
+      class="tools">
+
+[% WRAPPER 'header.inc' %]
+    [% INCLUDE 'cat-search.inc' %]
+[% END %]
+
+[% WRAPPER 'sub-header.inc' %]
+    [% WRAPPER breadcrumbs %]
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/mainpage.pl">Home</a>
+        [% END %]
+
+        [% WRAPPER breadcrumb_item %]
+            <a href="/cgi-bin/koha/tools/tools-home.pl">
+                Tools
+            </a>
+        [% END %]
+
+        [% WRAPPER breadcrumb_item bc_active=1 %]
+            Researcher Verification
+        [% END %]
+    [% END %]
+[% END %]
+
+<div class="main container-fluid">
+<div class="row">
+<div class="col-md-12">
+
+<div class="rv-wrap">
+
+<h1 class="rv-title">Researcher Verification Dashboard</h1>
+
+<div class="rv-subtitle">
+    Verify institutional researcher identities, manage current and
+    former status, and review identifier coverage.
+</div>
+
+[% IF message %]
+    <div class="rv-message">[% message | html %]</div>
+[% END %]
+
+[% IF error %]
+    <div class="rv-error">[% error | html %]</div>
+[% END %]
+
+<div class="rv-summary">
+
+    <div class="rv-card">
+        <strong>[% summary.total_profiles || 0 %]</strong>
+        <span>Total Profiles</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>[% summary.pending_profiles || 0 %]</strong>
+        <span>Pending Verification</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>[% summary.verified_profiles || 0 %]</strong>
+        <span>Verified Profiles</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>
+            [% summary.current_verified_researchers || 0 %]
+        </strong>
+        <span>Current Verified Researchers</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>[% summary.current_scopus_authors || 0 %]</strong>
+        <span>Verified Scopus ID Linked</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>[% summary.current_wos_authors || 0 %]</strong>
+        <span>Verified WoS ID Linked</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>
+            [% summary.current_orcid_researchers || 0 %]
+        </strong>
+        <span>Verified ORCID Linked</span>
+    </div>
+
+    <div class="rv-card">
+        <strong>[% summary.former_profiles || 0 %]</strong>
+        <span>Former Researchers</span>
+    </div>
+
+</div>
+
+
+<!-- RIMS_CORE_MANAGEMENT_V1 -->
+
+[% IF edit_profile %]
+
+<div class="rm-editor">
+
+    <h2>
+        Manage Researcher:
+        [% edit_profile.preferred_name | html %]
+    </h2>
+
+    <div class="rm-readonly">
+        Borrower: [% edit_profile.borrowernumber | html %]
+        &nbsp; | &nbsp;
+        Card: [% edit_profile.cardnumber | html %]
+        &nbsp; | &nbsp;
+        UUID: [% edit_profile.researcher_uuid | html %]
+        &nbsp; | &nbsp;
+        Verification:
+        [% edit_profile.verification_status | html %]
+    </div>
+
+
+    <!-- RIMS_MANAGEMENT_TABS_V1 -->
+
+    <div class="rm-tabs"
+         role="tablist"
+         aria-label="Researcher management sections">
+
+        <button type="button"
+                class="rm-tab-button is-active"
+                role="tab"
+                aria-selected="true"
+                data-rm-tab="core-profile">
+            Core Profile
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="identifiers">
+            Identifiers
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="affiliations">
+            Affiliations
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="name-variants">
+            Name Variants
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="publications">
+            Publications
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="sync-history">
+            Sync History
+        </button>
+
+        <button type="button"
+                class="rm-tab-button"
+                role="tab"
+                aria-selected="false"
+                data-rm-tab="audit-trail">
+            Audit Trail
+        </button>
+
+    </div>
+
+    <section class="rm-tab-panel is-active"
+             id="rm-panel-core-profile"
+             data-rm-panel="core-profile"
+             role="tabpanel">
+
+        <h3>Core Profile</h3>
+    <form method="post"
+          action="/cgi-bin/koha/tools/researcher-verification.pl">
+
+        <input type="hidden"
+               name="csrf_token"
+               value="[% csrf_token | html %]">
+
+        <input type="hidden"
+               name="action"
+               value="save_profile">
+
+        <input type="hidden"
+               name="borrowernumber"
+               value="[% edit_profile.borrowernumber | html %]">
+
+        <div class="rm-grid">
+
+            <div>
+                <label for="rm-preferred-name">
+                    Preferred Name *
+                </label>
+
+                <input id="rm-preferred-name"
+                       type="text"
+                       name="preferred_name"
+                       required
+                       value="[% edit_profile.preferred_name | html %]">
+            </div>
+
+            <div>
+                <label for="rm-official-name">
+                    Official Name
+                </label>
+
+                <input id="rm-official-name"
+                       type="text"
+                       name="official_name"
+                       value="[% edit_profile.official_name | html %]">
+            </div>
+
+            <div>
+                <label for="rm-user-type">
+                    User Type
+                </label>
+
+                <select id="rm-user-type"
+                        name="profile_user_type">
+
+                    <option value="">Not selected</option>
+
+                    [% FOREACH type IN user_types %]
+                        <option value="[% type | html %]"
+                            [% IF edit_profile.user_type == type %]
+                                selected
+                            [% END %]>
+                            [% type | html %]
+                        </option>
+                    [% END %]
+
+                </select>
+            </div>
+
+            <div>
+                <label for="rm-school">
+                    School
+                </label>
+
+                <input id="rm-school"
+                       type="text"
+                       name="school"
+                       value="[% edit_profile.school | html %]">
+            </div>
+
+            <div>
+                <label for="rm-department">
+                    Department
+                </label>
+
+                <input id="rm-department"
+                       type="text"
+                       name="department"
+                       value="[% edit_profile.department | html %]">
+            </div>
+
+            <div>
+                <label for="rm-designation">
+                    Designation
+                </label>
+
+                <input id="rm-designation"
+                       type="text"
+                       name="designation"
+                       value="[% edit_profile.designation | html %]">
+            </div>
+
+            <div>
+                <label for="rm-employee-id">
+                    Employee / Enrollment ID
+                </label>
+
+                <input id="rm-employee-id"
+                       type="text"
+                       name="employee_id"
+                       value="[% edit_profile.employee_id | html %]">
+            </div>
+
+            <div>
+                <label for="rm-joining-date">
+                    Joining Date
+                </label>
+
+                <input id="rm-joining-date"
+                       type="date"
+                       name="joining_date"
+                       value="[% edit_profile.joining_date | html %]">
+            </div>
+
+            <div>
+                <label for="rm-employment-status">
+                    Employment Status
+                </label>
+
+                <select id="rm-employment-status"
+                        name="employment_status">
+
+                    <option value="active"
+                        [% IF edit_profile.employment_status == 'active' %]
+                            selected
+                        [% END %]>
+                        Active
+                    </option>
+
+                    <option value="former"
+                        [% IF edit_profile.employment_status == 'former' %]
+                            selected
+                        [% END %]>
+                        Former
+                    </option>
+
+                </select>
+            </div>
+
+        </div>
+
+        <div class="rm-checkboxes">
+
+            <label>
+                <input type="checkbox"
+                       name="public_visibility"
+                       value="1"
+                    [% IF edit_profile.public_visibility %]
+                       checked
+                    [% END %]>
+                Public profile visible
+            </label>
+
+            <label>
+                <input type="checkbox"
+                       name="sync_enabled"
+                       value="1"
+                    [% IF edit_profile.sync_enabled %]
+                       checked
+                    [% END %]>
+                API synchronization enabled
+            </label>
+
+        </div>
+
+        <div>
+            <label for="rm-reason">
+                Change Note
+            </label>
+
+            <textarea id="rm-reason"
+                      name="reason"
+                      rows="2"
+                      placeholder="Reason for this profile update"></textarea>
+        </div>
+
+        <div class="rm-editor-actions">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Save Researcher Profile
+            </button>
+
+            <a class="btn btn-default"
+               href="/cgi-bin/koha/tools/researcher-verification.pl">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+    </section>
+
+    <section class="rm-tab-panel"
+             id="rm-panel-identifiers"
+             data-rm-panel="identifiers"
+             role="tabpanel">
+
+        <!-- RIMS_IDENTIFIERS_MODULE_V1 -->
+
+        <h3>Researcher Identifiers</h3>
+
+        [% IF edit_identifiers.size %]
+
+            <table class="rm-identifiers-table">
+
+                <thead>
+                    <tr>
+                        <th>Identifier</th>
+                        <th>Value</th>
+                        <th>Verification</th>
+                        <th>Primary</th>
+                        <th>Active</th>
+                        <th>Source</th>
+                        <th>Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    [% FOREACH identifier IN edit_identifiers %]
+
+                        <tr>
+                            <td>
+                                [% IF identifier.identifier_type == 'orcid' %]
+                                    ORCID iD
+                                [% ELSIF identifier.identifier_type == 'scopus' %]
+                                    Scopus Author ID
+                                [% ELSIF identifier.identifier_type == 'wos' %]
+                                    Web of Science ID
+                                [% ELSIF identifier.identifier_type == 'google_scholar' %]
+                                    Google Scholar
+                                [% ELSE %]
+                                    [% identifier.identifier_type | html %]
+                                [% END %]
+                            </td>
+
+                            <td>
+                                <code>
+                                    [% identifier.identifier_value | html %]
+                                </code>
+                            </td>
+
+                            <td>
+                                <span class="rm-status-[% identifier.verification_status | html %]">
+                                    [% identifier.verification_status | ucfirst | html %]
+                                </span>
+                            </td>
+
+                            <td>
+                                [% IF identifier.is_primary %]
+                                    Yes
+                                [% ELSE %]
+                                    No
+                                [% END %]
+                            </td>
+
+                            <td>
+                                [% IF identifier.is_active %]
+                                    Yes
+                                [% ELSE %]
+                                    No
+                                [% END %]
+                            </td>
+
+                            <td>
+                                [% identifier.verification_source || 'Not entered' | html %]
+                            </td>
+
+                            <td>
+                                [% identifier.updated_at | html %]
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-default rm-identifier-edit"
+                                        data-id="[% identifier.identifier_id | html %]"
+                                        data-type="[% identifier.identifier_type | html %]"
+                                        data-value="[% identifier.identifier_value | html %]"
+                                        data-status="[% identifier.verification_status | html %]"
+                                        data-primary="[% identifier.is_primary | html %]"
+                                        data-active="[% identifier.is_active | html %]"
+                                        data-source="[% identifier.verification_source | html %]">
+                                    <span class="rm-identifier-edit-label" aria-hidden="true">&#9998;</span>
+                                    <span class="rm-identifier-edit-text">Edit</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                    [% END %]
+
+                </tbody>
+
+            </table>
+
+        [% ELSE %]
+
+            <div class="alert alert-info">
+                No identifiers are currently linked to this researcher.
+            </div>
+
+        [% END %]
+
+        <form method="post"
+              class="rm-identifier-form"
+              action="/cgi-bin/koha/tools/researcher-verification.pl">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="[% csrf_token | html %]">
+
+            <input type="hidden"
+                   name="action"
+                   value="save_identifier">
+
+            <input type="hidden"
+                   name="borrowernumber"
+                   value="[% edit_profile.borrowernumber | html %]">
+
+            <input type="hidden"
+                   id="rm-identifier-id"
+                   name="identifier_id"
+                   value="">
+
+            <h4 id="rm-identifier-form-title">
+                Add Researcher Identifier
+            </h4>
+
+            <div class="rm-identifier-grid">
+
+                <div>
+                    <label for="rm-identifier-type">
+                        Identifier Type
+                    </label>
+
+                    <select id="rm-identifier-type"
+                            name="identifier_type"
+                            required>
+
+                        <option value="orcid">
+                            ORCID iD
+                        </option>
+
+                        <option value="scopus">
+                            Scopus Author ID
+                        </option>
+
+                        <option value="wos">
+                            Web of Science ResearcherID
+                        </option>
+
+                        <option value="google_scholar">
+                            Google Scholar Profile ID
+                        </option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label for="rm-identifier-value">
+                        Identifier Value
+                    </label>
+
+                    <input id="rm-identifier-value"
+                           type="text"
+                           name="identifier_value"
+                           maxlength="100"
+                           required
+                           placeholder="Enter identifier value">
+                </div>
+
+                <div>
+                    <label for="rm-identifier-status">
+                        Verification Status
+                    </label>
+
+                    <select id="rm-identifier-status"
+                            name="identifier_status"
+                            required>
+
+                        <option value="pending">
+                            Pending
+                        </option>
+
+                        <option value="verified">
+                            Verified
+                        </option>
+
+                        <option value="rejected">
+                            Rejected
+                        </option>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label for="rm-identifier-source">
+                        Verification Source
+                    </label>
+
+                    <input id="rm-identifier-source"
+                           type="text"
+                           name="identifier_source"
+                           maxlength="255"
+                           placeholder="OAuth, API, staff review">
+                </div>
+
+                <div>
+                    <label for="rm-identifier-reason">
+                        Change Note
+                    </label>
+
+                    <input id="rm-identifier-reason"
+                           type="text"
+                           name="reason"
+                           maxlength="255"
+                           placeholder="Reason for adding or updating">
+                </div>
+
+            </div>
+
+            <div class="rm-identifier-flags">
+
+                <label>
+                    <input type="checkbox"
+                           id="rm-identifier-primary"
+                           name="identifier_primary"
+                           value="1">
+                    Primary identifier for this type
+                </label>
+
+                <label>
+                    <input type="checkbox"
+                           id="rm-identifier-active"
+                           name="identifier_active"
+                           value="1"
+                           checked>
+                    Active identifier
+                </label>
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Save Identifier
+            </button>
+
+            <button type="button"
+                    id="rm-identifier-reset"
+                    class="btn btn-default">
+                Clear Form
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- RIMS_AFFILIATIONS_TEMPLATE_V1 -->
+    <section class="rm-tab-panel"
+             id="rm-panel-affiliations"
+             data-rm-panel="affiliations"
+             role="tabpanel">
+
+        <h3>Affiliation History</h3>
+
+        <p class="rm-affiliation-help">
+            Current and previous institutional relationships are used as
+            timeline evidence during author-publication disambiguation.
+        </p>
+
+        [% IF edit_affiliations.size %]
+
+            <div class="rm-affiliations-table-wrap">
+
+                <table class="rm-affiliations-table">
+
+                    <thead>
+                        <tr>
+                            <th>Organisation</th>
+                            <th>Department / Role</th>
+                            <th>Type</th>
+                            <th>Period</th>
+                            <th>Current</th>
+                            <th>Verification</th>
+                            <th>Source</th>
+                            <th>Updated</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        [% FOREACH affiliation IN edit_affiliations %]
+
+                            <tr>
+                                <td>
+                                    <strong>
+                                        [% affiliation.organisation_name | html %]
+                                    </strong>
+
+                                    [% IF affiliation.organisation_identifier %]
+                                        <br>
+                                        <small>
+                                            ID:
+                                            [% affiliation.organisation_identifier | html %]
+                                        </small>
+                                    [% END %]
+                                </td>
+
+                                <td>
+                                    [% affiliation.department || 'Not entered' | html %]
+
+                                    [% IF affiliation.role_title %]
+                                        <br>
+                                        <small>
+                                            [% affiliation.role_title | html %]
+                                        </small>
+                                    [% END %]
+                                </td>
+
+                                <td>
+                                    [% affiliation.affiliation_type | ucfirst | html %]
+                                </td>
+
+                                <td>
+                                    [% affiliation.start_date || 'Unknown' | html %]
+                                    &rarr;
+
+                                    [% IF affiliation.is_current %]
+                                        Present
+                                    [% ELSE %]
+                                        [% affiliation.end_date || 'Unknown' | html %]
+                                    [% END %]
+                                </td>
+
+                                <td>
+                                    [% IF affiliation.is_current %]
+                                        <strong class="rm-current-affiliation">
+                                            Yes
+                                        </strong>
+                                    [% ELSE %]
+                                        No
+                                    [% END %]
+                                </td>
+
+                                <td>
+                                    <span class="rm-status-[% affiliation.verification_status | html %]">
+                                        [% affiliation.verification_status | ucfirst | html %]
+                                    </span>
+                                </td>
+
+                                <td>
+                                    [% affiliation.source || 'Not entered' | html %]
+                                </td>
+
+                                <td>
+                                    [% affiliation.updated_at | html %]
+                                </td>
+
+                                <td>
+                                    <button
+                                        type="button"
+                                        class="btn btn-default rm-affiliation-edit"
+                                        data-id="[% affiliation.affiliation_id | html %]"
+                                        data-organisation="[% affiliation.organisation_name | html %]"
+                                        data-organisation-id="[% affiliation.organisation_identifier | html %]"
+                                        data-department="[% affiliation.department | html %]"
+                                        data-role="[% affiliation.role_title | html %]"
+                                        data-start="[% affiliation.start_date | html %]"
+                                        data-end="[% affiliation.end_date | html %]"
+                                        data-current="[% affiliation.is_current | html %]"
+                                        data-type="[% affiliation.affiliation_type | html %]"
+                                        data-status="[% affiliation.verification_status | html %]"
+                                        data-source="[% affiliation.source | html %]">
+
+                                        <span aria-hidden="true">&#9998;</span>
+                                        <span>Edit</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                        [% END %]
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        [% ELSE %]
+
+            <div class="alert alert-info">
+                No affiliations are currently recorded for this researcher.
+            </div>
+
+        [% END %]
+
+        <form method="post"
+              class="rm-affiliation-form"
+              action="/cgi-bin/koha/tools/researcher-verification.pl">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="[% csrf_token | html %]">
+
+            <input type="hidden"
+                   name="action"
+                   value="save_affiliation">
+
+            <input type="hidden"
+                   name="borrowernumber"
+                   value="[% edit_profile.borrowernumber | html %]">
+
+            <input type="hidden"
+                   id="rm-affiliation-id"
+                   name="affiliation_id"
+                   value="">
+
+            <h4 id="rm-affiliation-form-title">
+                Add Researcher Affiliation
+            </h4>
+
+            <div class="rm-affiliation-grid">
+
+                <div>
+                    <label for="rm-affiliation-organisation">
+                        Organisation
+                    </label>
+
+                    <input id="rm-affiliation-organisation"
+                           type="text"
+                           name="affiliation_organisation"
+                           maxlength="255"
+                           required
+                           placeholder="Institution or organisation">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-organisation-id">
+                        Organisation Identifier
+                    </label>
+
+                    <input id="rm-affiliation-organisation-id"
+                           type="text"
+                           name="affiliation_organisation_id"
+                           maxlength="150"
+                           placeholder="ROR or another institutional ID">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-department">
+                        Department
+                    </label>
+
+                    <input id="rm-affiliation-department"
+                           type="text"
+                           name="affiliation_department"
+                           maxlength="255"
+                           placeholder="Department, school or unit">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-role">
+                        Role / Designation
+                    </label>
+
+                    <input id="rm-affiliation-role"
+                           type="text"
+                           name="affiliation_role"
+                           maxlength="255"
+                           placeholder="Assistant Librarian, Professor, Scholar">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-type">
+                        Affiliation Type
+                    </label>
+
+                    <select id="rm-affiliation-type"
+                            name="affiliation_type"
+                            required>
+                        <option value="employment">Employment</option>
+                        <option value="education">Education</option>
+                        <option value="research">Research</option>
+                        <option value="visiting">Visiting</option>
+                        <option value="honorary">Honorary</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-status">
+                        Verification Status
+                    </label>
+
+                    <select id="rm-affiliation-status"
+                            name="affiliation_status"
+                            required>
+                        <option value="pending">Pending</option>
+                        <option value="verified">Verified</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-start">
+                        Start Date
+                    </label>
+
+                    <input id="rm-affiliation-start"
+                           type="date"
+                           name="affiliation_start_date">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-end">
+                        End Date
+                    </label>
+
+                    <input id="rm-affiliation-end"
+                           type="date"
+                           name="affiliation_end_date">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-source">
+                        Verification Source
+                    </label>
+
+                    <input id="rm-affiliation-source"
+                           type="text"
+                           name="affiliation_source"
+                           maxlength="50"
+                           placeholder="staff-review, ORCID, Scopus">
+                </div>
+
+                <div>
+                    <label for="rm-affiliation-reason">
+                        Change Note
+                    </label>
+
+                    <input id="rm-affiliation-reason"
+                           type="text"
+                           name="reason"
+                           maxlength="255"
+                           placeholder="Reason or supporting evidence">
+                </div>
+
+            </div>
+
+            <div class="rm-affiliation-flags">
+                <label>
+                    <input type="checkbox"
+                           id="rm-affiliation-current"
+                           name="affiliation_current"
+                           value="1">
+                    Current affiliation
+                </label>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Save Affiliation
+            </button>
+
+            <button type="button"
+                    id="rm-affiliation-reset"
+                    class="btn btn-default">
+                Clear Form
+            </button>
+
+        </form>
+
+    </section>
+
+    <section class="rm-tab-panel"
+             id="rm-panel-name-variants"
+             data-rm-panel="name-variants"
+             role="tabpanel">
+
+        <h3>Name Variants</h3>
+
+        <p class="rm-affiliation-help">
+            Maintain verified author-name forms used for publication matching
+            and researcher disambiguation.
+        </p>
+
+        [% IF edit_name_variants.size %]
+            <div class="rm-variants-table-wrap">
+                <table class="rm-variants-table">
+                    <thead>
+                        <tr>
+                            <th>Name variant</th>
+                            <th>Normalised form</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    [% FOREACH variant IN edit_name_variants %]
+                        <tr>
+                            <td>[% variant.name_variant | html %]</td>
+                            <td>[% variant.normalised_variant | html %]</td>
+                            <td>[% variant.source | html %]</td>
+                            <td>
+                                [% IF variant.is_verified %]
+                                    <span class="rm-status-verified">Verified</span>
+                                [% ELSE %]
+                                    <span class="rm-status-pending">Unverified</span>
+                                [% END %]
+                            </td>
+                            <td>[% variant.updated_at | html %]</td>
+                            <td>
+                                <div class="rm-variant-actions">
+                                    <button type="button"
+                                            class="btn btn-default btn-sm rm-variant-edit"
+                                            data-variant-id="[% variant.variant_id | html %]"
+                                            data-variant-name="[% variant.name_variant | html %]"
+                                            data-variant-source="[% variant.source | html %]"
+                                            data-variant-verified="[% variant.is_verified | html %]">
+                                        Edit
+                                    </button>
+
+                                    <form method="post" class="rm-inline-form">
+                                        <input type="hidden" name="csrf_token" value="[% csrf_token | html %]">
+                                        <input type="hidden" name="action" value="toggle_name_variant">
+                                        <input type="hidden" name="borrowernumber" value="[% edit_profile.borrowernumber | html %]">
+                                        <input type="hidden" name="variant_id" value="[% variant.variant_id | html %]">
+                                        <input type="hidden" name="reason" value="Verification status changed from Name Variants tab">
+                                        <button type="submit" class="btn btn-default btn-sm">
+                                            [% IF variant.is_verified %]Unverify[% ELSE %]Verify[% END %]
+                                        </button>
+                                    </form>
+
+                                    <form method="post" class="rm-inline-form rm-variant-delete-form">
+                                        <input type="hidden" name="csrf_token" value="[% csrf_token | html %]">
+                                        <input type="hidden" name="action" value="delete_name_variant">
+                                        <input type="hidden" name="borrowernumber" value="[% edit_profile.borrowernumber | html %]">
+                                        <input type="hidden" name="variant_id" value="[% variant.variant_id | html %]">
+                                        <input type="hidden" name="reason" value="Deleted from Name Variants tab">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    [% END %]
+                    </tbody>
+                </table>
+            </div>
+        [% ELSE %]
+            <div class="rm-module-notice">
+                No name variants have been recorded for this researcher.
+            </div>
+        [% END %]
+
+        <form method="post" class="rm-variant-form" id="rm-variant-form">
+            <input type="hidden" name="csrf_token" value="[% csrf_token | html %]">
+            <input type="hidden" name="action" value="save_name_variant">
+            <input type="hidden" name="borrowernumber" value="[% edit_profile.borrowernumber | html %]">
+            <input type="hidden" name="variant_id" id="rm-variant-id" value="">
+
+            <h4 id="rm-variant-form-title">Add Name Variant</h4>
+
+            <div class="rm-variant-grid">
+                <div>
+                    <label for="rm-variant-name">Name variant</label>
+                    <input id="rm-variant-name" type="text" name="variant_name"
+                           maxlength="255" required
+                           placeholder="A. Researcher, Alex Researcher">
+                </div>
+                <div>
+                    <label for="rm-variant-source">Source</label>
+                    <select id="rm-variant-source" name="variant_source">
+                        <option value="manual">Manual</option>
+                        <option value="profile">Profile</option>
+                        <option value="publication">Publication</option>
+                        <option value="orcid">ORCID</option>
+                        <option value="scopus">Scopus</option>
+                        <option value="wos">Web of Science</option>
+                        <option value="import">Import</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="rm-variant-reason">Change note</label>
+                    <input id="rm-variant-reason" type="text" name="reason"
+                           maxlength="255" placeholder="Evidence or reason">
+                </div>
+            </div>
+
+            <div class="rm-variant-flags">
+                <label>
+                    <input type="checkbox" id="rm-variant-verified"
+                           name="variant_verified" value="1">
+                    Verified name form
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Name Variant</button>
+            <button type="button" id="rm-variant-reset" class="btn btn-default">Clear Form</button>
+        </form>
+
+    </section>
+
+    <section class="rm-tab-panel"
+             id="rm-panel-publications"
+             data-rm-panel="publications"
+             role="tabpanel">
+
+        <h3>Publications</h3>
+
+        <div class="rm-module-notice">
+            <strong>Research output intelligence module</strong>
+
+            This section will display linked publications, source databases,
+            DOI coverage, citations, duplicate matches and unmatched records.
+        </div>
+
+    </section>
+
+    <section class="rm-tab-panel"
+             id="rm-panel-sync-history"
+             data-rm-panel="sync-history"
+             role="tabpanel">
+
+        <h3>Sync History</h3>
+
+        <div class="rm-module-notice">
+            <strong>External synchronization module</strong>
+
+            This section will show Scopus, Web of Science and ORCID
+            synchronization jobs, timestamps, status and error messages.
+        </div>
+
+    </section>
+
+    <section class="rm-tab-panel"
+             id="rm-panel-audit-trail"
+             data-rm-panel="audit-trail"
+             role="tabpanel">
+
+        <h3>Researcher Audit Trail</h3>
+
+        <div class="rm-module-notice">
+            <strong>Profile-specific audit module</strong>
+
+            This section will show lifecycle, identity, identifier,
+            affiliation, publication and synchronization changes for the
+            selected researcher.
+        </div>
+
+    </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var tabButtons = document.querySelectorAll(
+        ".rm-editor [data-rm-tab]"
+    );
+
+    var tabPanels = document.querySelectorAll(
+        ".rm-editor [data-rm-panel]"
+    );
+
+    function activateResearcherTab(tabName) {
+        tabButtons.forEach(function (button) {
+            var active = button.getAttribute("data-rm-tab") === tabName;
+
+            button.classList.toggle("is-active", active);
+            button.setAttribute(
+                "aria-selected",
+                active ? "true" : "false"
+            );
+        });
+
+        tabPanels.forEach(function (panel) {
+            var active = panel.getAttribute("data-rm-panel") === tabName;
+            panel.classList.toggle("is-active", active);
+        });
+
+        try {
+            window.sessionStorage.setItem(
+                "rimsActiveResearcherTab",
+                tabName
+            );
+        } catch (error) {
+            // Browser storage is optional.
+        }
+    }
+
+    tabButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            activateResearcherTab(
+                button.getAttribute("data-rm-tab")
+            );
+        });
+    });
+
+    var initialTab = "core-profile";
+
+    try {
+        var storedTab = window.sessionStorage.getItem(
+            "rimsActiveResearcherTab"
+        );
+
+        if (
+            storedTab &&
+            document.querySelector(
+                '.rm-editor [data-rm-tab="' + storedTab + '"]'
+            )
+        ) {
+            initialTab = storedTab;
+        }
+    } catch (error) {
+        // Core Profile remains the default.
+    }
+
+    activateResearcherTab(initialTab);
+
+    var identifierId =
+        document.getElementById("rm-identifier-id");
+
+    var identifierType =
+        document.getElementById("rm-identifier-type");
+
+    var identifierValue =
+        document.getElementById("rm-identifier-value");
+
+    var identifierStatus =
+        document.getElementById("rm-identifier-status");
+
+    var identifierSource =
+        document.getElementById("rm-identifier-source");
+
+    var identifierPrimary =
+        document.getElementById("rm-identifier-primary");
+
+    var identifierActive =
+        document.getElementById("rm-identifier-active");
+
+    var identifierTitle =
+        document.getElementById("rm-identifier-form-title");
+
+    function clearIdentifierForm() {
+        if (!identifierId) {
+            return;
+        }
+
+        identifierId.value = "";
+        identifierType.value = "orcid";
+        identifierValue.value = "";
+        identifierStatus.value = "pending";
+        identifierSource.value = "";
+        identifierPrimary.checked = false;
+        identifierActive.checked = true;
+        identifierTitle.textContent =
+            "Add Researcher Identifier";
+    }
+
+    document.querySelectorAll(
+        ".rm-identifier-edit"
+    ).forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            activateResearcherTab("identifiers");
+
+            identifierId.value =
+                button.getAttribute("data-id") || "";
+
+            identifierType.value =
+                button.getAttribute("data-type") || "orcid";
+
+            identifierValue.value =
+                button.getAttribute("data-value") || "";
+
+            identifierStatus.value =
+                button.getAttribute("data-status") || "pending";
+
+            identifierSource.value =
+                button.getAttribute("data-source") || "";
+
+            identifierPrimary.checked =
+                button.getAttribute("data-primary") === "1";
+
+            identifierActive.checked =
+                button.getAttribute("data-active") === "1";
+
+            identifierTitle.textContent =
+                "Edit Researcher Identifier";
+
+            identifierValue.focus();
+        });
+    });
+
+    var identifierReset =
+        document.getElementById("rm-identifier-reset");
+
+    if (identifierReset) {
+        identifierReset.addEventListener(
+            "click",
+            clearIdentifierForm
+        );
+    }
+
+    var affiliationId =
+        document.getElementById("rm-affiliation-id");
+
+    var affiliationOrganisation =
+        document.getElementById("rm-affiliation-organisation");
+
+    var affiliationOrganisationId =
+        document.getElementById("rm-affiliation-organisation-id");
+
+    var affiliationDepartment =
+        document.getElementById("rm-affiliation-department");
+
+    var affiliationRole =
+        document.getElementById("rm-affiliation-role");
+
+    var affiliationType =
+        document.getElementById("rm-affiliation-type");
+
+    var affiliationStatus =
+        document.getElementById("rm-affiliation-status");
+
+    var affiliationStart =
+        document.getElementById("rm-affiliation-start");
+
+    var affiliationEnd =
+        document.getElementById("rm-affiliation-end");
+
+    var affiliationSource =
+        document.getElementById("rm-affiliation-source");
+
+    var affiliationCurrent =
+        document.getElementById("rm-affiliation-current");
+
+    var affiliationTitle =
+        document.getElementById("rm-affiliation-form-title");
+
+    function applyAffiliationCurrentState() {
+        if (!affiliationCurrent || !affiliationEnd) {
+            return;
+        }
+
+        if (affiliationCurrent.checked) {
+            affiliationEnd.value = "";
+            affiliationEnd.disabled = true;
+        } else {
+            affiliationEnd.disabled = false;
+        }
+    }
+
+    function clearAffiliationForm() {
+        if (!affiliationId) {
+            return;
+        }
+
+        affiliationId.value = "";
+        affiliationOrganisation.value = "";
+        affiliationOrganisationId.value = "";
+        affiliationDepartment.value = "";
+        affiliationRole.value = "";
+        affiliationType.value = "employment";
+        affiliationStatus.value = "pending";
+        affiliationStart.value = "";
+        affiliationEnd.value = "";
+        affiliationSource.value = "";
+        affiliationCurrent.checked = false;
+        affiliationTitle.textContent =
+            "Add Researcher Affiliation";
+
+        applyAffiliationCurrentState();
+    }
+
+    document.querySelectorAll(
+        ".rm-affiliation-edit"
+    ).forEach(function (button) {
+
+        button.addEventListener("click", function () {
+            activateResearcherTab("affiliations");
+
+            affiliationId.value =
+                button.getAttribute("data-id") || "";
+
+            affiliationOrganisation.value =
+                button.getAttribute("data-organisation") || "";
+
+            affiliationOrganisationId.value =
+                button.getAttribute("data-organisation-id") || "";
+
+            affiliationDepartment.value =
+                button.getAttribute("data-department") || "";
+
+            affiliationRole.value =
+                button.getAttribute("data-role") || "";
+
+            affiliationStart.value =
+                button.getAttribute("data-start") || "";
+
+            affiliationEnd.value =
+                button.getAttribute("data-end") || "";
+
+            affiliationCurrent.checked =
+                button.getAttribute("data-current") === "1";
+
+            affiliationType.value =
+                button.getAttribute("data-type") || "employment";
+
+            affiliationStatus.value =
+                button.getAttribute("data-status") || "pending";
+
+            affiliationSource.value =
+                button.getAttribute("data-source") || "";
+
+            affiliationTitle.textContent =
+                "Edit Researcher Affiliation";
+
+            applyAffiliationCurrentState();
+            affiliationOrganisation.focus();
+        });
+    });
+
+    var affiliationReset =
+        document.getElementById("rm-affiliation-reset");
+
+    if (affiliationReset) {
+        affiliationReset.addEventListener(
+            "click",
+            clearAffiliationForm
+        );
+    }
+
+    if (affiliationCurrent) {
+        affiliationCurrent.addEventListener(
+            "change",
+            applyAffiliationCurrentState
+        );
+
+        applyAffiliationCurrentState();
+    }
+
+    var variantId = document.getElementById("rm-variant-id");
+    var variantName = document.getElementById("rm-variant-name");
+    var variantSource = document.getElementById("rm-variant-source");
+    var variantVerified = document.getElementById("rm-variant-verified");
+    var variantTitle = document.getElementById("rm-variant-form-title");
+
+    function resetVariantForm() {
+        if (!variantId) { return; }
+        variantId.value = "";
+        variantName.value = "";
+        variantSource.value = "manual";
+        variantVerified.checked = false;
+        variantTitle.textContent = "Add Name Variant";
+    }
+
+    document.querySelectorAll(".rm-variant-edit").forEach(function (button) {
+        button.addEventListener("click", function () {
+            activateResearcherTab("name-variants");
+            variantId.value = button.getAttribute("data-variant-id") || "";
+            variantName.value = button.getAttribute("data-variant-name") || "";
+            variantSource.value = button.getAttribute("data-variant-source") || "manual";
+            variantVerified.checked = button.getAttribute("data-variant-verified") === "1";
+            variantTitle.textContent = "Edit Name Variant";
+            variantName.focus();
+        });
+    });
+
+    var variantReset = document.getElementById("rm-variant-reset");
+    if (variantReset) {
+        variantReset.addEventListener("click", resetVariantForm);
+    }
+
+    document.querySelectorAll(".rm-variant-delete-form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            if (!window.confirm("Delete this name variant?")) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+</script>
+
+</div>
+
+[% END %]
+
+<form method="get"
+      class="rv-filter"
+      action="/cgi-bin/koha/tools/researcher-verification.pl">
+
+    <div>
+        <label for="rv-q">Search</label>
+        <input id="rv-q"
+               type="text"
+               name="q"
+               value="[% q | html %]"
+               placeholder="Name, ID, department">
+    </div>
+
+    <div>
+        <label for="rv-status">Status</label>
+        <select id="rv-status" name="status">
+            <option value="">All Statuses</option>
+            <option value="pending"
+                [% IF status_filter == 'pending' %]selected[% END %]>
+                Pending
+            </option>
+            <option value="verified"
+                [% IF status_filter == 'verified' %]selected[% END %]>
+                Verified
+            </option>
+            <option value="rejected"
+                [% IF status_filter == 'rejected' %]selected[% END %]>
+                Rejected
+            </option>
+            <option value="active"
+                [% IF status_filter == 'active' %]selected[% END %]>
+                Active
+            </option>
+            <option value="former"
+                [% IF status_filter == 'former' %]selected[% END %]>
+                Former
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="rv-type">User Type</label>
+        <select id="rv-type" name="user_type">
+            <option value="">All User Types</option>
+
+            [% FOREACH type IN user_types %]
+                <option value="[% type | html %]"
+                    [% IF type_filter == type %]selected[% END %]>
+                    [% type | html %]
+                </option>
+            [% END %]
+        </select>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" type="submit">
+            Apply Filters
+        </button>
+
+        <a class="btn btn-default"
+           href="/cgi-bin/koha/tools/researcher-verification.pl">
+            Clear
+        </a>
+    </div>
+
+</form>
+
+<div class="rv-table-wrap">
+
+<table class="rv-table">
+
+<thead>
+<tr>
+    <th>Researcher</th>
+    <th>Institutional Details</th>
+    <th>Identifiers</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+
+[% IF profiles.size == 0 %]
+
+<tr>
+    <td colspan="5">
+        No researcher profiles matched the selected filters.
+    </td>
+</tr>
+
+[% ELSE %]
+
+[% FOREACH p IN profiles %]
+
+<tr>
+
+<td>
+    <strong>[% p.preferred_name | html %]</strong><br>
+
+    [% p.job_title | html %]<br>
+
+    <a target="_blank"
+       href="[% profile_url %]?id=[% p.borrowernumber | uri %]">
+        Open Public Profile
+    </a>
+
+    <div class="rv-id">
+        Borrower: [% p.borrowernumber | html %]<br>
+        Card: [% p.cardnumber | html %]
+    </div>
+</td>
+
+<td>
+    <strong>User Type:</strong>
+    [% p.user_type || 'Not selected' | html %]<br>
+
+    <strong>School:</strong>
+    [% p.school || 'Not entered' | html %]<br>
+
+    <strong>Department:</strong>
+    [% p.department || p.working_group | html %]<br>
+
+    <strong>Designation:</strong>
+    [% p.designation || p.job_title | html %]<br>
+
+    <strong>Affiliation:</strong>
+    [% p.main_affiliation | html %]<br>
+
+    <strong>Employee ID:</strong>
+    [% p.employee_id | html %]<br>
+
+    <strong>Patron Expiry:</strong>
+    [% p.dateexpiry | html %]
+</td>
+
+<td class="rv-id">
+    <strong>ORCID:</strong>
+    [% p.orcid | html %]<br>
+
+    <strong>Scopus:</strong>
+    [% p.scopus_author_id | html %]<br>
+
+    <strong>WoS:</strong>
+    [% p.researcher_id | html %]
+</td>
+
+<td>
+
+    [% IF p.verification_status == 'verified' %]
+        <span class="rv-badge rv-verified">Verified</span>
+    [% ELSIF p.verification_status == 'rejected' %]
+        <span class="rv-badge rv-rejected">Rejected</span>
+    [% ELSE %]
+        <span class="rv-badge rv-pending">Pending</span>
+    [% END %]
+
+    [% IF p.employment_status == 'former' %]
+        <span class="rv-badge rv-former">Former</span>
+    [% ELSE %]
+        <span class="rv-badge rv-active">
+            [% p.employment_status | html %]
+        </span>
+    [% END %]
+
+    <br>
+
+    <strong>Public:</strong>
+    [% IF p.public_visibility %]Yes[% ELSE %]No[% END %]
+    <br>
+
+    <strong>API Sync:</strong>
+    [% IF p.sync_enabled %]Enabled[% ELSE %]Paused[% END %]
+    <br>
+
+    <strong>Updated:</strong>
+    [% p.updated_at | html %]
+
+    [% IF p.status_reason %]
+        <br>
+        <strong>Reason:</strong>
+        [% p.status_reason | html %]
+    [% END %]
+
+</td>
+
+<td class="rv-actions">
+
+    <a class="btn btn-primary"
+       href="/cgi-bin/koha/tools/researcher-verification.pl?edit=[% p.borrowernumber | uri %]">
+        Manage
+    </a>
+
+    <form method="post"
+          action="/cgi-bin/koha/tools/researcher-verification.pl">
+
+
+        <input type="hidden"
+               name="csrf_token"
+               value="[% csrf_token | html %]">
+
+        <input type="hidden"
+               name="borrowernumber"
+               value="[% p.borrowernumber | html %]">
+
+        <textarea name="reason"
+                  placeholder="Optional verification note"></textarea>
+
+        [% IF p.verification_status != 'verified' %]
+            <button class="btn btn-success"
+                    type="submit"
+                    name="action"
+                    value="verify">
+                Verify
+            </button>
+        [% END %]
+
+        [% IF p.verification_status != 'rejected' %]
+            <button class="btn rv-danger"
+                    type="submit"
+                    name="action"
+                    value="reject"
+                    onclick="return confirm(
+                        'Reject this researcher profile?'
+                    );">
+                Reject
+            </button>
+        [% END %]
+
+        [% IF p.employment_status != 'former' %]
+            <button class="btn rv-secondary"
+                    type="submit"
+                    name="action"
+                    value="mark_former"
+                    onclick="return confirm(
+                        'Mark this researcher as Former?'
+                    );">
+                Mark Former
+            </button>
+        [% ELSE %]
+            <button class="btn btn-primary"
+                    type="submit"
+                    name="action"
+                    value="reactivate">
+                Reactivate
+            </button>
+        [% END %]
+
+    
+
+        [%# RESEARCHER_REMOVE_DELETE_V6_UI %]
+
+        [% IF p.public_visibility %]
+            <button
+                class="btn btn-warning"
+                type="submit"
+                name="action"
+                value="hide_profile"
+                onclick="return confirm(
+                    'Remove this researcher from the public directory? Publications and the Koha patron account will be retained.'
+                );"
+            >
+                Remove Profile
+            </button>
+        [% ELSE %]
+            <button
+                class="btn btn-info"
+                type="submit"
+                name="action"
+                value="restore_profile"
+                onclick="return confirm(
+                    'Restore this researcher profile?'
+                );"
+            >
+                Restore Profile
+            </button>
+        [% END %]
+
+        <button
+            class="btn btn-danger rm-permanent-delete-profile"
+            type="button"
+            data-researcher-name="[% p.preferred_name | html %]"
+            data-borrowernumber="[% p.borrowernumber | html %]"
+        >
+            Permanently Delete Profile
+        </button>
+
+        <input
+            type="hidden"
+            name="confirmation_name"
+            value=""
+            class="rm-delete-confirmation-name"
+        >
+
+        <input
+            type="hidden"
+            name="delete_acknowledged"
+            value="0"
+            class="rm-delete-acknowledged"
+        >
+
+    </form>
+
+</td>
+
+</tr>
+
+[% END %]
+[% END %]
+
+</tbody>
+</table>
+
+</div>
+
+<h2>Recent Verification Activity</h2>
+
+<div class="rv-table-wrap">
+
+<table class="rv-table">
+
+<thead>
+<tr>
+    <th>Date</th>
+    <th>Researcher</th>
+    <th>Action</th>
+    <th>Reason</th>
+    <th>Source</th>
+</tr>
+</thead>
+
+<tbody>
+
+[% IF audit_rows.size == 0 %]
+
+<tr>
+    <td colspan="5">No audit events available.</td>
+</tr>
+
+[% ELSE %]
+
+[% FOREACH row IN audit_rows %]
+
+<tr>
+    <td>[% row.created_at | html %]</td>
+    <td>
+        [% row.preferred_name | html %]
+        <div class="rv-id">
+            [% row.borrowernumber | html %]
+        </div>
+    </td>
+    <td>[% row.action_type | html %]</td>
+    <td>[% row.action_reason | html %]</td>
+    <td>[% row.source | html %]</td>
+</tr>
+
+[% END %]
+[% END %]
+
+</tbody>
+</table>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+[% MACRO jsinclude BLOCK %]
+[% END %]
+
+[% INCLUDE 'intranet-bottom.inc' %]
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(
+        ".rm-permanent-delete-profile"
+    ).forEach(function (button) {
+        button.addEventListener("click", function () {
+            var form = button.closest("form");
+
+            if (!form) {
+                return;
+            }
+
+            var researcherName =
+                button.getAttribute(
+                    "data-researcher-name"
+                ) || "";
+
+            var borrowerNumber =
+                button.getAttribute(
+                    "data-borrowernumber"
+                ) || "";
+
+            var reasonInput =
+                form.querySelector('[name="reason"]');
+
+            var reason =
+                reasonInput
+                ? reasonInput.value.trim()
+                : "";
+
+            if (!reason) {
+                window.alert(
+                    "Permanent deletion ke liye Optional verification note field me deletion reason enter karein."
+                );
+
+                if (reasonInput) {
+                    reasonInput.focus();
+                }
+
+                return;
+            }
+
+            var typedName = window.prompt(
+                "PERMANENT DELETE\n\n"
+                + "Researcher: "
+                + researcherName
+                + "\nBorrower: "
+                + borrowerNumber
+                + "\n\n"
+                + "Confirm karne ke liye researcher ka exact name type karein:"
+            );
+
+            if (typedName === null) {
+                return;
+            }
+
+            if (
+                typedName.trim().toLowerCase()
+                !== researcherName.trim().toLowerCase()
+            ) {
+                window.alert(
+                    "Researcher name match nahi hua. Profile delete nahi ki gayi."
+                );
+                return;
+            }
+
+            var finalConfirmation =
+                window.confirm(
+                    "FINAL WARNING\n\n"
+                    + "Researcher profile, identifiers, affiliations, name variants, publication links, sync history and researcher photo permanently delete honge.\n\n"
+                    + "Koha patron account retain rahega.\n\n"
+                    + "Is action ko undo nahi kiya ja sakta. Continue?"
+                );
+
+            if (!finalConfirmation) {
+                return;
+            }
+
+            var nameField =
+                form.querySelector(
+                    ".rm-delete-confirmation-name"
+                );
+
+            var acknowledgeField =
+                form.querySelector(
+                    ".rm-delete-acknowledged"
+                );
+
+            nameField.value = typedName.trim();
+            acknowledgeField.value = "1";
+
+            var actionField =
+                document.createElement("input");
+
+            actionField.type = "hidden";
+            actionField.name = "action";
+            actionField.value = "delete_profile";
+
+            form.appendChild(actionField);
+            form.submit();
+        });
+    });
+});
+</script>
