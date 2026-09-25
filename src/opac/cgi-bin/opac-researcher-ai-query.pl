@@ -18,7 +18,6 @@ print $cgi->header(
     -status  => '200 OK',
 );
 
-
 sub fail_json {
     my (%args) = @_;
 
@@ -32,10 +31,27 @@ sub fail_json {
     exit 0;
 }
 
+sub read_config {
+    my ($file) = @_;
+    my %cfg;
 
-# ======================================================
-# INPUT
-# ======================================================
+    open my $fh, '<', $file
+        or return %cfg;
+
+    while (my $line = <$fh>) {
+        chomp $line;
+        next if $line =~ /^\s*#/;
+        next unless $line =~ /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/;
+
+        my ($key, $value) = ($1, $2);
+        $value =~ s/^"(.*)"$/$1/;
+        $value =~ s/^'(.*)'$/$1/;
+        $cfg{$key} = $value;
+    }
+
+    close $fh;
+    return %cfg;
+}
 
 my $question =
     $cgi->param('q') // '';
@@ -56,172 +72,91 @@ if (length($question) > 1500) {
     );
 }
 
-
-# ======================================================
-# SECRET
-# ======================================================
-
 my $secret_file =
-    '/etc/koha/sites/INSTANCE/gemini-expert-discovery.conf';
+    '/etc/koha/sites/INSTANCE/deepseek-expert-discovery.conf';
 
-open my $fh, '<', $secret_file
-    or fail_json(
-        source => 'configuration',
-        error  => 'AI query configuration is unavailable',
-    );
+my %cfg =
+    read_config($secret_file);
 
-my $api_key = '';
+my $api_key =
+    $cfg{DEEPSEEK_API_KEY} // '';
 
-while (my $line = <$fh>) {
+my $model =
+    $cfg{DEEPSEEK_MODEL}
+    || 'deepseek-flash';
 
-    chomp $line;
+my $base_url =
+    $cfg{DEEPSEEK_BASE_URL}
+    || 'https://api.deepseek.com';
 
-    if (
-        $line =~
-        /^GEMINI_API_KEY=(.+)$/
-    ) {
-        $api_key = $1;
-        last;
-    }
-}
-
-close $fh;
+my $timeout =
+    $cfg{DEEPSEEK_TIMEOUT_SECONDS}
+    || 45;
 
 if (!$api_key) {
     fail_json(
         source => 'configuration',
-        error  => 'AI query API key is not configured',
+        error  => 'DeepSeek API key is not configured',
     );
 }
 
+$base_url =~ s{/+$}{};
 
-# ======================================================
-# STRUCTURED PROMPT
-# ======================================================
+my $system_prompt = <<'PROMPT';
+You are the query-understanding component of an institutional
+library expert-discovery system.
 
-my $prompt = <<"PROMPT";
-You are the query-understanding component of Example University Library's
-institutional expert discovery system.
+Interpret the research question only.
 
-Analyse ONLY the research question.
+Do not recommend or rank researchers.
+Do not use external knowledge about institutional staff.
+Do not invent identities, affiliations, publications or expertise.
 
-Do not recommend researchers.
-Do not invent publications.
-Do not infer Example University staff identities.
-Return neutral structured research concepts only.
+Return JSON only with these keys:
+primary_topic, research_domain, context, methodologies,
+related_concepts, keywords, query_intent.
 
-Research question:
-$question
+Keep concepts concise and useful for matching against verified
+local researcher evidence.
 PROMPT
 
+my $user_prompt =
+    "Research question:\n"
+    . $question;
 
 my $payload = {
-    model => 'gemini-3.6-flash',
-
-    input => $prompt,
-
-    store => JSON::false,
-
-    generation_config => {
-        thinking_level => 'minimal',
-        temperature    => 0,
-    },
-
-    response_format => {
-        type      => 'text',
-        mime_type => 'application/json',
-
-        schema => {
-            type => 'object',
-
-            properties => {
-
-                primary_topic => {
-                    type => 'string',
-                },
-
-                research_domain => {
-                    type => 'string',
-                },
-
-                context => {
-                    type  => 'array',
-                    items => {
-                        type => 'string',
-                    },
-                },
-
-                methodologies => {
-                    type  => 'array',
-                    items => {
-                        type => 'string',
-                    },
-                },
-
-                related_concepts => {
-                    type  => 'array',
-                    items => {
-                        type => 'string',
-                    },
-                },
-
-                keywords => {
-                    type  => 'array',
-                    items => {
-                        type => 'string',
-                    },
-                },
-
-                query_intent => {
-                    type => 'string',
-
-                    enum => [
-                        'topic_expert',
-                        'methodology_expert',
-                        'interdisciplinary_expert',
-                        'collaboration_search',
-                        'general_expert_search',
-                    ],
-                },
-            },
-
-            required => [
-                'primary_topic',
-                'research_domain',
-                'context',
-                'methodologies',
-                'related_concepts',
-                'keywords',
-                'query_intent',
-            ],
+    model => $model,
+    messages => [
+        {
+            role    => 'system',
+            content => $system_prompt,
         },
+        {
+            role    => 'user',
+            content => $user_prompt,
+        },
+    ],
+    temperature => 0,
+    response_format => {
+        type => 'json_object',
     },
 };
 
-
-# ======================================================
-# GEMINI CALL
-# ======================================================
-
 my $http = HTTP::Tiny->new(
-    timeout => 45,
+    timeout    => $timeout,
     verify_SSL => 1,
 );
 
-my $url =
-    'https://generativelanguage.googleapis.com/'
-    . 'v1beta/interactions';
-
 my $response =
     $http->post(
-        $url,
+        $base_url . '/chat/completions',
         {
             headers => {
                 'Content-Type'
                     => 'application/json',
 
-                'x-goog-api-key'
-                    => $api_key,
+                'Authorization'
+                    => 'Bearer ' . $api_key,
             },
 
             content =>
@@ -229,9 +164,7 @@ my $response =
         }
     );
 
-
 if (!$response->{success}) {
-
     my $status =
         $response->{status} // '';
 
@@ -239,15 +172,10 @@ if (!$response->{success}) {
         $response->{reason} // '';
 
     fail_json(
-        source => 'gemini',
-        error  => "Gemini request failed: $status $reason",
+        source => 'deepseek',
+        error  => "DeepSeek request failed: $status $reason",
     );
 }
-
-
-# ======================================================
-# PARSE GEMINI RESPONSE
-# ======================================================
 
 my $outer;
 
@@ -260,71 +188,37 @@ eval {
 
 if ($@ || !$outer) {
     fail_json(
-        source => 'gemini',
-        error  => 'Invalid Gemini response',
+        source => 'deepseek',
+        error  => 'Invalid DeepSeek response',
     );
 }
 
-
 if ($outer->{error}) {
-
     my $message =
-        $outer->{error}->{message}
-        // 'Gemini API error';
+        ref($outer->{error}) eq 'HASH'
+        ? ($outer->{error}->{message} // 'DeepSeek API error')
+        : 'DeepSeek API error';
 
     fail_json(
-        source => 'gemini',
+        source => 'deepseek',
         error  => $message,
     );
 }
 
-
-my @texts;
-
-for my $step (
-    @{ $outer->{steps} // [] }
-) {
-
-    next
-        unless
-        ($step->{type} // '')
-        eq 'model_output';
-
-    for my $part (
-        @{ $step->{content} // [] }
-    ) {
-
-        next
-            unless
-            ($part->{type} // '')
-            eq 'text';
-
-        my $text =
-            $part->{text} // '';
-
-        push @texts, $text
-            if $text ne '';
-    }
-}
-
-
 my $model_text =
-    join(
-        "\n",
-        @texts
-    );
+    $outer->{choices}->[0]->{message}->{content}
+    // '';
 
-$model_text =~
-    s/^\s+|\s+$//g;
-
+$model_text =~ s/^\s+|\s+$//g;
+$model_text =~ s/^\`\`\`(?:json)?\s*//i;
+$model_text =~ s/\s*\`\`\`$//;
 
 if (!$model_text) {
     fail_json(
-        source => 'gemini',
-        error  => 'Gemini returned no structured text',
+        source => 'deepseek',
+        error  => 'DeepSeek returned no structured text',
     );
 }
-
 
 my $concepts;
 
@@ -337,15 +231,34 @@ eval {
 
 if ($@ || ref($concepts) ne 'HASH') {
     fail_json(
-        source => 'gemini',
-        error  => 'Gemini structured output was invalid',
+        source => 'deepseek',
+        error  => 'DeepSeek structured output was invalid',
     );
 }
 
+for my $key (
+    qw(
+        context
+        methodologies
+        related_concepts
+        keywords
+    )
+) {
+    $concepts->{$key} = []
+        unless ref($concepts->{$key}) eq 'ARRAY';
+}
 
-# ======================================================
-# BUILD SEARCH EXPANSION
-# ======================================================
+for my $key (
+    qw(
+        primary_topic
+        research_domain
+        query_intent
+    )
+) {
+    $concepts->{$key} =
+        ''
+        unless defined $concepts->{$key};
+}
 
 my @terms;
 
@@ -369,7 +282,6 @@ push @terms,
 push @terms,
     @{ $concepts->{keywords} // [] };
 
-
 my %seen;
 
 @terms =
@@ -382,12 +294,14 @@ my %seen;
     }
     @terms;
 
-
 print encode_json({
     ok => JSON::true,
 
     source =>
-        'gemini-3.6-flash',
+        'deepseek',
+
+    model =>
+        $model,
 
     original_question =>
         $question,
