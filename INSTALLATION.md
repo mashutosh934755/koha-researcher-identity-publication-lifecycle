@@ -11,7 +11,7 @@ git clone https://github.com/mashutosh934755/koha-researcher-identity-publicatio
 cd koha-researcher-identity-publication-lifecycle
 ```
 
-Review `database/schema/researcher-system-schema.sql`, `install/install.sh`, `scripts/cron/`, and `config/*.example`.
+Review `database/schema/researcher-system-schema.sql`, `install/install.sh`, `scripts/cron/`, `scripts/systemd/`, and `config/*.example`.
 
 ## 3. Install
 
@@ -34,15 +34,50 @@ Create/edit:
 /etc/koha/sites/<instance>/research-api.env
 ```
 
-using `config/research-api.env.example`, then set restrictive permissions (`chmod 600`). Optional AI query configuration uses:
+using `config/research-api.env.example`, then set restrictive permissions.
+
+### Optional DeepSeek query understanding
+
+The current Expert Discovery pilot uses DeepSeek only for natural-language query interpretation. Final expert ranking remains local and evidence-grounded.
+
+Copy:
 
 ```text
-/etc/koha/sites/<instance>/gemini-expert-discovery.conf
+config/deepseek-expert-discovery.conf.example
 ```
 
-Never commit active credential files.
+to:
 
-## 5. Verify
+```text
+/etc/koha/sites/<instance>/deepseek-expert-discovery.conf
+```
+
+Set the real key only on the server. Never commit it.
+
+Recommended ownership/permissions depend on the Koha deployment, but the file must be readable by the Koha runtime and not world-readable.
+
+## 5. Expert Discovery index refresh
+
+The production pilot uses a DB-backed local expert index. The generated production JSON must not be committed.
+
+Sanitized systemd examples are provided:
+
+```text
+scripts/systemd/koha-expert-index.service
+scripts/systemd/koha-expert-index.timer
+```
+
+Before enabling them, install and review the local sanitized index-builder implementation at the path referenced by the service. Confirm that it exports only public discovery fields.
+
+Example enablement after local validation:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now koha-expert-index.timer
+systemctl list-timers --all koha-expert-index.timer
+```
+
+## 6. Verify
 
 ```bash
 sudo ./install/verify.sh <koha-instance>
@@ -50,7 +85,20 @@ sudo ./install/verify.sh <koha-instance>
 
 The verifier checks expected files, Koha-environment Perl syntax for key components, selected database objects and obvious hard-coded-secret patterns. Live external API behaviour still requires configured credentials/network access.
 
-## 6. Roll back replaced files
+For Expert Discovery, additionally verify:
+
+```text
+- direct short-topic query works without external AI
+- natural-language query returns structured concepts
+- local verified profile evidence determines ranking
+- exact phrase ranks above singular/plural near-equivalent
+- publication count does not increase topical relevance
+- profile photos load through the public researcher-photo endpoint
+- missing photos fall back safely to initials
+- timer refreshes the local expert index
+```
+
+## 7. Roll back replaced files
 
 ```bash
 sudo ./install/rollback.sh /root/koha-rims-backup-YYYYMMDD-HHMMSS
@@ -58,6 +106,8 @@ sudo ./install/rollback.sh /root/koha-rims-backup-YYYYMMDD-HHMMSS
 
 Database objects are intentionally not dropped automatically during rollback.
 
-## 7. Current readiness boundary
+## 8. Current readiness boundary
 
 The source is production-derived and sanitized, but the generic installer still requires a clean third-party Koha integration test before the repository should be called universally production-ready.
+
+The V4.2 Expert Discovery update documents the deployed ranking/query architecture. Exact generated production index content and production credentials remain intentionally excluded.
