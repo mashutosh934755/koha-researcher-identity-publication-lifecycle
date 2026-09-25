@@ -1,0 +1,12 @@
+# Optional DeepSeek query-understanding configuration.
+# Keep credentials outside the repository.
+# Copy to:
+#   /etc/koha/sites/<instance>/deepseek-expert-discovery.conf
+# and restrict permissions, for example chmod 640 with an appropriate Koha group.
+#
+# Never commit a real key.
+
+DEEPSEEK_API_KEY=
+DEEPSEEK_MODEL=deepseek-flash
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TIMEOUT_SECONDS=45
