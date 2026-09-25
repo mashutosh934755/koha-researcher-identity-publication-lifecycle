@@ -376,22 +376,42 @@ for my $row ( @{$rows} ) {
     $row->{institution_line} =
         $institution_line;
 
-    # BEGIN RESEARCHER DIRECTORY EXPERTISE V6
+    # BEGIN RESEARCHER DIRECTORY EXPERTISE V7
     #
-    # research_interests is stored as multiline text.
-    # Convert it into a concise, deduplicated set of tags
-    # for researcher discovery cards.
+    # Authoritative discovery source:
+    #   researcher_research_areas
+    #
+    # Backward-compatible fallback:
+    #   custom_profile_details.research_interests
+    #
+    # This keeps the public directory aligned with the
+    # structured Research Areas managed by library staff.
     #
     my @expertise_tags;
     my %expertise_seen;
 
-    my $research_interests =
-        $row->{research_interests} // '';
+    my $research_area_rows =
+        $dbh->selectall_arrayref(
+            q{
+                SELECT
+                    research_area
+                FROM researcher_research_areas
+                WHERE borrowernumber = ?
+                  AND NULLIF(TRIM(research_area), '') IS NOT NULL
+                ORDER BY
+                    sort_order ASC,
+                    research_area ASC,
+                    id ASC
+                LIMIT 6
+            },
+            { Slice => {} },
+            $row->{borrowernumber}
+        ) || [];
 
-    for my $interest (
-        split /(?:\r?\n|;)+/,
-        $research_interests
-    ) {
+    for my $area_row ( @{$research_area_rows} ) {
+
+        my $interest =
+            $area_row->{research_area} // '';
 
         $interest =~ s/^\s+|\s+$//g;
         $interest =~ s/\s+/ /g;
@@ -402,7 +422,6 @@ for my $row ( @{$rows} ) {
 
         next if $expertise_seen{$key}++;
 
-        # Avoid excessively long card chips.
         if ( length($interest) > 60 ) {
             $interest =
                 substr($interest, 0, 57)
@@ -415,6 +434,40 @@ for my $row ( @{$rows} ) {
         last if @expertise_tags >= 6;
     }
 
+    # Backward-compatible fallback for researchers whose
+    # structured Research Areas have not yet been entered.
+    if ( !@expertise_tags ) {
+
+        my $research_interests =
+            $row->{research_interests} // '';
+
+        for my $interest (
+            split /(?:\\r?\\n|;)+/,
+            $research_interests
+        ) {
+
+            $interest =~ s/^\s+|\s+$//g;
+            $interest =~ s/\s+/ /g;
+
+            next unless length $interest;
+
+            my $key = lc $interest;
+
+            next if $expertise_seen{$key}++;
+
+            if ( length($interest) > 60 ) {
+                $interest =
+                    substr($interest, 0, 57)
+                    . '...';
+            }
+
+            push @expertise_tags,
+                $interest;
+
+            last if @expertise_tags >= 6;
+        }
+    }
+
     $row->{expertise_tags} =
         \@expertise_tags;
 
@@ -424,7 +477,7 @@ for my $row ( @{$rows} ) {
     $row->{publication_count} =
         $row->{publication_count} || 0;
 
-    # END RESEARCHER DIRECTORY EXPERTISE V6
+    # END RESEARCHER DIRECTORY EXPERTISE V7
 
     if ( $row->{orcid} ) {
         my $orcid = $row->{orcid};
